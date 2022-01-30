@@ -1,0 +1,13 @@
+.header-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 0px 20px;
+}
+
+.menu {
+    flex-grow: 1;
+}
+
+.icon {
+    padding-bottom: 5px;
+}

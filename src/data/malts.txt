@@ -1,0 +1,206 @@
+Acid Malt,3,1.027
+Acidulated (Weyermann),1.8,1.03
+Acidulated (BestMalz),1.5,1.036
+Amber (Crisp),27.5,1.03
+Amber Dry Extract,12.5,1.044
+Amber Liquid Extract,12.5,1.036
+Amber Malt,22,1.035
+Amber Malt (Joe White),23,1.037
+Amber Malt Extract (Coopers),172.6,1.036
+Aromatic Malt (Briess),20,1.035
+Aromatic Malt (Dingemans),19,1.037
+Australian Bitter Extract (Coopers),35.5,1.037
+Australian Pale Ale Extract (Coopers),45.7,1.036
+Aromatic Malt,26,1.036
+Barley Hulls,0,1
+Barley Flaked,1.7,1.032
+Barley Flaked (Briess),1.7,1.035
+Barley Flaked (Thomas Fawcett),2,1.035
+Barley Raw,2,1.028
+Barley Roasted,300,1.025
+Barley Torrefied,1.7,1.036
+Bayer,7.1,1.036
+BestMälz Aromatic (BestMälz),33,1.033
+Biscuit (Dingemans),22.5,1.032
+Belgian Debittered Black Malt,550,1.01
+Biscuit Malt,23,1.036
+Black,761.4,1.03
+Black (Crisp),680,1.035
+Black (Patent) Malt,500,1.025
+Black Barley (Briess),500,1.032
+Black Barley (Stout),500,1.025
+Black Malt (hoepfner),600,1.035
+Black Malt (Simpsons),550,1.025
+Black Malt (Thomas Fawcett),660,1.034
+Black Malt - 2 Row (Briess),500,1.033
+Black Malt - 6 Row (Briess),500,1.032
+Black Malt Extra (BestMälz),710.7,1.033
+Black Malt R1000 (BestMälz),362.9,1.033
+Black Malt R1400 (BestMälz),710.7,1.033
+Black Pearl Malt Dark,490,1.3
+Black Pearl Malt Light,340,1.3
+Black Pearl Malt Medium,420,1.3
+Borlander Munich Malt (Briess),10,1.035
+Brewer's Malt 2-Row, Premium (Great Western),1,1.036
+Brewers Malt 2-Row (Briess),1.8,1.037
+Brewers Malt 6-Row (Briess),1.8,1.036
+Brown Malt,65,1.032
+Brown Malt (Crisp),65,1.035
+Brown Malt (Simpsons),150,1.034
+Brown Malt Patagonia,115,1.032
+Brown Sugar Dark,50,1.046
+Brown Sugar Light,50,1.046
+Brumalt,23,1.033
+Cara-Pils/DeTRUEtrine,2,1.033
+Caraamber,30,1.035
+Caraaroma,130,1.035
+Carafa I,337,1.032
+Carafa II,412,1.032
+Carafa III,525,1.032
+Carafa Special I (Weyermann),320,1.036
+Carafoam,2,1.033
+Caramel / Crystal 60L,60,0
+Caramel Malt - 120L (Briess),120,1.032
+Caramel Malt - 80L 6-Row (Briess),80,1.033
+Caramel Wheat Malt,46,1.035
+Caramel/Crystal Malt - 10L,10,1.035
+Caramel/Crystal Malt - 150L,150,1.035
+Caramel/Crystal Malt - 15L,15,1.035
+Caramel/Crystal Malt - 20L,20,1.035
+Caramel/Crystal Malt - 30L,30,1.035
+Caramel/Crystal Malt - 40L,40,1.034
+Caramel/Crystal Malt - 60L,60,1.034
+Caramel/Crystal Malt - 80L,80,1.034
+Caramel/Crystal Malt - 90L,90,1.034
+Caramel/Crystal Malt -120L,120,1.033
+Caramunich I (Weyermann),34.5,1.036
+Caramunich Malt,56,1.033
+Carapils (Briess),1.5,1.034
+Carapils (DeTRUEtrine Malt),1.8,0
+Carapils 6-Row (Briess),1.3,1.034
+Carared,20,1.035
+Caravienne Malt,22,1.034
+Chocolate Malt,350,1.028
+Chocolate Malt,450,1.034
+Chocolate Malt (Muntons),385,1.028
+Chocolate Malt (Muntons),385,1.028
+Chocolate Malt (Thomas Fawcett),508,1.034
+Chocolate Malt Pale,225,1.028
+Chocolate Rye Malt,250,1.031
+Chocolate Wheat Malt,400,1.033
+Corn Flaked,1.3,1.037
+Crystal 40 2-Row (Great Western),40,1.032
+Crystal ETRUEtra Dark (Simpsons),160,1.035
+Crystal Medium (Simpsons),55,1.035
+English Crystal 50-60 L,55,1.034
+Honey Malt,25,1.037
+Kolsch Malt,4.5,1.037
+Lager Malt,2,1.038
+Maris Otter (Crisp),4,1.038
+Melanoiden Malt,20,1.037
+Melanoidin (Weyermann),27,1.037
+Mild Malt,4,1.037
+Munich 10L (Briess),7,1.035
+Munich 10L (Gambrinus),10,1.035
+Munich Malt,9,1.037
+Munich Malt - 10L,10,1.035
+Munich Malt - 20L,20,1.035
+Munich Malt Light (Weyermann),5.5,1.037
+Munich Malt Light (Weyermann),5.5,1.037
+Oats Flaked,1,1.037
+Oats Flaked (toasted),15,1.037
+Oats Golden Naked (Simpsons),10,1.032
+Oats Malted,1,1.037
+Pale 2-Row,1.8,0
+Pale 2-Row,1.8,0
+Pale 2-Row,1.8,0
+Pale Ale Malt,3.5,1.036
+Pale Ale Malt 2-Row (Briess),3.5,1.037
+Pale Ale Malt 2-Row (Briess),3.5,1.037
+Pale Chocolate,225,1.028
+Pale Malt (2 Row) Belgian,3,1.037
+Pale Malt (2 Row) UK,3,1.036
+Pale Malt (2 Row) US,2,1.036
+Pale Malt (6 Row) US,2,1.035
+Pale Malt Golden Promise,2.5,1.037
+Pale Malt Halcyon,2.5,1.037
+Pale Malt Maris Otter,3,1.038
+Peat Smoked Malt,2.8,1.034
+Pilsner (2 Row) Belgian,2,1.036
+Pilsner (2 Row) German,2,1.037
+Pilsner (2 Row) UK,1,1.036
+Pilsner (Weyermann),1.7,1.038
+Rice Flaked,1,1.032
+Roasted Barley,300,1.025
+Roasted Barley,300,0
+Roasted Barley,500,1.025
+Roasted Barley,300,1.025
+Rye Malt,4.7,1.029
+Rye Malt (Briess),3.7,1.035
+Rye Malt (Weyermann),3,1.029
+Rye Flaked,2,1.036
+Rye Flaked (Briess),4.6,1.033
+Rye Flaked (toasted),10,1.036
+Sinamar (Wyermann),153,1.02
+Smoked Malt,9,1.037
+Smoked Malt (BestMälz),3,1.037
+Special B (Castle Malting),152.284264,1.035
+Smoked Malt (Hoepfner),2.5,1.037
+Smoked Malt (Weyermann),2,1.037
+Soft Candi Sugar Blanc (White),0,1.042
+Soft Candi Sugar Brun Foncé (Dark),22,1.042
+Soft Candi Sugar Brun Léger (Light),6.5,1.042
+Sparkling Ale Extract (Coopers),45.7,1.036
+Special B (Dingemans),147.5,1.03
+Special B Malt,180,1.03
+Special Pale (Cargill),3.5,1.036
+Special Roast,50,1.033
+Special Roast (Briess),50,1.033
+Stout Extract (Coopers),913.7,1.036
+Sugar Table (Sucrose),1,1.046
+Toasted Malt,27,1.033
+Two-Row Pale Malt,3,1.037
+Traditional Draught Extract (Coopers),66,1.036
+Turbinado,10,1.044
+Victory Malt,25,1.034
+Victory Malt (Briess),28,1.034
+Vienna,4.1,1.036
+Vienna (BestMälz),4.1,1.035
+Vienna (Durst Malz),7,1.037
+Vienna (Hoepfner),4,1.037
+Vienna Malt,3.5,1.036
+Vienna Malt (Briess),3.5,1.036
+Vienna Malt (Gambrinus),6,1.037
+Vienna Malt (Great Western),3.5,1.037
+Vienna Malt (Weyermann),3,1.038
+Wheat,3,1.038
+Wheat (BestMälz),2,1.036
+Wheat (Durst Malz),3.6,1.039
+Wheat - Red Malt (Briess),2.3,1.037
+Wheat - Soft Red Flaked (Briess),1.6,1.035
+Wheat - White Malt (Briess),2.3,1.039
+Wheat Beer Extract (Coopers),33,1.036
+Wheat Dark (BestMälz),9.1,1.036
+Wheat Dry Extract,8,1.044
+Wheat Liquid Extract,8,1.036
+Wheat Malt (Barrett Burston),1.5,1.037
+Wheat Malt (Gambrinus),2.3,1.039
+Wheat Malt Extract (Coopers),33,1.036
+Wheat Malt Bel,2,1.037
+Wheat Malt Dark,9,1.039
+Wheat Malt Dark (Hoepfner),8,1.039
+Wheat Malt Dark (Weyermann),7,1.038
+Wheat Malt Ger,2,1.039
+Wheat Malt Light (Hoepfner),2,1.039
+Wheat Malt Malt Craft (Joe White),1.8,1.038
+Wheat Malt Pale (Weyermann),2,1.038
+Wheat Malt White,2.4,1.04
+Wheat Flaked,1.6,1.035
+Wheat Red (Cargill),2.9,1.037
+Wheat Roasted,425,1.025
+Wheat Roasted (Joe White),750,1.032
+Wheat Torrified,1.7,1.036
+Wheat Torrified (Thomas Fawcett),2,1.035
+White Wheat,2.8,0
+Wheat White (Cargill),2.9,1.038
+White Wheat Malt,2.4,1.04
