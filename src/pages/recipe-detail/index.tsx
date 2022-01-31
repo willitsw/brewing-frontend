@@ -25,6 +25,7 @@ import {
   RecipeActionTypes,
 } from "../../redux/recipe-list/slice";
 import { FermentableAdditionType } from "../../types/beer-json";
+import { calculateSrm } from "../../utils/beer-math";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -55,6 +56,7 @@ const RecipeDetailPage = () => {
   const dispatch = useAppDispatch();
   const recipe = useAppSelector((state) => state.recipes.currentRecipe);
   const [isFormTouched, setIsFormTouched] = useState<boolean>(false);
+  const [srm, setSrm] = useState<number | "-">("-");
 
   useEffect(() => {
     const onComponentLoad = async () => {
@@ -91,6 +93,14 @@ const RecipeDetailPage = () => {
         grains: grainsArray,
       });
 
+      const srmData = grainsArray.map((grain: any) => {
+        return {
+          lovibond: grain.color,
+          pounds: grain.amount,
+        };
+      });
+      setSrm(calculateSrm(workingRecipe.batch_size.value, srmData));
+
       dispatch({
         type: RecipeActionTypes.SetCurrentRecipe,
         payload: workingRecipe,
@@ -99,7 +109,7 @@ const RecipeDetailPage = () => {
     onComponentLoad();
   }, []);
 
-  const onFinish = (recipeForm: any) => {
+  const handleSave = (recipeForm: any) => {
     const submitCopy: Recipe = deepCloneObject(recipe);
     submitCopy.name = recipeForm.name;
     submitCopy.description = recipeForm.description;
@@ -135,10 +145,6 @@ const RecipeDetailPage = () => {
     setIsFormTouched(false);
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Save failed:", errorInfo);
-  };
-
   const goBackToRecipeList = () => {
     navigate("/recipes/list/");
   };
@@ -151,91 +157,124 @@ const RecipeDetailPage = () => {
     }
   };
 
+  const handleOnValuesChange = (changedValues: any) => {
+    setIsFormTouched(true);
+
+    const changedValue = Object.keys(changedValues)[0];
+    if (changedValue === "grains" || changedValue === "batchSizeValue") {
+      updateSrm();
+    }
+  };
+
+  const updateSrm = () => {
+    console.log("updating srm");
+
+    const recipe = recipeForm.getFieldsValue();
+
+    if (!recipe?.batchSizeValue || !recipe?.grains) {
+      setSrm("-");
+    }
+    const srmData = recipe.grains.map((grain: any) => {
+      return {
+        lovibond: grain.color,
+        pounds: grain.amount,
+      };
+    });
+    setSrm(calculateSrm(recipe.batchSizeValue, srmData));
+  };
+
   return (
-    <Content isLoading={!recipe} pageTitle={recipe ? recipe.name : ""}>
-      <Button
-        type="text"
-        onClick={handleCancelClick}
-        icon={<StepBackwardFilled />}
-      >
-        Back to Recipe List{" "}
-      </Button>
+    <>
       <Form
         name="recipe-edit-form"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         form={recipeForm}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        onFinish={handleSave}
+        scrollToFirstError={true}
         autoComplete="off"
         layout="vertical"
-        onFieldsChange={() => setIsFormTouched(true)}
+        onValuesChange={handleOnValuesChange}
       >
-        <Typography.Title level={4}>General Info</Typography.Title>
-        <Form.Item
-          label="Recipe Name"
-          name="name"
-          rules={[{ required: true, message: "A recipe name is required." }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Recipe Description" name="description">
-          <Input.TextArea />
-        </Form.Item>
-
-        <Form.Item
-          label="Author"
-          name="author"
-          rules={[
-            { warningOnly: true, message: "It is nice to enter an author." },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Batch Size (gal)"
-          name="batchSizeValue"
-          rules={[{ required: true, message: "A batch size is required." }]}
-        >
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item
-          label="Brewhouse Efficiency Percentage"
-          name="efficiencyValue"
-          rules={[
-            {
-              required: true,
-              message: "An efficiency percentage is required.",
-            },
-          ]}
-        >
-          <InputNumber />
-        </Form.Item>
-
-        <Form.Item label="Brew Type" name="type">
-          <Radio.Group>
-            <Radio.Button value="all grain">All Grain</Radio.Button>
-            <Radio.Button value="extract">Extract</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Divider />
-
-        <GrainAdditions recipeForm={recipeForm} />
-        <Divider />
-
-        <Space>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Save
+        <Content
+          isLoading={!recipe}
+          pageTitle={recipe ? recipe.name : ""}
+          navElement={
+            <Button
+              type="link"
+              onClick={handleCancelClick}
+              icon={<StepBackwardFilled />}
+            >
+              Back to Recipe List
             </Button>
+          }
+        >
+          <Typography.Title level={4}>General Info</Typography.Title>
+          <Form.Item
+            label="Recipe Name"
+            name="name"
+            rules={[{ required: true, message: "A recipe name is required." }]}
+          >
+            <Input />
           </Form.Item>
-          <Form.Item>
-            <Button onClick={handleCancelClick}>Cancel</Button>
+
+          <Form.Item label="Recipe Description" name="description">
+            <Input.TextArea />
           </Form.Item>
-        </Space>
+
+          <Form.Item
+            label="Author"
+            name="author"
+            rules={[
+              { warningOnly: true, message: "It is nice to enter an author." },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Batch Size (gal)"
+            name="batchSizeValue"
+            rules={[{ required: true, message: "A batch size is required." }]}
+          >
+            <InputNumber />
+          </Form.Item>
+
+          <Form.Item
+            label="Brewhouse Efficiency Percentage"
+            name="efficiencyValue"
+            rules={[
+              {
+                required: true,
+                message: "An efficiency percentage is required.",
+              },
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
+
+          <Form.Item label="Brew Type" name="type">
+            <Radio.Group>
+              <Radio.Button value="all grain">All Grain</Radio.Button>
+              <Radio.Button value="extract">Extract</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+          <Divider />
+
+          <GrainAdditions recipeForm={recipeForm} srm={srm} />
+          <Divider />
+
+          <Space>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Save
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <Button onClick={handleCancelClick}>Cancel</Button>
+            </Form.Item>
+          </Space>
+        </Content>
       </Form>
       <OkCancelModal
         onCancel={() => setShowCancelModal(false)}
@@ -245,7 +284,7 @@ const RecipeDetailPage = () => {
       >
         This cannot be undone.
       </OkCancelModal>
-    </Content>
+    </>
   );
 };
 

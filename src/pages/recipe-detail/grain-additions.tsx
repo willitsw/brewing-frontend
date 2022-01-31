@@ -5,7 +5,6 @@ import {
   Col,
   Form,
   FormInstance,
-  Input,
   InputNumber,
   Row,
   Select,
@@ -16,6 +15,7 @@ import styles from "./grain-additions.module.css";
 
 interface GrainAdditionsProps {
   recipeForm: FormInstance;
+  srm: number | "-";
 }
 
 const typeAheadOptions = DefaultGrains.map((grain) => {
@@ -24,8 +24,10 @@ const typeAheadOptions = DefaultGrains.map((grain) => {
   };
 });
 
-const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
+const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
   const { Option } = Select;
+  const { Title } = Typography;
+
   const handleGrainNameSelect = (selection: string) => {
     const defaultGrain = DefaultGrains.find(
       (grain) => grain.name === selection
@@ -46,14 +48,12 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
   const handleTypeChange = (selection: string, index: number) => {
     const grains = recipeForm.getFieldValue("grains");
     grains[index].type = selection;
-    console.log("grains", grains, "index", index);
 
     recipeForm.setFieldsValue(grains);
   };
 
   const getInitialType = (index: number): string => {
     const grains = recipeForm.getFieldValue("grains");
-    console.log("grains", grains, "index", index);
     return grains[index]?.type ?? "";
   };
 
@@ -73,7 +73,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
         <Col span={2}>
           <strong>Potential Gravity</strong>
         </Col>
-        <Col span={2}>
+        <Col span={3}>
           <strong>Type</strong>
         </Col>
         <Col span={1} />
@@ -131,16 +131,22 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                       </Col>
                       <Col span={2}>
                         <Form.Item {...restField} name={[name, "gravity"]}>
-                          <InputNumber />
+                          <InputNumber
+                            stringMode
+                            min="1"
+                            max="2"
+                            step="0.001"
+                          />
                         </Form.Item>
                       </Col>
-                      <Col span={2}>
+                      <Col span={3}>
                         <Form.Item {...restField} name={[name, "type"]}>
                           <Select
                             onChange={(value: string) =>
                               handleTypeChange(value, index)
                             }
                             value={getInitialType(index)}
+                            style={{ width: 150 }}
                           >
                             <Option value="grain">Grain</Option>
                             <Option value="extract">Liquid Extract</Option>
@@ -155,7 +161,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                   );
                 })}
             <Row>
-              <Col span={7}>
+              <Col span={12}>
                 <Button
                   type="dashed"
                   onClick={() => add()}
@@ -164,6 +170,11 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                 >
                   Add field
                 </Button>
+              </Col>
+              <Col span={2}>
+                <Title className={styles.srm} level={4}>
+                  SRM: {srm}
+                </Title>
               </Col>
             </Row>
           </>

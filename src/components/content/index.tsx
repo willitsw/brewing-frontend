@@ -6,15 +6,24 @@ interface ContentProps {
   pageTitle: string;
   isLoading?: boolean;
   children: React.ReactNode;
+  navElement?: React.ReactNode;
 }
 
-const Content = ({ pageTitle, children, isLoading = false }: ContentProps) => {
+const Content = ({
+  pageTitle,
+  children,
+  isLoading = false,
+  navElement,
+}: ContentProps) => {
   const { Content } = Layout;
   const { Title } = Typography;
 
   return (
     <Content className={styles["content"]}>
-      <Title level={2}>{pageTitle}</Title>
+      {navElement && navElement}
+      <Title className={navElement ? styles["title-with-nav"] : ""} level={2}>
+        {pageTitle}
+      </Title>
       <Loading isLoading={isLoading}>
         <Space direction="vertical" className={styles["content-area-space"]}>
           {children}
