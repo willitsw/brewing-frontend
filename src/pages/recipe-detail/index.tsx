@@ -24,8 +24,12 @@ import {
   processCreateUpdateRecipe,
   RecipeActionTypes,
 } from "../../redux/recipe-list/slice";
-import { FermentableAdditionType } from "../../types/beer-json";
+import {
+  FermentableAdditionType,
+  HopAdditionType,
+} from "../../types/beer-json";
 import { calculateSrm } from "../../utils/beer-math";
+import HopAdditions from "./hop-additions";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -83,6 +87,17 @@ const RecipeDetailPage = () => {
         }
       );
 
+      const hopsArray =
+        workingRecipe.ingredients.hop_additions?.map((hop) => {
+          return {
+            name: hop.name,
+            amount: hop.amount?.value ?? null,
+            alpha: hop.alpha_acid,
+            additionType: hop.timing.use ?? null,
+            minutes: hop.timing.time?.value ?? null,
+          };
+        }) ?? [];
+
       recipeForm.setFieldsValue({
         name: workingRecipe.name,
         author: workingRecipe.author,
@@ -91,6 +106,7 @@ const RecipeDetailPage = () => {
         type: workingRecipe.type,
         description: workingRecipe.description,
         grains: grainsArray,
+        hops: hopsArray,
       });
 
       const srmData = grainsArray.map((grain: any) => {
@@ -139,8 +155,29 @@ const RecipeDetailPage = () => {
           },
         };
       });
-
     submitCopy.ingredients.fermentable_additions = fermentableAdditions;
+
+    const hopAdditions: HopAdditionType[] = recipeForm.hops.map(
+      (hop: any): HopAdditionType => {
+        return {
+          name: hop.name,
+          alpha_acid: hop.alpha,
+          timing: {
+            time: {
+              unit: "min",
+              value: hop.minutes,
+            },
+            use: hop.additionType,
+          },
+          amount: {
+            unit: "oz",
+            value: hop.amount,
+          },
+        };
+      }
+    );
+    submitCopy.ingredients.hop_additions = hopAdditions;
+
     dispatch(processCreateUpdateRecipe(submitCopy));
     setIsFormTouched(false);
   };
@@ -262,6 +299,9 @@ const RecipeDetailPage = () => {
           <Divider />
 
           <GrainAdditions recipeForm={recipeForm} srm={srm} />
+          <Divider />
+
+          <HopAdditions recipeForm={recipeForm} />
           <Divider />
 
           <Space>

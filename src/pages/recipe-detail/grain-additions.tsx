@@ -11,7 +11,7 @@ import {
   Typography,
 } from "antd";
 import DefaultGrains from "../../data/default-grains";
-import styles from "./grain-additions.module.css";
+import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
   recipeForm: FormInstance;
@@ -60,7 +60,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
   return (
     <>
       <Typography.Title level={4}>Grain additions</Typography.Title>
-      <Row className={styles["grain-row"]}>
+      <Row className={styles["table-row"]}>
         <Col span={5}>
           <strong>Name</strong>
         </Col>

@@ -9,7 +9,7 @@ import {
 } from "../../redux/recipe-list/slice";
 import OkCancelModal from "../../components/ok-cancel-modal";
 
-import styles from "./recipe-list-table.module.css";
+import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
 import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
 
@@ -98,7 +98,7 @@ const RecipeListTable = ({}: RecipeListTableProps) => {
   return (
     <>
       <Button
-        className={styles["new-recipe-button"]}
+        className={styles["new-entity-button"]}
         type="primary"
         onClick={() => navigate("/recipes/new")}
       >
