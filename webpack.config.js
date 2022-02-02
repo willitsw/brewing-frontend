@@ -7,7 +7,7 @@ module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: path.join(__dirname, "build"),
-    filename: "index.bundle.js",
+    filename: "index.[contenthash].bundle.js",
     publicPath: "/",
   },
   mode: process.env.NODE_ENV || "development",
@@ -34,7 +34,7 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
-        test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
+        test: /\.(jpg|jpeg|png|gif|mp3|svg|ico)$/,
         use: ["file-loader"],
       },
     ],
