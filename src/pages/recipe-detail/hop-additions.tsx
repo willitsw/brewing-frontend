@@ -25,7 +25,6 @@ const typeAheadOptions = DefaultHops.map((hop) => {
 
 const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
   const { Option } = Select;
-  const { Title } = Typography;
 
   const getInitialType = (index: number): string => {
     const hops = recipeForm.getFieldValue("hops");

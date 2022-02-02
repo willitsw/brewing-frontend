@@ -13,7 +13,6 @@ import {
   Space,
   Typography,
   Divider,
-  Modal,
 } from "antd";
 import { deepCloneObject } from "../../utils/helpers";
 import OkCancelModal from "../../components/ok-cancel-modal";
