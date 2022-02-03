@@ -160,7 +160,7 @@ const RecipeDetailPage = () => {
       (hop: any): HopAdditionType => {
         return {
           name: hop.name,
-          alpha_acid: hop.alpha,
+          alpha_acid: { value: hop.alpha, unit: "%" },
           timing: {
             time: {
               unit: "min",

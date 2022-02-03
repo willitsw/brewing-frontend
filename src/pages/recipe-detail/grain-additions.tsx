@@ -101,7 +101,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                             options={typeAheadOptions}
                             style={{ width: 250 }}
                             filterOption={(inputValue, option) =>
-                              option!.value
+                              option?.value
                                 .toUpperCase()
                                 .indexOf(inputValue.toUpperCase()) !== -1
                             }
