@@ -1,26 +1,45 @@
+import { Button } from "antd";
+import { getAuth, signOut } from "firebase/auth";
+import { useState } from "react";
 import Content from "../../components/content";
-import { useAuth0 } from "@auth0/auth0-react";
+import CreateNewAccountModal from "../../components/modals/create-new-account";
+import LoginModal from "../../components/modals/login";
+import { useAppSelector } from "../../redux/hooks";
 
 const HomePage = () => {
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
-
+  const auth = getAuth();
+  const [showCreateAccountModal, setShowCreateAccountModal] =
+    useState<boolean>(false);
+  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
+  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
   return (
     <Content pageTitle="What ales you">
       Welcome
-      <br />
-      <button onClick={() => loginWithRedirect()}>Log In</button>
-      <button onClick={() => logout({ returnTo: window.location.origin })}>
-        Log Out
-      </button>
       {isAuthenticated ? (
-        <div>
-          <img src={user?.picture} alt={user?.name} />
-          <h2>{user?.name}</h2>
-          <p>{user?.email}</p>
-        </div>
+        <Button type="primary" onClick={() => signOut(auth)}>
+          Log out
+        </Button>
       ) : (
-        <div>Not logged in</div>
+        <>
+          <Button
+            type="primary"
+            onClick={() => setShowCreateAccountModal(true)}
+          >
+            Create an Account
+          </Button>
+          <Button type="primary" onClick={() => setShowLoginModal(true)}>
+            Login
+          </Button>
+        </>
       )}
+      <CreateNewAccountModal
+        onCancel={() => setShowCreateAccountModal(false)}
+        showModal={showCreateAccountModal}
+      />
+      <LoginModal
+        onCancel={() => setShowLoginModal(false)}
+        showModal={showLoginModal}
+      />
     </Content>
   );
 };

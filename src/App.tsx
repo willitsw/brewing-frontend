@@ -1,11 +1,8 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Layout } from "antd";
-import Header from "./components/header";
-import HomePage from "./pages/home";
-import RecipeListPage from "./pages/recipe-list";
-import RecipeDetailPage from "./pages/recipe-detail";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import PageLayout from "./components/page-layout";
+import AuthProvider from "./components/auth-provider";
 
 export enum RouteSegments {
   Home = "/home",
@@ -16,22 +13,11 @@ export enum RouteSegments {
 const App = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Layout className="layout">
-          <Header />
-          <Routes>
-            <Route path={"/home"} element={<HomePage />} />
-            <Route path={"/recipes/list"} element={<RecipeListPage />} />
-            <Route path={"/recipes/new"} element={<RecipeDetailPage />} />
-            <Route path={"/recipes/edit/:id"} element={<RecipeDetailPage />} />
-            <Route
-              path={"/recipes/duplicate/:id"}
-              element={<RecipeDetailPage />}
-            />
-            <Route path="*" element={<HomePage />} />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <PageLayout />
+        </BrowserRouter>
+      </AuthProvider>
     </Provider>
   );
 };

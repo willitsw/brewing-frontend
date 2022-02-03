@@ -1,5 +1,4 @@
 import Content from "../../components/content";
-import OkCancelModal from "../../components/ok-cancel-modal";
 import RecipeListTable from "./recipe-list-table";
 
 const RecipeListPage = () => {

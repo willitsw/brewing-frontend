@@ -13,9 +13,7 @@ import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
 import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
 
-interface RecipeListTableProps {}
-
-const RecipeListTable = ({}: RecipeListTableProps) => {
+const RecipeListTable = () => {
   const dispatch = useAppDispatch();
   const recipeList = useAppSelector((state) => state.recipes.recipeList);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
