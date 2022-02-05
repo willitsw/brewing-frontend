@@ -3,8 +3,8 @@ import makeRequest from "./request";
 
 // RECIPE ENDPOINTS
 
-export const getRecipesByUser = async (user: string): Promise<Recipe[]> => {
-  return await makeRequest(`/recipes/user/${user}`, "GET");
+export const getRecipesByUser = async (): Promise<Recipe[]> => {
+  return await makeRequest("/recipes", "GET");
 };
 
 export const getRecipeById = async (recipeId: string): Promise<Recipe> => {
@@ -16,5 +16,5 @@ export const deleteRecipe = async (recipeId: string): Promise<void> => {
 };
 
 export const createUpdateRecipe = async (recipe: Recipe): Promise<Recipe> => {
-  return await makeRequest(`/recipes`, "POST", recipe);
+  return await makeRequest("/recipes", "POST", recipe);
 };

@@ -22,6 +22,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processCreateUpdateRecipe,
   RecipeActionTypes,
+  selectCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import {
   FermentableAdditionType,
@@ -29,6 +30,7 @@ import {
 } from "../../types/beer-json";
 import { calculateSrm } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
+import { selectCurrentUser } from "../../redux/user/slice";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -57,7 +59,8 @@ const RecipeDetailPage = () => {
   const navigate = useNavigate();
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const recipe = useAppSelector((state) => state.recipes.currentRecipe);
+  const recipe = useAppSelector(selectCurrentRecipe);
+  const currentUser = useAppSelector(selectCurrentUser);
   const [isFormTouched, setIsFormTouched] = useState<boolean>(false);
   const [srm, setSrm] = useState<number | "-">("-");
 
@@ -132,6 +135,7 @@ const RecipeDetailPage = () => {
     submitCopy.batch_size.value = recipeForm.batchSizeValue;
     submitCopy.efficiency.brewhouse.value = recipeForm.efficiencyValue;
     submitCopy.type = recipeForm.type;
+    submitCopy.user = currentUser?.uid ?? "";
 
     const fermentableAdditions: FermentableAdditionType[] =
       recipeForm.grains.map((grain: any): FermentableAdditionType => {
@@ -203,8 +207,6 @@ const RecipeDetailPage = () => {
   };
 
   const updateSrm = () => {
-    console.log("updating srm");
-
     const recipe = recipeForm.getFieldsValue();
 
     if (!recipe?.batchSizeValue || !recipe?.grains) {

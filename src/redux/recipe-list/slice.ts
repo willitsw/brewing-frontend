@@ -27,7 +27,7 @@ export enum RecipeActionTypes {
 export const refreshRecipeList = createAsyncThunk(
   "recipes/refreshRecipeList",
   async () => {
-    return await getRecipesByUser("bob");
+    return await getRecipesByUser();
   }
 );
 
@@ -91,5 +91,7 @@ export const recipeSlice = createSlice({
 export const { setRecipeList, setCurrentRecipe } = recipeSlice.actions;
 
 export const selectRecipeList = (state: RootState) => state.recipes.recipeList;
+export const selectCurrentRecipe = (state: RootState) =>
+  state.recipes.currentRecipe;
 
 export default recipeSlice.reducer;

@@ -1,6 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { BeerUser } from "../../types/user";
 import type { RootState } from "../store";
+import { constants } from "../../constants";
+
+const defaultCurrentUser: BeerUser | null = constants.useAuth
+  ? null
+  : {
+      displayName: "Local Dev User",
+      email: "localDevUser@whatalesyou.net",
+      photoUrl: null,
+      uid: "123456789",
+    };
 
 interface UserState {
   currentUser: BeerUser | null;
@@ -8,8 +18,8 @@ interface UserState {
 }
 
 const initialState: UserState = {
-  currentUser: null,
-  isAuthenticated: false,
+  currentUser: defaultCurrentUser,
+  isAuthenticated: !!defaultCurrentUser,
 };
 
 export enum RecipeActionTypes {
@@ -22,12 +32,14 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: { payload: BeerUser }) => {
-      state.currentUser = action.payload;
-      state.isAuthenticated = action.payload != null;
+      const newUser = constants.useAuth ? action.payload : defaultCurrentUser;
+      state.currentUser = newUser;
+      state.isAuthenticated = !!newUser;
     },
     clearUser: (state) => {
-      state.currentUser = null;
-      state.isAuthenticated = false;
+      const newUser = constants.useAuth ? null : defaultCurrentUser;
+      state.currentUser = newUser;
+      state.isAuthenticated = !!newUser;
     },
   },
 });
@@ -35,5 +47,7 @@ export const userSlice = createSlice({
 export const { setUser, clearUser } = userSlice.actions;
 
 export const selectCurrentUser = (state: RootState) => state.user.currentUser;
+export const userIsAuthenticated = (state: RootState) =>
+  state.user.isAuthenticated;
 
 export default userSlice.reducer;

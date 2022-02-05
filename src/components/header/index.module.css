@@ -1,7 +1,19 @@
 .header-layout {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    height: 68px;
+}
+
+.header-left-items {
+    display: flex;
+    flex-direction: row;
     gap: 0px 20px;
+}
+
+.avatar{
+    padding-top: 0px;
+    cursor: pointer;
 }
 
 .menu {

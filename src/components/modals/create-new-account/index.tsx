@@ -1,6 +1,15 @@
-import { Form, Input, Modal } from "antd";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { Button, Form, Input, Modal, Space, Typography } from "antd";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithRedirect,
+} from "firebase/auth";
 import { useState } from "react";
+import { GoogleAuthProvider } from "firebase/auth";
+import { FacebookAuthProvider } from "firebase/auth";
+import { FacebookOutlined, GoogleOutlined } from "@ant-design/icons";
+
+import styles from "./index.module.css";
 
 interface CreateNewAccountModalProps {
   onCancel: () => void;
@@ -20,6 +29,26 @@ const CreateNewAccountModal = ({
   const [modalLoading, setModalLoading] = useState<boolean>(false);
 
   const auth = getAuth();
+  const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (error) {
+      console.log("google signup failed:", error);
+    }
+    onCancel();
+  };
+
+  const handleFacebookSignUp = async () => {
+    try {
+      await signInWithRedirect(auth, facebookProvider);
+    } catch (error) {
+      console.log("facebook signup failed:", error);
+    }
+    onCancel();
+  };
 
   const handleSubmit = async () => {
     setModalLoading(true);
@@ -28,7 +57,7 @@ const CreateNewAccountModal = ({
       const values: FormValues = form.getFieldsValue();
       await createUserWithEmailAndPassword(auth, values.email, values.password);
     } catch (error) {
-      console.log("form submission failed:", error);
+      console.log("email / password signup failed:", error);
     }
     setModalLoading(false);
     onCancel();
@@ -66,6 +95,27 @@ const CreateNewAccountModal = ({
           <Input.Password />
         </Form.Item>
       </Form>
+      <Space
+        className={styles["other-providers"]}
+        align="center"
+        direction="vertical"
+      >
+        <Typography.Title level={5}>- or -</Typography.Title>
+        <Button
+          icon={<GoogleOutlined />}
+          type="primary"
+          onClick={handleGoogleSignUp}
+        >
+          Sign up with Google
+        </Button>
+        {/* <Button
+          icon={<FacebookOutlined />}
+          type="primary"
+          onClick={handleFacebookSignUp}
+        >
+          Sign up with Facebook
+        </Button> */}
+      </Space>
     </Modal>
   );
 };
