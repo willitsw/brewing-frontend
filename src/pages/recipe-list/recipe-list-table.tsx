@@ -6,17 +6,20 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processDeleteRecipe,
   refreshRecipeList,
+  setRecipeList,
 } from "../../redux/recipe-list/slice";
 import OkCancelModal from "../../components/ok-cancel-modal";
 
 import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
 import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
+import { getRecipesByUser } from "../../utils/api-calls";
 
 const RecipeListTable = () => {
   const dispatch = useAppDispatch();
   const recipeList = useAppSelector((state) => state.recipes.recipeList);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   const nameToDelete = idToDelete
@@ -25,7 +28,9 @@ const RecipeListTable = () => {
 
   useEffect(() => {
     const getRecipeList = async () => {
-      dispatch(refreshRecipeList());
+      const recipeList = await getRecipesByUser();
+      dispatch(setRecipeList(recipeList));
+      setLoading(false);
     };
     getRecipeList();
   }, []);
@@ -102,7 +107,11 @@ const RecipeListTable = () => {
       >
         New Recipe
       </Button>
-      <Table columns={columnDefinitions} dataSource={preparedRecipeData} />
+      <Table
+        columns={columnDefinitions}
+        dataSource={preparedRecipeData}
+        loading={loading}
+      />
       <OkCancelModal
         onCancel={() => setIdToDelete(null)}
         onSubmit={() => handleDeleteRecipe()}

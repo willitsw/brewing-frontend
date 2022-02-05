@@ -63,6 +63,7 @@ const RecipeDetailPage = () => {
   const currentUser = useAppSelector(selectCurrentUser);
   const [isFormTouched, setIsFormTouched] = useState<boolean>(false);
   const [srm, setSrm] = useState<number | "-">("-");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const onComponentLoad = async () => {
@@ -123,6 +124,7 @@ const RecipeDetailPage = () => {
         type: RecipeActionTypes.SetCurrentRecipe,
         payload: workingRecipe,
       });
+      setLoading(false);
     };
     onComponentLoad();
   }, []);
@@ -235,8 +237,8 @@ const RecipeDetailPage = () => {
         onValuesChange={handleOnValuesChange}
       >
         <Content
-          isLoading={!recipe}
-          pageTitle={recipe ? recipe.name : ""}
+          isLoading={loading}
+          pageTitle={!loading ? recipe?.name ?? "" : ""}
           navElement={
             <Button
               type="link"
