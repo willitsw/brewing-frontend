@@ -5,12 +5,13 @@ import RecipeDetailPage from "../../pages/recipe-detail";
 import RecipeListPage from "../../pages/recipe-list";
 import { useAppSelector } from "../../redux/hooks";
 import { userIsAuthenticated } from "../../redux/user/slice";
+import Footer from "../footer";
 import Header from "../header";
 
 const PageLayout = () => {
   const isAuthenticated = useAppSelector(userIsAuthenticated);
   return (
-    <Layout className="layout">
+    <Layout className="layout beer-layout">
       <Header />
       <Routes>
         <Route path={"/home"} element={<HomePage />} />
@@ -27,6 +28,7 @@ const PageLayout = () => {
         )}
         <Route path="*" element={<HomePage />} />
       </Routes>
+      <Footer />
     </Layout>
   );
 };
