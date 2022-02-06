@@ -31,6 +31,7 @@ import {
 import { calculateSrm } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
 import { selectCurrentUser } from "../../redux/user/slice";
+import YeastAdditions from "./yeast-additions";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -305,6 +306,9 @@ const RecipeDetailPage = () => {
           <Divider />
 
           <HopAdditions recipeForm={recipeForm} />
+          <Divider />
+
+          <YeastAdditions recipeForm={recipeForm} />
           <Divider />
 
           <Space>
