@@ -1,5 +1,5 @@
 import styles from "./index.module.css";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 
 interface LoadingProps {
   isLoading: boolean;
@@ -10,7 +10,7 @@ const Loading = ({ isLoading, children }: LoadingProps) => {
   if (isLoading) {
     return (
       <div className={styles.loading}>
-        <LoadingOutlined />
+        <Spin size="large" />
       </div>
     );
   }
