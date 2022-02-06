@@ -19,16 +19,18 @@ const Content = ({
   const { Title } = Typography;
 
   return (
-    <Content className={styles["content"]}>
-      {navElement && navElement}
-      <Title className={navElement ? styles["title-with-nav"] : ""} level={2}>
-        {pageTitle}
-      </Title>
-      <Loading isLoading={isLoading}>
-        <Space direction="vertical" className={styles["content-area-space"]}>
-          {children}
-        </Space>
-      </Loading>
+    <Content>
+      <div className={`${styles["content"]} beer-max-width`}>
+        {navElement && navElement}
+        <Title className={navElement ? styles["title-with-nav"] : ""} level={2}>
+          {pageTitle}
+        </Title>
+        <Loading isLoading={isLoading}>
+          <Space direction="vertical" className={styles["content-area-space"]}>
+            {children}
+          </Space>
+        </Loading>
+      </div>
     </Content>
   );
 };

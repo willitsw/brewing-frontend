@@ -77,46 +77,48 @@ const Header = () => {
   };
 
   return (
-    <Header className={styles["header-layout"]}>
-      <div className={styles["header-left-items"]}>
-        <div className="logo">
-          <Image
-            className={styles.icon}
-            width={40}
-            src={beerIcon}
-            preview={false}
-          />
+    <Header>
+      <div className={`${styles["header-layout"]} beer-max-width`}>
+        <div className={styles["header-left-items"]}>
+          <div className="logo">
+            <Image
+              className={styles.icon}
+              width={40}
+              src={beerIcon}
+              preview={false}
+            />
+          </div>
+          <Menu
+            className={styles.menu}
+            theme="dark"
+            mode="horizontal"
+            onClick={handleMenuClick}
+            selectedKeys={[currentPage]}
+          >
+            <Menu.Item key={"/home"}>Home</Menu.Item>
+            <Menu.Item key={"/recipes/list"} disabled={!isAuthenticated}>
+              Recipes
+            </Menu.Item>
+          </Menu>
         </div>
-        <Menu
-          className={styles.menu}
-          theme="dark"
-          mode="horizontal"
-          onClick={handleMenuClick}
-          selectedKeys={[currentPage]}
-        >
-          <Menu.Item key={"/home"}>Home</Menu.Item>
-          <Menu.Item key={"/recipes/list"} disabled={!isAuthenticated}>
-            Recipes
-          </Menu.Item>
-        </Menu>
+        <Dropdown overlay={getUserMenu()} trigger={["click"]}>
+          <div className={styles.avatar}>
+            {currentUser?.photoUrl ? (
+              <Avatar size="large" src={currentUser.photoUrl} />
+            ) : (
+              <Avatar size="large" icon={<UserOutlined />} />
+            )}
+          </div>
+        </Dropdown>
+        <CreateNewAccountModal
+          onCancel={() => setShowCreateAccountModal(false)}
+          showModal={showCreateAccountModal}
+        />
+        <LoginModal
+          onCancel={() => setShowLoginModal(false)}
+          showModal={showLoginModal}
+        />
       </div>
-      <Dropdown overlay={getUserMenu()} trigger={["click"]}>
-        <div className={styles.avatar}>
-          {currentUser?.photoUrl ? (
-            <Avatar size="large" src={currentUser.photoUrl} />
-          ) : (
-            <Avatar size="large" icon={<UserOutlined />} />
-          )}
-        </div>
-      </Dropdown>
-      <CreateNewAccountModal
-        onCancel={() => setShowCreateAccountModal(false)}
-        showModal={showCreateAccountModal}
-      />
-      <LoginModal
-        onCancel={() => setShowLoginModal(false)}
-        showModal={showLoginModal}
-      />
     </Header>
   );
 };

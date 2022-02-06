@@ -5,7 +5,6 @@ import { Table, Button, Space, Tooltip } from "antd";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processDeleteRecipe,
-  refreshRecipeList,
   setRecipeList,
 } from "../../redux/recipe-list/slice";
 import OkCancelModal from "../../components/ok-cancel-modal";

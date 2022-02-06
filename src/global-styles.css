@@ -8,3 +8,7 @@ body {
 .beer-layout {
     min-height: 100vh;
 }
+
+.beer-max-width {
+    max-width: 1280px;
+}
