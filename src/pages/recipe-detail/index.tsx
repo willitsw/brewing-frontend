@@ -13,6 +13,10 @@ import {
   Space,
   Typography,
   Divider,
+  Affix,
+  message,
+  Col,
+  Row,
 } from "antd";
 import { deepCloneObject } from "../../utils/helpers";
 import OkCancelModal from "../../components/ok-cancel-modal";
@@ -25,13 +29,67 @@ import {
   selectCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import {
+  CultureAdditionType,
   FermentableAdditionType,
   HopAdditionType,
+  UseType,
 } from "../../types/beer-json";
 import { calculateSrm } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
 import { selectCurrentUser } from "../../redux/user/slice";
 import YeastAdditions from "./yeast-additions";
+import GeneralInfo from "./general-info";
+import styles from "./index.module.css";
+import Stats from "./stats";
+export interface RecipeGrain {
+  name: string;
+  amount: number | null;
+  color: number | null;
+  gravity: number | null;
+  type:
+    | "dry extract"
+    | "extract"
+    | "grain"
+    | "sugar"
+    | "fruit"
+    | "juice"
+    | "honey"
+    | "other";
+}
+
+export interface RecipeHop {
+  name: string;
+  amount: number | null;
+  alpha: number;
+  additionType: UseType | null;
+  minutes: number | null;
+}
+
+export interface RecipeYeast {
+  name: string;
+  attenuation: number;
+}
+
+export interface RecipeForm {
+  name: string;
+  author: string;
+  batchSizeValue: number;
+  efficiencyValue: number;
+  type:
+    | "cider"
+    | "kombucha"
+    | "soda"
+    | "other"
+    | "mead"
+    | "wine"
+    | "extract"
+    | "partial mash"
+    | "all grain";
+  description?: string;
+  grains: RecipeGrain[];
+  hops: RecipeHop[];
+  yeasts: RecipeYeast[];
+}
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -48,13 +106,17 @@ const defaultRecipe: Recipe = {
     },
   },
   id: uuid(),
-  ingredients: { fermentable_additions: [] },
+  ingredients: {
+    fermentable_additions: [],
+    hop_additions: [],
+    culture_additions: [],
+  },
   type: "all grain",
   user: "bob",
 };
 
 const RecipeDetailPage = () => {
-  const [recipeForm] = Form.useForm();
+  const [recipeForm] = Form.useForm<RecipeForm>();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -65,6 +127,9 @@ const RecipeDetailPage = () => {
   const [isFormTouched, setIsFormTouched] = useState<boolean>(false);
   const [srm, setSrm] = useState<number | "-">("-");
   const [loading, setLoading] = useState<boolean>(true);
+  const [isDesktop] = useState<boolean>(
+    window.matchMedia("(min-width: 1200px)").matches
+  );
 
   useEffect(() => {
     const onComponentLoad = async () => {
@@ -79,8 +144,8 @@ const RecipeDetailPage = () => {
         workingRecipe = defaultRecipe;
       }
 
-      const grainsArray = workingRecipe.ingredients.fermentable_additions.map(
-        (grain) => {
+      const grainsArray: RecipeGrain[] =
+        workingRecipe.ingredients.fermentable_additions.map((grain) => {
           return {
             name: grain.name,
             amount: grain.amount?.value ?? null,
@@ -88,17 +153,24 @@ const RecipeDetailPage = () => {
             gravity: grain.yield?.potential?.value ?? null,
             type: grain.type,
           };
-        }
-      );
+        });
 
-      const hopsArray =
+      const hopsArray: RecipeHop[] =
         workingRecipe.ingredients.hop_additions?.map((hop) => {
           return {
             name: hop.name,
             amount: hop.amount?.value ?? null,
-            alpha: hop.alpha_acid,
+            alpha: hop.alpha_acid.value,
             additionType: hop.timing.use ?? null,
             minutes: hop.timing.time?.value ?? null,
+          };
+        }) ?? [];
+
+      const yeastArray: RecipeYeast[] =
+        workingRecipe.ingredients.culture_additions?.map((yeast) => {
+          return {
+            name: yeast.name,
+            attenuation: yeast.attenuation?.value ?? 0,
           };
         }) ?? [];
 
@@ -111,6 +183,7 @@ const RecipeDetailPage = () => {
         description: workingRecipe.description,
         grains: grainsArray,
         hops: hopsArray,
+        yeasts: yeastArray,
       });
 
       const srmData = grainsArray.map((grain: any) => {
@@ -130,7 +203,13 @@ const RecipeDetailPage = () => {
     onComponentLoad();
   }, []);
 
-  const handleSave = (recipeForm: any) => {
+  const handleSaveFailed = () => {
+    message.error(
+      "Form could not be saved. Please address any validation errors."
+    );
+  };
+
+  const handleSave = (recipeForm: RecipeForm) => {
     const submitCopy: Recipe = deepCloneObject(recipe);
     submitCopy.name = recipeForm.name;
     submitCopy.description = recipeForm.description;
@@ -141,22 +220,22 @@ const RecipeDetailPage = () => {
     submitCopy.user = currentUser?.uid ?? "";
 
     const fermentableAdditions: FermentableAdditionType[] =
-      recipeForm.grains.map((grain: any): FermentableAdditionType => {
+      recipeForm.grains.map((grain: RecipeGrain): FermentableAdditionType => {
         return {
           name: grain.name,
           amount: {
             unit: "lb",
-            value: grain.amount,
+            value: grain.amount ?? 0,
           },
           color: {
             unit: "Lovi",
-            value: grain.color,
+            value: grain.color ?? 0,
           },
           type: grain.type,
           yield: {
             potential: {
               unit: "sg",
-              value: grain.gravity,
+              value: grain.gravity ?? 0,
             },
           },
         };
@@ -164,28 +243,41 @@ const RecipeDetailPage = () => {
     submitCopy.ingredients.fermentable_additions = fermentableAdditions;
 
     const hopAdditions: HopAdditionType[] = recipeForm.hops.map(
-      (hop: any): HopAdditionType => {
+      (hop: RecipeHop): HopAdditionType => {
         return {
           name: hop.name,
           alpha_acid: { value: hop.alpha, unit: "%" },
           timing: {
             time: {
               unit: "min",
-              value: hop.minutes,
+              value: hop.minutes ?? 0,
             },
-            use: hop.additionType,
+            use: hop.additionType ?? undefined,
           },
           amount: {
             unit: "oz",
-            value: hop.amount,
+            value: hop.amount ?? 0,
           },
         };
       }
     );
     submitCopy.ingredients.hop_additions = hopAdditions;
 
+    const yeastAdditions: CultureAdditionType[] = recipeForm.yeasts.map(
+      (yeast: RecipeYeast): CultureAdditionType => {
+        return {
+          name: yeast.name,
+          form: "liquid",
+          type: "ale",
+          attenuation: { unit: "%", value: yeast.attenuation },
+        };
+      }
+    );
+    submitCopy.ingredients.culture_additions = yeastAdditions;
+
     dispatch(processCreateUpdateRecipe(submitCopy));
     setIsFormTouched(false);
+    message.success(`${submitCopy.name} has been saved.`);
   };
 
   const goBackToRecipeList = () => {
@@ -224,6 +316,44 @@ const RecipeDetailPage = () => {
     setSrm(calculateSrm(recipe.batchSizeValue, srmData));
   };
 
+  const formSections = (
+    <>
+      <GeneralInfo />
+      <Divider />
+      <GrainAdditions recipeForm={recipeForm} srm={srm} />
+      <Divider />
+      <HopAdditions recipeForm={recipeForm} />
+      <Divider />
+      <YeastAdditions recipeForm={recipeForm} />
+      <Divider />
+    </>
+  );
+
+  const getLayout = () => {
+    if (isDesktop) {
+      return (
+        <Row justify="start" gutter={[24, 0]}>
+          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+            {formSections}
+          </Col>
+          <Col xs={0} sm={0} md={0} lg={8} xl={8}>
+            <Affix offsetTop={10}>
+              <Stats />
+            </Affix>
+          </Col>
+        </Row>
+      );
+    }
+
+    return (
+      <>
+        {formSections}
+        <Stats />
+        <Divider />
+      </>
+    );
+  };
+
   return (
     <>
       <Form
@@ -232,6 +362,7 @@ const RecipeDetailPage = () => {
         wrapperCol={{ span: 16 }}
         form={recipeForm}
         onFinish={handleSave}
+        onFinishFailed={handleSaveFailed}
         scrollToFirstError={true}
         autoComplete="off"
         layout="vertical"
@@ -240,87 +371,20 @@ const RecipeDetailPage = () => {
         <Content
           isLoading={loading}
           pageTitle={!loading ? recipe?.name ?? "" : ""}
-          navElement={
-            <Button
-              type="link"
-              onClick={handleCancelClick}
-              icon={<StepBackwardFilled />}
-            >
-              Back to Recipe List
-            </Button>
-          }
         >
-          <Typography.Title level={4}>General Info</Typography.Title>
-          <Form.Item
-            label="Recipe Name"
-            name="name"
-            rules={[{ required: true, message: "A recipe name is required." }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Recipe Description" name="description">
-            <Input.TextArea />
-          </Form.Item>
-
-          <Form.Item
-            label="Author"
-            name="author"
-            rules={[
-              { warningOnly: true, message: "It is nice to enter an author." },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Batch Size (gal)"
-            name="batchSizeValue"
-            rules={[{ required: true, message: "A batch size is required." }]}
-          >
-            <InputNumber />
-          </Form.Item>
-
-          <Form.Item
-            label="Brewhouse Efficiency Percentage"
-            name="efficiencyValue"
-            rules={[
-              {
-                required: true,
-                message: "An efficiency percentage is required.",
-              },
-            ]}
-          >
-            <InputNumber />
-          </Form.Item>
-
-          <Form.Item label="Brew Type" name="type">
-            <Radio.Group>
-              <Radio.Button value="all grain">All Grain</Radio.Button>
-              <Radio.Button value="extract">Extract</Radio.Button>
-            </Radio.Group>
-          </Form.Item>
-          <Divider />
-
-          <GrainAdditions recipeForm={recipeForm} srm={srm} />
-          <Divider />
-
-          <HopAdditions recipeForm={recipeForm} />
-          <Divider />
-
-          <YeastAdditions recipeForm={recipeForm} />
-          <Divider />
-
-          <Space>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
-            </Form.Item>
-            <Form.Item>
-              <Button onClick={handleCancelClick}>Cancel</Button>
-            </Form.Item>
-          </Space>
+          {getLayout()}
+          <Affix offsetBottom={10} style={{ float: "right" }}>
+            <Space>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Save
+                </Button>
+              </Form.Item>
+              <Form.Item>
+                <Button onClick={handleCancelClick}>Back to Recipe List</Button>
+              </Form.Item>
+            </Space>
+          </Affix>
         </Content>
       </Form>
       <OkCancelModal

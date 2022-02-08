@@ -10,11 +10,12 @@ import {
   Select,
   Typography,
 } from "antd";
+import { RecipeForm, RecipeGrain } from ".";
 import DefaultGrains from "../../data/default-grains";
 import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
-  recipeForm: FormInstance;
+  recipeForm: FormInstance<RecipeForm>;
   srm: number | "-";
 }
 
@@ -34,14 +35,14 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
     );
 
     if (defaultGrain) {
-      const grains = recipeForm.getFieldValue("grains");
+      const grains: RecipeGrain[] = recipeForm.getFieldValue("grains");
       const grainIndexToModify = grains.findIndex(
-        (grain: any) => grain.name === defaultGrain.name
+        (grain: RecipeGrain) => grain.name === defaultGrain.name
       );
       grains[grainIndexToModify].color = defaultGrain.lovibond;
       grains[grainIndexToModify].gravity = defaultGrain.gravity;
       grains[grainIndexToModify].type = defaultGrain.type;
-      recipeForm.setFieldsValue(grains);
+      recipeForm.setFieldsValue({ grains });
     }
   };
 
@@ -60,7 +61,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
   return (
     <>
       <Typography.Title level={4}>Grain additions</Typography.Title>
-      <Row className={styles["table-row"]}>
+      {/* <Row className={styles["table-row"]}>
         <Col span={5}>
           <strong>Name</strong>
         </Col>
@@ -77,7 +78,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
           <strong>Type</strong>
         </Col>
         <Col span={1} />
-      </Row>
+      </Row> */}
       <Form.List name="grains">
         {(fields, { add, remove }) => (
           <>
@@ -86,7 +87,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
               : fields.map(({ key, name, ...restField }, index) => {
                   return (
                     <Row key={key}>
-                      <Col span={5}>
+                      <Col span={8}>
                         <Form.Item
                           {...restField}
                           name={[name, "name"]}
@@ -110,7 +111,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={2}>
+                      <Col span={3}>
                         <Form.Item
                           {...restField}
                           name={[name, "amount"]}
@@ -124,12 +125,12 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                           <InputNumber />
                         </Form.Item>
                       </Col>
-                      <Col span={2}>
+                      <Col span={3}>
                         <Form.Item {...restField} name={[name, "color"]}>
                           <InputNumber />
                         </Form.Item>
                       </Col>
-                      <Col span={2}>
+                      <Col span={3}>
                         <Form.Item {...restField} name={[name, "gravity"]}>
                           <InputNumber
                             stringMode
@@ -139,7 +140,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={3}>
+                      <Col span={4}>
                         <Form.Item {...restField} name={[name, "type"]}>
                           <Select
                             onChange={(value: string) =>

@@ -1,32 +1,76 @@
-import { List, Typography } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  List,
+  Row,
+  Typography,
+} from "antd";
 
 interface YeastAdditionsProps {
   recipeForm: any;
 }
 
 const YeastAdditions = ({ recipeForm }: YeastAdditionsProps) => {
-  const data = [
-    "Racing car sprays burning fuel into crowd.",
-    "Japanese princess to wed commoner.",
-    "Australian walks 100km after outback crash.",
-    "Man charged over missing wedding girl.",
-    "Los Angeles battles huge wildfires.",
-  ];
   return (
-    <>
-      <Typography.Title level={4}>Yeast additions</Typography.Title>
-      <List
-        header={<div>Header</div>}
-        footer={<div>Footer</div>}
-        bordered
-        dataSource={data}
-        renderItem={(item) => (
-          <List.Item>
-            <Typography.Text mark>[ITEM]</Typography.Text> {item}
-          </List.Item>
-        )}
-      />
-    </>
+    <Form.List name="yeasts">
+      {(fields, { add, remove }) => (
+        <List
+          header={
+            <Typography.Title level={4}>Yeast additions</Typography.Title>
+          }
+          footer={
+            <Row>
+              <Col span={12}>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  icon={<PlusOutlined />}
+                >
+                  Add yeast
+                </Button>
+              </Col>
+            </Row>
+          }
+          itemLayout="vertical"
+          dataSource={fields}
+          locale={{ emptyText: "No yeasts exist. Add some!" }}
+          renderItem={({ key, name, ...restField }) => (
+            <List.Item>
+              <Form.Item
+                {...restField}
+                name={[name, "name"]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please name your yeast.",
+                  },
+                ]}
+              >
+                <Input placeholder="Yeast Name" size="large" />
+              </Form.Item>
+              <Form.Item
+                {...restField}
+                name={[name, "attenuation"]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Required",
+                  },
+                ]}
+              >
+                <InputNumber size="small" />
+              </Form.Item>
+              <MinusCircleOutlined onClick={() => remove(name)} />
+            </List.Item>
+          )}
+        />
+      )}
+    </Form.List>
   );
 };
 

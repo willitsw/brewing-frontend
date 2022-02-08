@@ -12,3 +12,7 @@ body {
 .beer-max-width {
     max-width: 1280px;
 }
+
+.ant-form-item-control {
+    max-width: 100%;
+}
