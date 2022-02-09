@@ -4,23 +4,9 @@ import Content from "../../components/content";
 import { Recipe } from "../../types/beer-interfaces";
 import { v4 as uuid } from "uuid";
 import { getRecipeById } from "../../utils/api-calls";
-import {
-  Form,
-  Input,
-  Button,
-  InputNumber,
-  Radio,
-  Space,
-  Typography,
-  Divider,
-  Affix,
-  message,
-  Col,
-  Row,
-} from "antd";
+import { Form, Button, Space, Divider, Affix, message, Col, Row } from "antd";
 import { deepCloneObject } from "../../utils/helpers";
 import OkCancelModal from "../../components/ok-cancel-modal";
-import { StepBackwardFilled } from "@ant-design/icons";
 import GrainAdditions from "./grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
@@ -39,7 +25,6 @@ import HopAdditions from "./hop-additions";
 import { selectCurrentUser } from "../../redux/user/slice";
 import YeastAdditions from "./yeast-additions";
 import GeneralInfo from "./general-info";
-import styles from "./index.module.css";
 import Stats from "./stats";
 export interface RecipeGrain {
   name: string;
@@ -324,7 +309,7 @@ const RecipeDetailPage = () => {
       <Divider />
       <HopAdditions recipeForm={recipeForm} />
       <Divider />
-      <YeastAdditions recipeForm={recipeForm} />
+      <YeastAdditions />
       <Divider />
     </>
   );
@@ -338,7 +323,7 @@ const RecipeDetailPage = () => {
           </Col>
           <Col xs={0} sm={0} md={0} lg={8} xl={8}>
             <Affix offsetTop={10}>
-              <Stats />
+              <Stats srm={srm} />
             </Affix>
           </Col>
         </Row>
@@ -348,7 +333,7 @@ const RecipeDetailPage = () => {
     return (
       <>
         {formSections}
-        <Stats />
+        <Stats srm={srm} />
         <Divider />
       </>
     );

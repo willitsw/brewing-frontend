@@ -1,8 +1,4 @@
-import {
-  EditOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   AutoComplete,
   Button,
@@ -12,10 +8,8 @@ import {
   InputNumber,
   Row,
   Select,
-  Statistic,
   Typography,
 } from "antd";
-import { useState } from "react";
 import { RecipeForm, RecipeGrain } from ".";
 import DefaultGrains from "../../data/default-grains";
 import styles from "./index.module.css";

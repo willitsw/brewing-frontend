@@ -1,76 +1,76 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  List,
-  Row,
-  Typography,
-} from "antd";
+import { Button, Col, Form, Input, InputNumber, Row, Typography } from "antd";
 
-interface YeastAdditionsProps {
-  recipeForm: any;
-}
+import styles from "./index.module.css";
 
-const YeastAdditions = ({ recipeForm }: YeastAdditionsProps) => {
+const YeastAdditions = () => {
   return (
-    <Form.List name="yeasts">
-      {(fields, { add, remove }) => (
-        <List
-          header={
-            <Typography.Title level={4}>Yeast additions</Typography.Title>
-          }
-          footer={
+    <>
+      <Typography.Title level={4}>Yeast additions</Typography.Title>
+      <Form.List name="yeasts">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.length === 0
+              ? "No yeasts yet - feel free to add some!"
+              : fields.map(({ key, name, ...restField }) => {
+                  return (
+                    <Row
+                      key={key}
+                      justify="start"
+                      align="middle"
+                      gutter={[12, 0]}
+                    >
+                      <Col xs={16} sm={16} md={7} lg={7} xl={7}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "name"]}
+                          label="Name"
+                          labelCol={{ span: 30, offset: 0 }}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please name your yeast.",
+                            },
+                          ]}
+                        >
+                          <Input style={{ width: 220 }} />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={6} sm={6} md={3} lg={3} xl={3}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "attenuation"]}
+                          label="Attenuation"
+                          labelCol={{ span: 30, offset: 0 }}
+                        >
+                          <InputNumber />
+                        </Form.Item>
+                      </Col>
+                      <Col span={1}>
+                        <MinusCircleOutlined
+                          onClick={() => remove(name)}
+                          className={styles["edit-delete-icon"]}
+                        />
+                      </Col>
+                    </Row>
+                  );
+                })}
             <Row>
-              <Col span={12}>
+              <Col span={24}>
                 <Button
                   type="dashed"
                   onClick={() => add()}
                   block
                   icon={<PlusOutlined />}
                 >
-                  Add yeast
+                  Add a yeast
                 </Button>
               </Col>
             </Row>
-          }
-          itemLayout="vertical"
-          dataSource={fields}
-          locale={{ emptyText: "No yeasts exist. Add some!" }}
-          renderItem={({ key, name, ...restField }) => (
-            <List.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "name"]}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please name your yeast.",
-                  },
-                ]}
-              >
-                <Input placeholder="Yeast Name" size="large" />
-              </Form.Item>
-              <Form.Item
-                {...restField}
-                name={[name, "attenuation"]}
-                rules={[
-                  {
-                    required: true,
-                    message: "Required",
-                  },
-                ]}
-              >
-                <InputNumber size="small" />
-              </Form.Item>
-              <MinusCircleOutlined onClick={() => remove(name)} />
-            </List.Item>
-          )}
-        />
-      )}
-    </Form.List>
+          </>
+        )}
+      </Form.List>
+    </>
   );
 };
 
