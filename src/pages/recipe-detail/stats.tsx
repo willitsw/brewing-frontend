@@ -2,9 +2,10 @@ import { Col, Row, Statistic, Typography } from "antd";
 
 interface StatsProps {
   srm: number | "-";
+  og: number | "-";
 }
 
-const Stats = ({ srm }: StatsProps) => {
+const Stats = ({ srm, og }: StatsProps) => {
   return (
     <>
       <Typography.Title level={4}>Stats</Typography.Title>
@@ -13,7 +14,7 @@ const Stats = ({ srm }: StatsProps) => {
           <Statistic title="SRM" value={srm} />
         </Col>
         <Col span={12}>
-          <Statistic title="ABV" value={6.2} />
+          <Statistic title="OG" value={og} />
         </Col>
       </Row>
     </>

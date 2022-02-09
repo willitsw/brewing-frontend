@@ -20,7 +20,7 @@ import {
   HopAdditionType,
   UseType,
 } from "../../types/beer-json";
-import { calculateSrm } from "../../utils/beer-math";
+import { calculateOg, calculateSrm } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
 import { selectCurrentUser } from "../../redux/user/slice";
 import YeastAdditions from "./yeast-additions";
@@ -111,6 +111,7 @@ const RecipeDetailPage = () => {
   const currentUser = useAppSelector(selectCurrentUser);
   const [isFormTouched, setIsFormTouched] = useState<boolean>(false);
   const [srm, setSrm] = useState<number | "-">("-");
+  const [og, setOg] = useState<number | "-">("-");
   const [loading, setLoading] = useState<boolean>(true);
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
@@ -178,6 +179,20 @@ const RecipeDetailPage = () => {
         };
       });
       setSrm(calculateSrm(workingRecipe.batch_size.value, srmData));
+
+      const ogData = grainsArray.map((grain: RecipeGrain) => {
+        return {
+          potential: grain.gravity ?? 0,
+          pounds: grain.amount ?? 0,
+        };
+      });
+      setOg(
+        calculateOg(
+          ogData,
+          workingRecipe.batch_size.value,
+          workingRecipe.efficiency.brewhouse.value
+        )
+      );
 
       dispatch({
         type: RecipeActionTypes.SetCurrentRecipe,
@@ -284,6 +299,13 @@ const RecipeDetailPage = () => {
     if (changedValue === "grains" || changedValue === "batchSizeValue") {
       updateSrm();
     }
+    if (
+      changedValue === "grains" ||
+      changedValue === "batchSizeValue" ||
+      changedValue === "efficiencyValue"
+    ) {
+      updateOg();
+    }
   };
 
   const updateSrm = () => {
@@ -299,6 +321,25 @@ const RecipeDetailPage = () => {
       };
     });
     setSrm(calculateSrm(recipe.batchSizeValue, srmData));
+  };
+
+  const updateOg = () => {
+    const recipe = recipeForm.getFieldsValue();
+
+    if (
+      !recipe?.batchSizeValue ||
+      !recipe?.grains ||
+      !recipe?.efficiencyValue
+    ) {
+      setOg("-");
+    }
+    const srmData = recipe.grains.map((grain: RecipeGrain) => {
+      return {
+        potential: grain.gravity ?? 0,
+        pounds: grain.amount ?? 0,
+      };
+    });
+    setOg(calculateOg(srmData, recipe.batchSizeValue, recipe.efficiencyValue));
   };
 
   const formSections = (
@@ -323,7 +364,7 @@ const RecipeDetailPage = () => {
           </Col>
           <Col xs={0} sm={0} md={0} lg={8} xl={8}>
             <Affix offsetTop={10}>
-              <Stats srm={srm} />
+              <Stats srm={srm} og={og} />
             </Affix>
           </Col>
         </Row>
@@ -333,7 +374,7 @@ const RecipeDetailPage = () => {
     return (
       <>
         {formSections}
-        <Stats srm={srm} />
+        <Stats srm={srm} og={og} />
         <Divider />
       </>
     );
