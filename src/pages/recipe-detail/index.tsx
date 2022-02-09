@@ -320,7 +320,7 @@ const RecipeDetailPage = () => {
     <>
       <GeneralInfo />
       <Divider />
-      <GrainAdditions recipeForm={recipeForm} srm={srm} />
+      <GrainAdditions recipeForm={recipeForm} />
       <Divider />
       <HopAdditions recipeForm={recipeForm} />
       <Divider />

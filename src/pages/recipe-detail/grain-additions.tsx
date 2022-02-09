@@ -1,4 +1,8 @@
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import {
   AutoComplete,
   Button,
@@ -8,15 +12,16 @@ import {
   InputNumber,
   Row,
   Select,
+  Statistic,
   Typography,
 } from "antd";
+import { useState } from "react";
 import { RecipeForm, RecipeGrain } from ".";
 import DefaultGrains from "../../data/default-grains";
 import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
   recipeForm: FormInstance<RecipeForm>;
-  srm: number | "-";
 }
 
 const typeAheadOptions = DefaultGrains.map((grain) => {
@@ -25,9 +30,8 @@ const typeAheadOptions = DefaultGrains.map((grain) => {
   };
 });
 
-const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
+const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
   const { Option } = Select;
-  const { Title } = Typography;
 
   const handleGrainNameSelect = (selection: string) => {
     const defaultGrain = DefaultGrains.find(
@@ -42,6 +46,8 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
       grains[grainIndexToModify].color = defaultGrain.lovibond;
       grains[grainIndexToModify].gravity = defaultGrain.gravity;
       grains[grainIndexToModify].type = defaultGrain.type;
+      grains[grainIndexToModify].amount = 0;
+
       recipeForm.setFieldsValue({ grains });
     }
   };
@@ -61,24 +67,6 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
   return (
     <>
       <Typography.Title level={4}>Grain additions</Typography.Title>
-      {/* <Row className={styles["table-row"]}>
-        <Col span={5}>
-          <strong>Name</strong>
-        </Col>
-        <Col span={2}>
-          <strong>Amount (LB)</strong>
-        </Col>
-        <Col span={2}>
-          <strong>Color (Lovibond)</strong>
-        </Col>
-        <Col span={2}>
-          <strong>Potential Gravity</strong>
-        </Col>
-        <Col span={3}>
-          <strong>Type</strong>
-        </Col>
-        <Col span={1} />
-      </Row> */}
       <Form.List name="grains">
         {(fields, { add, remove }) => (
           <>
@@ -86,11 +74,18 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
               ? "No grains yet - feel free to add some!"
               : fields.map(({ key, name, ...restField }, index) => {
                   return (
-                    <Row key={key}>
-                      <Col span={8}>
+                    <Row
+                      key={key}
+                      justify="start"
+                      align="middle"
+                      gutter={[12, 0]}
+                    >
+                      <Col xs={16} sm={16} md={8} lg={8} xl={8}>
                         <Form.Item
                           {...restField}
                           name={[name, "name"]}
+                          label="Name"
+                          labelCol={{ span: 30, offset: 0 }}
                           rules={[
                             {
                               required: true,
@@ -100,7 +95,7 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                         >
                           <AutoComplete
                             options={typeAheadOptions}
-                            style={{ width: 250 }}
+                            style={{ width: 220 }}
                             filterOption={(inputValue, option) =>
                               option?.value
                                 .toUpperCase()
@@ -111,10 +106,12 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={3}>
+                      <Col xs={7} sm={7} md={3} lg={3} xl={3}>
                         <Form.Item
                           {...restField}
                           name={[name, "amount"]}
+                          label="Amount"
+                          labelCol={{ span: 30, offset: 0 }}
                           rules={[
                             {
                               required: true,
@@ -122,32 +119,48 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                             },
                           ]}
                         >
-                          <InputNumber />
+                          <InputNumber style={{ width: 72 }} />
                         </Form.Item>
                       </Col>
-                      <Col span={3}>
-                        <Form.Item {...restField} name={[name, "color"]}>
-                          <InputNumber />
+                      <Col xs={6} sm={6} md={3} lg={3} xl={3}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "color"]}
+                          label="Color"
+                          labelCol={{ span: 30, offset: 0 }}
+                        >
+                          <InputNumber style={{ width: 72 }} />
                         </Form.Item>
                       </Col>
-                      <Col span={3}>
-                        <Form.Item {...restField} name={[name, "gravity"]}>
+                      <Col xs={6} sm={6} md={3} lg={3} xl={3}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "gravity"]}
+                          label="Gravity"
+                          labelCol={{ span: 30, offset: 0 }}
+                        >
                           <InputNumber
                             stringMode
                             min="1"
                             max="2"
                             step="0.001"
+                            style={{ width: 84 }}
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={4}>
-                        <Form.Item {...restField} name={[name, "type"]}>
+                      <Col xs={8} sm={8} md={4} lg={4} xl={4}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "type"]}
+                          label="Type"
+                          labelCol={{ span: 30, offset: 0 }}
+                        >
                           <Select
                             onChange={(value: string) =>
                               handleTypeChange(value, index)
                             }
                             value={getInitialType(index)}
-                            style={{ width: 150 }}
+                            style={{ width: 120 }}
                           >
                             <Option value="grain">Grain</Option>
                             <Option value="extract">Liquid Extract</Option>
@@ -156,13 +169,16 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                         </Form.Item>
                       </Col>
                       <Col span={1}>
-                        <MinusCircleOutlined onClick={() => remove(name)} />
+                        <MinusCircleOutlined
+                          onClick={() => remove(name)}
+                          className={styles["edit-delete-icon"]}
+                        />
                       </Col>
                     </Row>
                   );
                 })}
             <Row>
-              <Col span={12}>
+              <Col span={24}>
                 <Button
                   type="dashed"
                   onClick={() => add()}
@@ -171,11 +187,6 @@ const GrainAdditions = ({ recipeForm, srm }: GrainAdditionsProps) => {
                 >
                   Add field
                 </Button>
-              </Col>
-              <Col span={2}>
-                <Title className={styles.srm} level={4}>
-                  SRM: {srm}
-                </Title>
               </Col>
             </Row>
           </>
