@@ -185,7 +185,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                   block
                   icon={<PlusOutlined />}
                 >
-                  Add field
+                  Add a grain
                 </Button>
               </Col>
             </Row>
