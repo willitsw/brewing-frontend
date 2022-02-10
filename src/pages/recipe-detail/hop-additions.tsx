@@ -93,6 +93,22 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
+                      <Col xs={7} sm={7} md={3} lg={3} xl={3}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "amount"]}
+                          label="Amount"
+                          labelCol={{ span: 30, offset: 0 }}
+                          rules={[
+                            {
+                              required: true,
+                              message: "How much?",
+                            },
+                          ]}
+                        >
+                          <InputNumber style={{ width: 72 }} />
+                        </Form.Item>
+                      </Col>
                       <Col xs={6} sm={6} md={3} lg={3} xl={3}>
                         <Form.Item
                           {...restField}
