@@ -96,7 +96,8 @@ export const calculateIbu = (
     if (hop.minutes && hop.amount) {
       const boilTimeFactor = (1 - Math.E ** (-0.04 * hop.minutes)) / 4.15;
       const aaUtilization = bignessFactor * boilTimeFactor;
-      const ibu = (aaUtilization * hop.amount * 7490) / batchSize;
+      const mgLtrAa = ((hop.alpha / 100) * hop.amount * 7490) / batchSize;
+      const ibu = aaUtilization * mgLtrAa;
       totalIbu += ibu;
     }
   });
