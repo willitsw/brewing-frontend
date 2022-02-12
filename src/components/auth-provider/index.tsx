@@ -1,4 +1,5 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { clearBrewSettings } from "../../redux/brew-settings/slice";
 import { useAppDispatch } from "../../redux/hooks";
 import { clearUser, setUser } from "../../redux/user/slice";
 
@@ -30,6 +31,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       // ...
       console.log("user is logged out");
       dispatch(clearUser());
+      dispatch(clearBrewSettings());
     }
   });
   return <>{children}</>;

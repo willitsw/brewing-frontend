@@ -27,6 +27,8 @@ const defaultSettings: BrewSettings = {
   boilOffWaterLossRate: 1.5,
   waterLossPerGrain: 0.125,
   author: "",
+  user: "",
+  id: "",
 };
 
 const BrewSettings = () => {

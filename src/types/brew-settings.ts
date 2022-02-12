@@ -1,4 +1,6 @@
-export interface BrewSettings {
+import { DbType } from "./beer-interfaces";
+
+export interface BrewSettings extends DbType {
   author: string;
   measurementType: "imperial" | "metric";
   batchSize: number;
