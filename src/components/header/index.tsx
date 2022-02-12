@@ -32,6 +32,8 @@ const Header = () => {
       setCurrentPage("/home");
     } else if (location.pathname.includes("recipes")) {
       setCurrentPage("/recipes/list");
+    } else if (location.pathname.includes("brew-settings")) {
+      setCurrentPage("/brew-settings");
     } else {
       setCurrentPage("/home");
     }
@@ -98,6 +100,9 @@ const Header = () => {
             <Menu.Item key={"/home"}>Home</Menu.Item>
             <Menu.Item key={"/recipes/list"} disabled={!isAuthenticated}>
               Recipes
+            </Menu.Item>
+            <Menu.Item key={"/brew-settings"} disabled={!isAuthenticated}>
+              Brew Settings
             </Menu.Item>
           </Menu>
         </div>

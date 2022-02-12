@@ -12,6 +12,7 @@ module.exports = {
     filename: "index.[contenthash].bundle.js",
     publicPath: "/",
   },
+  devtool: "eval-cheap-source-map",
   mode: process.env.NODE_ENV || "development",
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

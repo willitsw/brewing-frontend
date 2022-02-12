@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "../../pages/home";
 import RecipeDetailPage from "../../pages/recipe-detail";
 import RecipeListPage from "../../pages/recipe-list";
+import BrewSettingsPage from "../../pages/brew-settings";
 import { useAppSelector } from "../../redux/hooks";
 import { userIsAuthenticated } from "../../redux/user/slice";
 import Footer from "../footer";
@@ -24,6 +25,7 @@ const PageLayout = () => {
               path={"/recipes/duplicate/:id"}
               element={<RecipeDetailPage />}
             />
+            <Route path={"/brew-settings"} element={<BrewSettingsPage />} />
           </>
         )}
         <Route path="*" element={<HomePage />} />
