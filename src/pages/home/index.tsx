@@ -1,19 +1,19 @@
 import { Button, Space, Typography } from "antd";
 import { getAuth, signOut } from "firebase/auth";
-import { useState } from "react";
 import Content from "../../components/content";
-import CreateNewAccountModal from "../../components/modals/create-new-account";
-import LoginModal from "../../components/modals/login";
-import { useAppSelector } from "../../redux/hooks";
-import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import {
+  selectCurrentUser,
+  setShowCreateAccountModal,
+  setShowLoginModal,
+  userIsAuthenticated,
+} from "../../redux/user/slice";
 
 const HomePage = () => {
   const auth = getAuth();
-  const [showCreateAccountModal, setShowCreateAccountModal] =
-    useState<boolean>(false);
-  const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const isAuthenticated = useAppSelector(userIsAuthenticated);
   const currentUser = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
   return (
     <Content pageTitle="What ales you">
       {isAuthenticated ? (
@@ -33,24 +33,19 @@ const HomePage = () => {
           <Space>
             <Button
               type="primary"
-              onClick={() => setShowCreateAccountModal(true)}
+              onClick={() => dispatch(setShowCreateAccountModal(true))}
             >
               Create an Account
             </Button>
-            <Button type="primary" onClick={() => setShowLoginModal(true)}>
+            <Button
+              type="primary"
+              onClick={() => dispatch(setShowLoginModal(true))}
+            >
               Login
             </Button>
           </Space>
         </>
       )}
-      <CreateNewAccountModal
-        onCancel={() => setShowCreateAccountModal(false)}
-        showModal={showCreateAccountModal}
-      />
-      <LoginModal
-        onCancel={() => setShowLoginModal(false)}
-        showModal={showLoginModal}
-      />
     </Content>
   );
 };

@@ -1,7 +1,16 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { clearBrewSettings } from "../../redux/brew-settings/slice";
-import { useAppDispatch } from "../../redux/hooks";
-import { clearUser, setUser } from "../../redux/user/slice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  clearUser,
+  setShowCreateAccountModal,
+  setShowLoginModal,
+  setUser,
+  showCreateAccountModal,
+  showLoginModal,
+} from "../../redux/user/slice";
+import CreateNewAccountModal from "../modals/create-new-account";
+import LoginModal from "../modals/login";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -10,6 +19,8 @@ interface AuthProviderProps {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const auth = getAuth();
   const dispatch = useAppDispatch();
+  const showLogin = useAppSelector(showLoginModal);
+  const showCreateAccount = useAppSelector(showCreateAccountModal);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -34,7 +45,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       dispatch(clearBrewSettings());
     }
   });
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <CreateNewAccountModal
+        onCancel={() => dispatch(setShowCreateAccountModal(false))}
+        showModal={showCreateAccount}
+      />
+      <LoginModal
+        onCancel={() => dispatch(setShowLoginModal(false))}
+        showModal={showLogin}
+      />
+    </>
+  );
 };
 
 export default AuthProvider;

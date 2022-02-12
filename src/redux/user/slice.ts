@@ -15,11 +15,15 @@ const defaultCurrentUser: BeerUser | null = constants.useAuth
 interface UserState {
   currentUser: BeerUser | null;
   isAuthenticated: boolean;
+  showLoginModal: boolean;
+  showCreateAccountModal: boolean;
 }
 
 const initialState: UserState = {
   currentUser: defaultCurrentUser,
   isAuthenticated: !!defaultCurrentUser,
+  showCreateAccountModal: false,
+  showLoginModal: false,
 };
 
 export enum RecipeActionTypes {
@@ -41,13 +45,27 @@ export const userSlice = createSlice({
       state.currentUser = newUser;
       state.isAuthenticated = !!newUser;
     },
+    setShowLoginModal: (state, action: { payload: boolean }) => {
+      state.showLoginModal = action.payload;
+    },
+    setShowCreateAccountModal: (state, action: { payload: boolean }) => {
+      state.showCreateAccountModal = action.payload;
+    },
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  setShowCreateAccountModal,
+  setShowLoginModal,
+} = userSlice.actions;
 
 export const selectCurrentUser = (state: RootState) => state.user.currentUser;
 export const userIsAuthenticated = (state: RootState) =>
   state.user.isAuthenticated;
+export const showCreateAccountModal = (state: RootState) =>
+  state.user.showCreateAccountModal;
+export const showLoginModal = (state: RootState) => state.user.showLoginModal;
 
 export default userSlice.reducer;
