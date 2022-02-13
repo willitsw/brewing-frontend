@@ -299,6 +299,15 @@ const RecipeDetailPage = () => {
     }
   };
 
+  const handleOnFieldsChange = (changedFields: any) => {
+    if (changedFields[0].name.includes("additionType")) {
+      const hops: RecipeHop[] = recipeForm.getFieldValue("hops");
+      const indexToChange = changedFields[0].name[1];
+      hops[indexToChange].minutes = 0;
+      recipeForm.setFieldsValue({ hops });
+    }
+  };
+
   const handleOnValuesChange = (changedValues: any) => {
     setIsFormTouched(true);
 
@@ -386,6 +395,7 @@ const RecipeDetailPage = () => {
         autoComplete="off"
         layout="vertical"
         onValuesChange={handleOnValuesChange}
+        onFieldsChange={handleOnFieldsChange}
       >
         <Content
           isLoading={loading}

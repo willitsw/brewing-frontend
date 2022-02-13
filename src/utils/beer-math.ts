@@ -8,8 +8,11 @@ export const calculateSrm = (
     return null;
   }
   let srm = 0;
-  grains.forEach((grain) => {
-    if (grain.color && grain.amount) {
+
+  const actualGrains = grains.filter((grain) => !!grain);
+
+  actualGrains.forEach((grain) => {
+    if (grain.color && grain.amount && grain.gravity) {
       srm += (grain.amount * grain.color) / batchSizeGallons;
     }
   });
@@ -29,10 +32,17 @@ export const calculateOg = (
   if (!batchSizeGallons || grains.length === 0 || !efficiency) {
     return null;
   }
-  const unadjustedOg = grains.reduce((og, { gravity, amount }) => {
-    if (gravity <= 0 || amount <= 0) {
-      return og;
-    }
+
+  const actualGrains = grains.filter(
+    (grain) =>
+      !!grain &&
+      grain.gravity &&
+      grain.amount &&
+      grain.gravity > 0 &&
+      grain.amount > 0
+  );
+
+  const unadjustedOg = actualGrains.reduce((og, { gravity, amount }) => {
     const points = gravity - 1;
     return (og += points * amount);
   }, 0);
@@ -92,8 +102,15 @@ export const calculateIbu = (
 
   let totalIbu = 0;
 
-  hops.forEach((hop) => {
-    if (hop.minutes && hop.amount) {
+  const actualHops = hops.filter((hop) => !!hop);
+
+  actualHops.forEach((hop) => {
+    if (
+      hop.minutes &&
+      hop.amount &&
+      hop.additionType === "add_to_boil" &&
+      hop.alpha
+    ) {
       const boilTimeFactor = (1 - Math.E ** (-0.04 * hop.minutes)) / 4.15;
       const aaUtilization = bignessFactor * boilTimeFactor;
       const mgLtrAa = ((hop.alpha / 100) * hop.amount * 7490) / batchSize;

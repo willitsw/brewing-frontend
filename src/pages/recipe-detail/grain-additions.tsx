@@ -112,8 +112,17 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                               message: "How much?",
                             },
                           ]}
+                          initialValue={0}
                         >
-                          <InputNumber style={{ width: 72 }} />
+                          <InputNumber
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            style={{ width: 72 }}
+                            formatter={(value) => {
+                              return value ? `${value} lbs` : "0 lbs";
+                            }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col xs={6} sm={6} md={3} lg={3} xl={3}>
@@ -122,8 +131,23 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                           name={[name, "color"]}
                           label="Color"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={0}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
                         >
-                          <InputNumber style={{ width: 72 }} />
+                          <InputNumber
+                            min="0"
+                            max="100"
+                            step="0.1"
+                            style={{ width: 72 }}
+                            formatter={(value) => {
+                              return value ? `${value} L` : "0 L";
+                            }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col xs={6} sm={6} md={3} lg={3} xl={3}>
@@ -132,6 +156,13 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                           name={[name, "gravity"]}
                           label="Gravity"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={"1.000"}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
                         >
                           <InputNumber
                             stringMode
@@ -148,6 +179,13 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                           name={[name, "type"]}
                           label="Type"
                           labelCol={{ span: 30, offset: 0 }}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
+                          initialValue="grain"
                         >
                           <Select
                             onChange={(value: string) =>

@@ -10,6 +10,7 @@ import {
   Select,
   Typography,
 } from "antd";
+import { RecipeHop } from ".";
 import DefaultHops from "../../data/default-hops";
 import styles from "./index.module.css";
 
@@ -28,7 +29,7 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
 
   const getInitialType = (index: number): string => {
     const hops = recipeForm.getFieldValue("hops");
-    return hops[index]?.type ?? "";
+    return hops[index]?.type ?? "add_to_boil";
   };
 
   const handleTypeChange = (selection: string, index: number) => {
@@ -38,15 +39,15 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
     recipeForm.setFieldsValue(hops);
   };
 
-  const handleHopNameSelect = (selection: string) => {
+  const handleHopNameSelect = (selection: string, index: number) => {
     const defaultHop = DefaultHops.find((hop) => hop.name === selection);
 
     if (defaultHop) {
-      const hops = recipeForm.getFieldValue("hops");
-      const hopIndexToModify = hops.findIndex(
-        (hop: any) => hop.name === defaultHop.name
-      );
-      hops[hopIndexToModify].alpha = defaultHop.alpha;
+      const hops: RecipeHop[] = recipeForm.getFieldValue("hops");
+      hops[index].alpha = defaultHop.alpha;
+      hops[index].additionType = "add_to_boil";
+      hops[index].amount = 0;
+      hops[index].minutes = 0;
       recipeForm.setFieldsValue(hops);
     }
   };
@@ -88,7 +89,9 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                                 .toUpperCase()
                                 .indexOf(inputValue.toUpperCase()) !== -1
                             }
-                            onSelect={handleHopNameSelect}
+                            onSelect={(selection: string) =>
+                              handleHopNameSelect(selection, index)
+                            }
                             placeholder="Hop Name"
                           />
                         </Form.Item>
@@ -99,6 +102,7 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                           name={[name, "amount"]}
                           label="Amount"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={0}
                           rules={[
                             {
                               required: true,
@@ -106,25 +110,54 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                             },
                           ]}
                         >
-                          <InputNumber style={{ width: 72 }} />
+                          <InputNumber
+                            min="0"
+                            max="100"
+                            step="0.5"
+                            style={{ width: 72 }}
+                            formatter={(value) => {
+                              return value ? `${value} oz` : "0 oz";
+                            }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col xs={6} sm={6} md={3} lg={3} xl={3}>
                         <Form.Item
                           {...restField}
                           name={[name, "alpha"]}
-                          label="Alpha Acid"
+                          label="Bitterness"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={0}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
                         >
-                          <InputNumber stringMode min="0" max="25" step="0.1" />
+                          <InputNumber
+                            min="0"
+                            max="25"
+                            step="0.1"
+                            formatter={(value) => {
+                              return value ? `${value} AA` : "0 AA";
+                            }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col xs={8} sm={8} md={3} lg={3} xl={3}>
                         <Form.Item
                           {...restField}
                           name={[name, "additionType"]}
-                          label="Addition Type"
+                          label="Add To"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={"add_to_boil"}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
                         >
                           <Select
                             onChange={(value: string) =>
@@ -142,10 +175,26 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                         <Form.Item
                           {...restField}
                           name={[name, "minutes"]}
-                          label="Minutes"
+                          label="Time"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={0}
                         >
-                          <InputNumber min={0} />
+                          <InputNumber
+                            min={0}
+                            formatter={(value) => {
+                              const hopItem: RecipeHop =
+                                recipeForm.getFieldValue("hops")[index];
+
+                              switch (hopItem.additionType) {
+                                case "add_to_boil":
+                                  return `${value} min`;
+                                case "add_to_fermentation":
+                                  return `${value} days`;
+                                default:
+                                  return `${value} min`;
+                              }
+                            }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col span={1}>
