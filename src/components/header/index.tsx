@@ -4,12 +4,7 @@ import { Layout, Menu, Image, Avatar, Dropdown, Button } from "antd";
 import styles from "./index.module.css";
 import beerIcon from "./beer-icon.png";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import {
-  selectCurrentUser,
-  setShowCreateAccountModal,
-  setShowLoginModal,
-  userIsAuthenticated,
-} from "../../redux/user/slice";
+import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
 import {
   LoginOutlined,
   LogoutOutlined,
@@ -17,16 +12,20 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { getAuth, signOut } from "firebase/auth";
+import {
+  setShowCreateAccountModal,
+  setShowLoginModal,
+} from "../../redux/global-modals/slice";
 
 const Header = () => {
   const auth = getAuth();
   const { Header } = Layout;
   const [currentPage, setCurrentPage] = useState("");
-  const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = useAppSelector(userIsAuthenticated);
   const currentUser = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthenticated) {

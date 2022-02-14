@@ -11,13 +11,13 @@ import { FacebookAuthProvider } from "firebase/auth";
 import { FacebookOutlined, GoogleOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.css";
+import {
+  setShowLoginModal,
+  showLoginModal,
+} from "../../../redux/global-modals/slice";
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 
 declare const window: any;
-
-interface LoginModalProps {
-  onCancel: () => void;
-  showModal: boolean;
-}
 
 interface FormValues {
   email: string;
@@ -25,13 +25,17 @@ interface FormValues {
   customToken: string;
 }
 
-const LoginModal = ({ onCancel, showModal }: LoginModalProps) => {
+const LoginModal = () => {
   const [form] = Form.useForm();
   const [modalLoading, setModalLoading] = useState<boolean>(false);
+  const showLogin = useAppSelector(showLoginModal);
+  const dispatch = useAppDispatch();
 
   const auth = getAuth();
   const googleProvider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
+
+  const onCancel = () => dispatch(setShowLoginModal(false));
 
   const handleGoogleSignIn = async () => {
     try {
@@ -71,7 +75,7 @@ const LoginModal = ({ onCancel, showModal }: LoginModalProps) => {
   return (
     <Modal
       title="Sign In"
-      visible={showModal}
+      visible={showLogin}
       onOk={handleSubmit}
       onCancel={onCancel}
       confirmLoading={modalLoading}

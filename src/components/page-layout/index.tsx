@@ -1,5 +1,5 @@
 import { Layout } from "antd";
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import HomePage from "../../pages/home";
 import RecipeDetailPage from "../../pages/recipe-detail";
 import RecipeListPage from "../../pages/recipe-list";
@@ -8,6 +8,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { userIsAuthenticated } from "../../redux/user/slice";
 import Footer from "../footer";
 import Header from "../header";
+import GlobalModals from "../global-modals";
 
 const PageLayout = () => {
   const isAuthenticated = useAppSelector(userIsAuthenticated);
@@ -31,6 +32,7 @@ const PageLayout = () => {
         <Route path="*" element={<HomePage />} />
       </Routes>
       <Footer />
+      <GlobalModals />
     </Layout>
   );
 };

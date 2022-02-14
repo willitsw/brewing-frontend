@@ -1,13 +1,12 @@
 import { Button, Space, Typography } from "antd";
 import { getAuth, signOut } from "firebase/auth";
 import Content from "../../components/content";
-import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
-  selectCurrentUser,
   setShowCreateAccountModal,
   setShowLoginModal,
-  userIsAuthenticated,
-} from "../../redux/user/slice";
+} from "../../redux/global-modals/slice";
+import { useAppSelector, useAppDispatch } from "../../redux/hooks";
+import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
 
 const HomePage = () => {
   const auth = getAuth();

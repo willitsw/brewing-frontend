@@ -10,23 +10,24 @@ import { FacebookAuthProvider } from "firebase/auth";
 import { FacebookOutlined, GoogleOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.css";
-
-interface CreateNewAccountModalProps {
-  onCancel: () => void;
-  showModal: boolean;
-}
+import {
+  setShowCreateAccountModal,
+  showCreateAccountModal,
+} from "../../../redux/global-modals/slice";
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 
 interface FormValues {
   email: string;
   password: string;
 }
 
-const CreateNewAccountModal = ({
-  onCancel,
-  showModal,
-}: CreateNewAccountModalProps) => {
+const CreateNewAccountModal = () => {
   const [form] = Form.useForm();
   const [modalLoading, setModalLoading] = useState<boolean>(false);
+  const showCreateAccount = useAppSelector(showCreateAccountModal);
+  const dispatch = useAppDispatch();
+
+  const onCancel = () => dispatch(setShowCreateAccountModal(false));
 
   const auth = getAuth();
   const googleProvider = new GoogleAuthProvider();
@@ -66,9 +67,9 @@ const CreateNewAccountModal = ({
   return (
     <Modal
       title="Create a New Account"
-      visible={showModal}
+      visible={showCreateAccount}
       onOk={handleSubmit}
-      onCancel={onCancel}
+      onCancel={() => onCancel()}
       confirmLoading={modalLoading}
       forceRender
     >

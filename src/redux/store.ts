@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import RecipesReducer from "./recipe-list/slice";
 import UserReducer from "./user/slice";
 import BrewSettingsReducer from "./brew-settings/slice";
+import GlobalModalsReducer from "./global-modals/slice";
 
 export const store = configureStore({
   reducer: {
     recipes: RecipesReducer,
     user: UserReducer,
     brewSettings: BrewSettingsReducer,
+    globalModals: GlobalModalsReducer,
   },
 });
 
