@@ -40,7 +40,7 @@ const Header = () => {
   }, [location, isAuthenticated]);
 
   const handleMenuClick = (newMenuItem: any) => {
-    setCurrentPage(newMenuItem.key);
+    //setCurrentPage(newMenuItem.key);
     navigate(newMenuItem.key);
   };
 

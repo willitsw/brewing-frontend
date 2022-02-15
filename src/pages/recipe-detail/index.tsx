@@ -32,6 +32,7 @@ import { selectCurrentUser } from "../../redux/user/slice";
 import YeastAdditions from "./yeast-additions";
 import GeneralInfo from "./general-info";
 import Stats from "./stats";
+import { setPageIsClean } from "../../redux/global-modals/slice";
 export interface RecipeGrain {
   name: string;
   amount: number;
@@ -115,7 +116,6 @@ const RecipeDetailPage = () => {
   const dispatch = useAppDispatch();
   const recipe = useAppSelector(selectCurrentRecipe);
   const currentUser = useAppSelector(selectCurrentUser);
-  const [isFormTouched, setIsFormTouched] = useState<boolean>(false);
   const [srm, setSrm] = useState<number | null>(null);
   const [og, setOg] = useState<number | null>(null);
   const [fg, setFg] = useState<number | null>(null);
@@ -283,20 +283,12 @@ const RecipeDetailPage = () => {
     submitCopy.ingredients.culture_additions = yeastAdditions;
 
     dispatch(processCreateUpdateRecipe(submitCopy));
-    setIsFormTouched(false);
+    dispatch(setPageIsClean(false));
     message.success(`${submitCopy.name} has been saved.`);
   };
 
   const goBackToRecipeList = () => {
     navigate("/recipes/list/");
-  };
-
-  const handleCancelClick = () => {
-    if (isFormTouched) {
-      setShowCancelModal(true);
-    } else {
-      goBackToRecipeList();
-    }
   };
 
   const handleOnFieldsChange = (changedFields: any) => {
@@ -309,7 +301,7 @@ const RecipeDetailPage = () => {
   };
 
   const handleOnValuesChange = (changedValues: any) => {
-    setIsFormTouched(true);
+    dispatch(setPageIsClean(false));
 
     const changedValue = Object.keys(changedValues)[0];
     if (
@@ -410,7 +402,9 @@ const RecipeDetailPage = () => {
                 </Button>
               </Form.Item>
               <Form.Item>
-                <Button onClick={handleCancelClick}>Back to Recipe List</Button>
+                <Button onClick={goBackToRecipeList}>
+                  Back to Recipe List
+                </Button>
               </Form.Item>
             </Space>
           </Affix>

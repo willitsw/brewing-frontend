@@ -1,3 +1,4 @@
+import ConfirmLeaveModal from "../modals/confirm-leave";
 import CreateNewAccountModal from "../modals/create-new-account";
 import LoginModal from "../modals/login";
 
@@ -6,6 +7,7 @@ const GlobalModals = () => {
     <>
       <CreateNewAccountModal />
       <LoginModal />
+      <ConfirmLeaveModal />
     </>
   );
 };
