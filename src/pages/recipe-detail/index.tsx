@@ -375,50 +375,38 @@ const RecipeDetailPage = () => {
   };
 
   return (
-    <>
-      <Form
-        name="recipe-edit-form"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        form={recipeForm}
-        onFinish={handleSave}
-        onFinishFailed={handleSaveFailed}
-        scrollToFirstError={true}
-        autoComplete="off"
-        layout="vertical"
-        onValuesChange={handleOnValuesChange}
-        onFieldsChange={handleOnFieldsChange}
+    <Form
+      name="recipe-edit-form"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      form={recipeForm}
+      onFinish={handleSave}
+      onFinishFailed={handleSaveFailed}
+      scrollToFirstError={true}
+      autoComplete="off"
+      layout="vertical"
+      onValuesChange={handleOnValuesChange}
+      onFieldsChange={handleOnFieldsChange}
+    >
+      <Content
+        isLoading={loading}
+        pageTitle={!loading ? recipe?.name ?? "" : ""}
       >
-        <Content
-          isLoading={loading}
-          pageTitle={!loading ? recipe?.name ?? "" : ""}
-        >
-          {getLayout()}
-          <Affix offsetBottom={10} style={{ float: "right" }}>
-            <Space>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Save
-                </Button>
-              </Form.Item>
-              <Form.Item>
-                <Button onClick={goBackToRecipeList}>
-                  Back to Recipe List
-                </Button>
-              </Form.Item>
-            </Space>
-          </Affix>
-        </Content>
-      </Form>
-      <OkCancelModal
-        onCancel={() => setShowCancelModal(false)}
-        onSubmit={() => goBackToRecipeList()}
-        showModal={showCancelModal}
-        title={`Are you sure you'd like to cancel editing ${recipe?.name}?`}
-      >
-        This cannot be undone.
-      </OkCancelModal>
-    </>
+        {getLayout()}
+        <Affix offsetBottom={10} style={{ float: "right" }}>
+          <Space>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Save
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <Button onClick={goBackToRecipeList}>Back to Recipe List</Button>
+            </Form.Item>
+          </Space>
+        </Affix>
+      </Content>
+    </Form>
   );
 };
 
