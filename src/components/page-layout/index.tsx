@@ -9,29 +9,38 @@ import { userIsAuthenticated } from "../../redux/user/slice";
 import Footer from "../footer";
 import Header from "../header";
 import GlobalModals from "../global-modals";
+import { selectGlobalIsLoading } from "../../redux/misc/slice";
+import Loading from "../loading";
 
 const PageLayout = () => {
   const isAuthenticated = useAppSelector(userIsAuthenticated);
+  const isLoading = useAppSelector(selectGlobalIsLoading);
+
   return (
     <Layout className="layout beer-layout">
-      <Header />
-      <Routes>
-        <Route path={"/home"} element={<HomePage />} />
-        {isAuthenticated && (
-          <>
-            <Route path={"/recipes/list"} element={<RecipeListPage />} />
-            <Route path={"/recipes/new"} element={<RecipeDetailPage />} />
-            <Route path={"/recipes/edit/:id"} element={<RecipeDetailPage />} />
-            <Route
-              path={"/recipes/duplicate/:id"}
-              element={<RecipeDetailPage />}
-            />
-            <Route path={"/brew-settings"} element={<BrewSettingsPage />} />
-          </>
-        )}
-        <Route path="*" element={<HomePage />} />
-      </Routes>
-      <Footer />
+      <Loading isLoading={isLoading}>
+        <Header />
+        <Routes>
+          <Route path={"/home"} element={<HomePage />} />
+          {isAuthenticated && (
+            <>
+              <Route path={"/recipes/list"} element={<RecipeListPage />} />
+              <Route path={"/recipes/new"} element={<RecipeDetailPage />} />
+              <Route
+                path={"/recipes/edit/:id"}
+                element={<RecipeDetailPage />}
+              />
+              <Route
+                path={"/recipes/duplicate/:id"}
+                element={<RecipeDetailPage />}
+              />
+              <Route path={"/brew-settings"} element={<BrewSettingsPage />} />
+            </>
+          )}
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+        <Footer />
+      </Loading>
       <GlobalModals />
     </Layout>
   );

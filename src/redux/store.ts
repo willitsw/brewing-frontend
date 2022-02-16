@@ -3,6 +3,7 @@ import RecipesReducer from "./recipe-list/slice";
 import UserReducer from "./user/slice";
 import BrewSettingsReducer from "./brew-settings/slice";
 import GlobalModalsReducer from "./global-modals/slice";
+import MiscReducer from "./misc/slice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     user: UserReducer,
     brewSettings: BrewSettingsReducer,
     globalModals: GlobalModalsReducer,
+    misc: MiscReducer,
   },
 });
 

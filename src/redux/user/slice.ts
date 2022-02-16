@@ -11,7 +11,6 @@ const defaultCurrentUser: BeerUser | null = constants.useAuth
       photoUrl: null,
       uid: "123456789",
     };
-
 interface UserState {
   currentUser: BeerUser | null;
   isAuthenticated: boolean;
@@ -28,16 +27,16 @@ export enum RecipeActionTypes {
 }
 
 export const userSlice = createSlice({
-  name: "recipes",
+  name: "users",
   initialState,
   reducers: {
     setUser: (state, action: { payload: BeerUser }) => {
-      const newUser = constants.useAuth ? action.payload : defaultCurrentUser;
+      const newUser = action.payload;
       state.currentUser = newUser;
       state.isAuthenticated = !!newUser;
     },
     clearUser: (state) => {
-      const newUser = constants.useAuth ? null : defaultCurrentUser;
+      const newUser = null;
       state.currentUser = newUser;
       state.isAuthenticated = !!newUser;
     },

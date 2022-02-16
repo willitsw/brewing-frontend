@@ -14,7 +14,7 @@ const initialState: GlobalModalsState = {
 };
 
 export const globalModalsSlice = createSlice({
-  name: "brew-settings",
+  name: "global-modals",
   initialState,
   reducers: {
     setShowLoginModal: (state, action: { payload: boolean }) => {
