@@ -13,39 +13,32 @@ import {
 } from "antd";
 import { useEffect } from "react";
 import Content from "../../components/content";
+import {
+  processCreateUpdateBrewSettings,
+  selectBrewSettings,
+} from "../../redux/brew-settings/slice";
+import { setPageIsClean } from "../../redux/global-modals/slice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { BrewSettings } from "../../types/brew-settings";
 
 import styles from "./index.module.css";
 
-const defaultSettings: BrewSettings = {
-  batchSize: 5,
-  boilTime: 60,
-  brewhouseEfficiency: 70,
-  measurementType: "imperial",
-  kettleTrubWaterLoss: 0.25,
-  fermentorTrubWaterLoss: 0.25,
-  boilOffWaterLossRate: 1.5,
-  waterLossPerGrain: 0.125,
-  author: "",
-  user: "",
-  id: "",
-};
-
 const BrewSettings = () => {
+  const brewSettings = useAppSelector(selectBrewSettings);
   const [form] = Form.useForm<BrewSettings>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const onComponentLoad = async () => {
-      // if we have settings for this user, set them here instead of defaults
-      form.setFieldsValue(defaultSettings);
+      form.setFieldsValue(brewSettings);
     };
     onComponentLoad();
   }, []);
 
   const handleSave = (form: BrewSettings) => {
-    //dispatch(processCreateUpdateBrewSettings(form));
-    console.log("form saved", form);
+    dispatch(processCreateUpdateBrewSettings(form));
     message.success("Brew Settings have been updated.");
+    dispatch(setPageIsClean(true));
   };
 
   const handleSaveFailed = () => {
@@ -53,8 +46,6 @@ const BrewSettings = () => {
       "Brew Settings could not be saved. Please address any validation errors."
     );
   };
-
-  //TODO: confirm modal on navigate away
 
   return (
     <Content pageTitle="Brew Settings">
@@ -68,6 +59,7 @@ const BrewSettings = () => {
         scrollToFirstError={true}
         autoComplete="off"
         layout="vertical"
+        onValuesChange={() => dispatch(setPageIsClean(false))}
       >
         <Typography.Title level={4}>General Defaults</Typography.Title>
         <Row justify="start" gutter={[12, 0]}>

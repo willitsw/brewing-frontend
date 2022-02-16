@@ -12,8 +12,8 @@ import { FacebookOutlined, GoogleOutlined } from "@ant-design/icons";
 
 import styles from "./index.module.css";
 import {
+  selectShowLoginModal,
   setShowLoginModal,
-  showLoginModal,
 } from "../../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 
@@ -28,7 +28,7 @@ interface FormValues {
 const LoginModal = () => {
   const [form] = Form.useForm();
   const [modalLoading, setModalLoading] = useState<boolean>(false);
-  const showLogin = useAppSelector(showLoginModal);
+  const showLoginModal = useAppSelector(selectShowLoginModal);
   const dispatch = useAppDispatch();
 
   const auth = getAuth();
@@ -75,7 +75,7 @@ const LoginModal = () => {
   return (
     <Modal
       title="Sign In"
-      visible={showLogin}
+      visible={showLoginModal}
       onOk={handleSubmit}
       onCancel={onCancel}
       confirmLoading={modalLoading}

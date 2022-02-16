@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect } from "react";
 import {
-  pageIsClean,
+  selectPageIsClean,
   setPageIsClean,
 } from "../../../redux/global-modals/slice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -8,19 +8,11 @@ import type { History, Blocker, Transition } from "history";
 import { UNSAFE_NavigationContext } from "react-router-dom";
 
 const ConfirmLeaveModal = () => {
-  const shouldAllowNavigation = useAppSelector(pageIsClean);
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", (event) => {
-      console.log("set before unload");
-      event.preventDefault();
-      return (event.returnValue = "Are you sure you want to exit?");
-    });
-  }, []);
+  const pageIsClean = useAppSelector(selectPageIsClean);
 
   usePrompt(
     "You have unsaved changes. Are you sure you want to leave?",
-    !shouldAllowNavigation
+    !pageIsClean
   );
 
   return null;

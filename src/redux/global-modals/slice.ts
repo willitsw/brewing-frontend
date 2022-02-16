@@ -32,10 +32,11 @@ export const globalModalsSlice = createSlice({
 export const { setShowCreateAccountModal, setShowLoginModal, setPageIsClean } =
   globalModalsSlice.actions;
 
-export const showCreateAccountModal = (state: RootState) =>
+export const selectShowCreateAccountModal = (state: RootState) =>
   state.globalModals.showCreateAccountModal;
-export const showLoginModal = (state: RootState) =>
+export const selectShowLoginModal = (state: RootState) =>
   state.globalModals.showLoginModal;
-export const pageIsClean = (state: RootState) => state.globalModals.pageIsClean;
+export const selectPageIsClean = (state: RootState) =>
+  state.globalModals.pageIsClean;
 
 export default globalModalsSlice.reducer;

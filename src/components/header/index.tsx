@@ -13,6 +13,8 @@ import {
 } from "@ant-design/icons";
 import { getAuth, signOut } from "firebase/auth";
 import {
+  selectPageIsClean,
+  setPageIsClean,
   setShowCreateAccountModal,
   setShowLoginModal,
 } from "../../redux/global-modals/slice";
@@ -24,6 +26,7 @@ const Header = () => {
   const location = useLocation();
   const isAuthenticated = useAppSelector(userIsAuthenticated);
   const currentUser = useAppSelector(selectCurrentUser);
+  const pageIsClean = useAppSelector(selectPageIsClean);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -36,6 +39,10 @@ const Header = () => {
       setCurrentPage("/brew-settings");
     } else {
       setCurrentPage("/home");
+    }
+
+    if (!pageIsClean) {
+      dispatch(setPageIsClean(true));
     }
   }, [location, isAuthenticated]);
 

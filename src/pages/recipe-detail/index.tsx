@@ -6,7 +6,6 @@ import { v4 as uuid } from "uuid";
 import { getRecipeById } from "../../utils/api-calls";
 import { Form, Button, Space, Divider, Affix, message, Col, Row } from "antd";
 import { deepCloneObject } from "../../utils/helpers";
-import OkCancelModal from "../../components/ok-cancel-modal";
 import GrainAdditions from "./grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
@@ -112,7 +111,6 @@ const RecipeDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const recipe = useAppSelector(selectCurrentRecipe);
   const currentUser = useAppSelector(selectCurrentUser);
@@ -283,7 +281,7 @@ const RecipeDetailPage = () => {
     submitCopy.ingredients.culture_additions = yeastAdditions;
 
     dispatch(processCreateUpdateRecipe(submitCopy));
-    dispatch(setPageIsClean(false));
+    dispatch(setPageIsClean(true));
     message.success(`${submitCopy.name} has been saved.`);
   };
 

@@ -12,7 +12,7 @@ import { FacebookOutlined, GoogleOutlined } from "@ant-design/icons";
 import styles from "./index.module.css";
 import {
   setShowCreateAccountModal,
-  showCreateAccountModal,
+  selectShowCreateAccountModal,
 } from "../../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 
@@ -24,7 +24,7 @@ interface FormValues {
 const CreateNewAccountModal = () => {
   const [form] = Form.useForm();
   const [modalLoading, setModalLoading] = useState<boolean>(false);
-  const showCreateAccount = useAppSelector(showCreateAccountModal);
+  const selectShowCreateAccount = useAppSelector(selectShowCreateAccountModal);
   const dispatch = useAppDispatch();
 
   const onCancel = () => dispatch(setShowCreateAccountModal(false));
@@ -67,7 +67,7 @@ const CreateNewAccountModal = () => {
   return (
     <Modal
       title="Create a New Account"
-      visible={showCreateAccount}
+      visible={selectShowCreateAccount}
       onOk={handleSubmit}
       onCancel={() => onCancel()}
       confirmLoading={modalLoading}
