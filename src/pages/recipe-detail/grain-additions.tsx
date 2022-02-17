@@ -12,6 +12,9 @@ import {
 } from "antd";
 import { RecipeForm, RecipeGrain } from ".";
 import DefaultGrains from "../../data/default-grains";
+import { selectBrewSettings } from "../../redux/brew-settings/slice";
+import { useAppSelector } from "../../redux/hooks";
+import { poundsToKilograms } from "../../utils/unit-conversions";
 import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
@@ -26,6 +29,7 @@ const typeAheadOptions = DefaultGrains.map((grain) => {
 
 const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
   const { Option } = Select;
+  const { measurementType } = useAppSelector(selectBrewSettings);
 
   const handleGrainNameSelect = (selection: string) => {
     const defaultGrain = DefaultGrains.find(
@@ -120,6 +124,11 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                             step="0.1"
                             style={{ width: 72 }}
                             formatter={(value) => {
+                              if (measurementType === "metric") {
+                                return value
+                                  ? `${poundsToKilograms(parseFloat(value))} kg`
+                                  : "0 kg";
+                              }
                               return value ? `${value} lbs` : "0 lbs";
                             }}
                           />
@@ -145,7 +154,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                             step="0.1"
                             style={{ width: 72 }}
                             formatter={(value) => {
-                              return value ? `${value} L` : "0 L";
+                              return value ? `${value} Lov` : "0 Lov";
                             }}
                           />
                         </Form.Item>

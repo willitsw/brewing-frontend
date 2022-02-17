@@ -12,6 +12,9 @@ import {
 } from "antd";
 import { RecipeHop } from ".";
 import DefaultHops from "../../data/default-hops";
+import { selectBrewSettings } from "../../redux/brew-settings/slice";
+import { useAppSelector } from "../../redux/hooks";
+import { ouncesToGrams } from "../../utils/unit-conversions";
 import styles from "./index.module.css";
 
 interface HopAdditionsProps {
@@ -26,6 +29,7 @@ const typeAheadOptions = DefaultHops.map((hop) => {
 
 const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
   const { Option } = Select;
+  const { measurementType } = useAppSelector(selectBrewSettings);
 
   const getInitialType = (index: number): string => {
     const hops = recipeForm.getFieldValue("hops");
@@ -116,6 +120,11 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                             step="0.5"
                             style={{ width: 72 }}
                             formatter={(value) => {
+                              if (measurementType === "metric") {
+                                return value
+                                  ? `${ouncesToGrams(parseFloat(value))} g`
+                                  : "0 g";
+                              }
                               return value ? `${value} oz` : "0 oz";
                             }}
                           />

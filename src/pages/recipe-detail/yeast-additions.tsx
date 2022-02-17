@@ -43,7 +43,14 @@ const YeastAdditions = () => {
                           label="Attenuation"
                           labelCol={{ span: 30, offset: 0 }}
                         >
-                          <InputNumber />
+                          <InputNumber
+                            min="0"
+                            max="100"
+                            step="1"
+                            formatter={(value) => {
+                              return value ? `${value} %` : "0 %";
+                            }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col span={1}>
