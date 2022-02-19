@@ -27,6 +27,7 @@ import Stats from "./stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
+import { selectCurrentUser } from "../../redux/user/slice";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -45,7 +46,8 @@ const defaultRecipe: Recipe = {
 
 const RecipeDetailPage = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
-  const [recipeForm] = Form.useForm<Recipe>();
+  const currentUser = useAppSelector(selectCurrentUser);
+  const [form] = Form.useForm<Recipe>();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -80,9 +82,14 @@ const RecipeDetailPage = () => {
         workingRecipe.batchSize = brewSettings.batchSize;
         workingRecipe.efficiency = brewSettings.brewhouseEfficiency;
         workingRecipe.measurementType = brewSettings.measurementType;
+        workingRecipe.user = currentUser?.uid ?? "";
       }
 
-      recipeForm.setFieldsValue(workingRecipe);
+      form.setFieldsValue(workingRecipe);
+
+      if (workingRecipe.measurementType === "metric") {
+        workingRecipe = recipeToImperial(workingRecipe);
+      }
 
       setSrm(calculateSrm(workingRecipe.batchSize, workingRecipe.fermentables));
       const workingOg = calculateOg(
@@ -130,25 +137,29 @@ const RecipeDetailPage = () => {
   };
 
   const handleOnFieldsChange = (changedFields: any) => {
+    if (changedFields.length === 0) {
+      return null;
+    }
+
     if (changedFields[0].name[0] === "measurementType") {
       // recipe type was changed, lets convert the recipe
       if (changedFields[0].value === "metric") {
-        const oldRecipe: Recipe = recipeForm.getFieldsValue();
-        recipeForm.setFieldsValue(recipeToMetric(oldRecipe));
+        const oldRecipe: Recipe = form.getFieldsValue();
+        form.setFieldsValue(recipeToMetric(oldRecipe));
         setMeasurementType("metric");
       } else {
-        const oldRecipe: Recipe = recipeForm.getFieldsValue();
-        recipeForm.setFieldsValue(recipeToImperial(oldRecipe));
+        const oldRecipe: Recipe = form.getFieldsValue();
+        form.setFieldsValue(recipeToImperial(oldRecipe));
         setMeasurementType("imperial");
       }
     }
 
     if (changedFields[0].name.includes("use")) {
       // hops use was changed, lets reset the timing value
-      const hops: Hop[] = recipeForm.getFieldValue("hops");
+      const hops: Hop[] = form.getFieldValue("hops");
       const indexToChange = changedFields[0].name[1];
       hops[indexToChange].timing = 0;
-      recipeForm.setFieldsValue({ hops });
+      form.setFieldsValue({ hops });
     }
   };
 
@@ -168,7 +179,10 @@ const RecipeDetailPage = () => {
   };
 
   const updateStats = () => {
-    const workingRecipe = recipeForm.getFieldsValue();
+    let workingRecipe: Recipe = form.getFieldsValue();
+    if (workingRecipe.measurementType === "metric") {
+      workingRecipe = recipeToImperial(workingRecipe);
+    }
     setSrm(calculateSrm(workingRecipe.batchSize, workingRecipe.fermentables));
     const workingOg = calculateOg(
       workingRecipe.fermentables,
@@ -192,12 +206,9 @@ const RecipeDetailPage = () => {
     <>
       <GeneralInfo measurementType={measurementType} />
       <Divider />
-      <GrainAdditions
-        recipeForm={recipeForm}
-        measurementType={measurementType}
-      />
+      <GrainAdditions form={form} measurementType={measurementType} />
       <Divider />
-      <HopAdditions recipeForm={recipeForm} measurementType={measurementType} />
+      <HopAdditions form={form} measurementType={measurementType} />
       <Divider />
       <YeastAdditions />
       <Divider />
@@ -234,7 +245,7 @@ const RecipeDetailPage = () => {
       name="recipe-edit-form"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
-      form={recipeForm}
+      form={form}
       onFinish={handleSave}
       onFinishFailed={handleSaveFailed}
       scrollToFirstError={true}
@@ -243,6 +254,8 @@ const RecipeDetailPage = () => {
       onValuesChange={handleOnValuesChange}
       onFieldsChange={handleOnFieldsChange}
     >
+      <Form.Item name="id" hidden />
+      <Form.Item name="user" hidden />
       <Content
         isLoading={loading}
         pageTitle={!loading ? recipe?.name ?? "" : ""}

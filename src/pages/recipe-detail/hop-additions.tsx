@@ -19,7 +19,7 @@ import { ouncesToGrams } from "../../utils/converters";
 import styles from "./index.module.css";
 
 interface HopAdditionsProps {
-  recipeForm: FormInstance;
+  form: FormInstance;
   measurementType: MeasurementType;
 }
 
@@ -29,33 +29,33 @@ const typeAheadOptions = DefaultHops.map((hop) => {
   };
 });
 
-const HopAdditions = ({ recipeForm, measurementType }: HopAdditionsProps) => {
+const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
   const { Option } = Select;
 
   const getInitialType = (index: number): string => {
-    const hops = recipeForm.getFieldValue("hops");
+    const hops = form.getFieldValue("hops");
     return hops[index]?.type ?? "add_to_boil";
   };
 
   const handleTypeChange = (selection: string, index: number) => {
-    const hops = recipeForm.getFieldValue("hops");
+    const hops = form.getFieldValue("hops");
     hops[index].type = selection;
 
-    recipeForm.setFieldsValue(hops);
+    form.setFieldsValue(hops);
   };
 
   const handleHopNameSelect = (selection: string, index: number) => {
     const defaultHop = DefaultHops.find((hop) => hop.name === selection);
 
     if (defaultHop) {
-      const hops: Hop[] = recipeForm.getFieldValue("hops");
+      const hops: Hop[] = form.getFieldValue("hops");
       hops[index].alphaAcid = defaultHop.alpha;
-      recipeForm.setFieldsValue({ hops });
+      form.setFieldsValue({ hops });
     }
   };
 
   const getHopTimeLabel = (index: number) => {
-    const hopItem: Hop = recipeForm.getFieldValue("hops")[index];
+    const hopItem: Hop = form.getFieldValue("hops")[index];
 
     switch (hopItem.use) {
       case "Boil":
@@ -196,7 +196,7 @@ const HopAdditions = ({ recipeForm, measurementType }: HopAdditionsProps) => {
                         >
                           <InputNumber
                             disabled={
-                              recipeForm.getFieldValue("hops")[index].use ===
+                              form.getFieldValue("hops")[index].use ===
                               "Flame out"
                             }
                             min={0}

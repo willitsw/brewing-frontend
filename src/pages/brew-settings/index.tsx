@@ -1,3 +1,4 @@
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import {
   Affix,
   Button,
@@ -9,6 +10,7 @@ import {
   message,
   Radio,
   Row,
+  Switch,
   Typography,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -32,6 +34,7 @@ const BrewSettings = () => {
   const [measurementType, setMeasurementType] = useState<MeasurementType>(
     brewSettings.measurementType
   );
+  const [sparge, setSparge] = useState<boolean>(brewSettings.sparge);
 
   const [form] = Form.useForm<BrewSettings>();
   const dispatch = useAppDispatch();
@@ -60,6 +63,12 @@ const BrewSettings = () => {
   };
 
   const handleOnFieldsChange = (changedFields: any) => {
+    console.log(form.getFieldsValue());
+
+    if (changedFields.length === 0) {
+      return null;
+    }
+
     dispatch(setPageIsClean(false));
 
     if (changedFields[0].name[0] === "measurementType") {
@@ -73,6 +82,10 @@ const BrewSettings = () => {
         form.setFieldsValue(brewSettingsToImperial(oldSettings));
         setMeasurementType("imperial");
       }
+    }
+
+    if (changedFields[0].name[0] === "sparge") {
+      setSparge(changedFields[0].value);
     }
   };
 
@@ -199,6 +212,43 @@ const BrewSettings = () => {
             >
               <InputNumber
                 addonAfter={measurementType === "metric" ? "lit/hr" : "gal/hr"}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Divider />
+        <Typography.Title level={4}>Mash Settings</Typography.Title>
+        <Row justify="start" gutter={[12, 0]}>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
+            <Form.Item
+              label="Sparging"
+              name="sparge"
+              labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
+              initialValue={sparge}
+            >
+              <Switch
+                checkedChildren={<CheckOutlined />}
+                unCheckedChildren={<CloseOutlined />}
+                checked={sparge}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
+            <Form.Item
+              label="Mash Thickness"
+              name="mashThickness"
+              labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 125 }}
+              initialValue="1.3"
+              hidden={!sparge}
+            >
+              <InputNumber
+                min="0"
+                max="100"
+                step="0.1"
+                style={{ width: 115 }}
+                addonAfter={measurementType === "metric" ? "l/kg" : "qt/lb"}
               />
             </Form.Item>
           </Col>

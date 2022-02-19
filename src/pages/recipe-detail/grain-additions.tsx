@@ -19,7 +19,7 @@ import { poundsToKilograms } from "../../utils/converters";
 import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
-  recipeForm: FormInstance<Recipe>;
+  form: FormInstance<Recipe>;
   measurementType: MeasurementType;
 }
 
@@ -29,10 +29,7 @@ const typeAheadOptions = DefaultGrains.map((grain) => {
   };
 });
 
-const GrainAdditions = ({
-  recipeForm,
-  measurementType,
-}: GrainAdditionsProps) => {
+const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
   const { Option } = Select;
 
   const handleGrainNameSelect = (selection: string) => {
@@ -41,8 +38,7 @@ const GrainAdditions = ({
     );
 
     if (defaultGrain) {
-      const fermentables: Fermentable[] =
-        recipeForm.getFieldValue("fermentables");
+      const fermentables: Fermentable[] = form.getFieldValue("fermentables");
       const indexToModify = fermentables.findIndex(
         (fermentable: Fermentable) => fermentable.name === defaultGrain.name
       );
@@ -50,20 +46,19 @@ const GrainAdditions = ({
       fermentables[indexToModify].gravity = defaultGrain.gravity;
       fermentables[indexToModify].type = defaultGrain.type;
 
-      recipeForm.setFieldsValue({ fermentables });
+      form.setFieldsValue({ fermentables });
     }
   };
 
   const handleTypeChange = (selection: string, index: number) => {
-    const fermentables: Fermentable[] =
-      recipeForm.getFieldValue("fermentables");
+    const fermentables: Fermentable[] = form.getFieldValue("fermentables");
     fermentables[index].type = selection as FermentableType;
 
-    recipeForm.setFieldsValue({ fermentables });
+    form.setFieldsValue({ fermentables });
   };
 
   const getInitialType = (index: number): string => {
-    const grains = recipeForm.getFieldValue("fermentables");
+    const grains = form.getFieldValue("fermentables");
     return grains[index]?.type ?? "";
   };
 

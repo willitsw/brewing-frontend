@@ -32,6 +32,16 @@ export const gramsToOunces = (grams: number): number => {
   return parseFloat(rawOz.toFixed(2));
 };
 
+export const quartPoundsToLiterKilos = (quartPounds: number) => {
+  const rawLiterKilos = quartPounds * 2.086;
+  return parseFloat(rawLiterKilos.toFixed(1));
+};
+
+export const literKilosToQuartPounds = (literKilos: number) => {
+  const rawQuartPounds = literKilos / 2.086;
+  return parseFloat(rawQuartPounds.toFixed(1));
+};
+
 export const recipeToMetric = (imperialRecipe: Recipe): Recipe => {
   const metricHops: Hop[] = imperialRecipe.hops.map((hop) => {
     return {
@@ -100,6 +110,7 @@ export const brewSettingsToMetric = (
       imperialBrewSettings.kettleTrubWaterLoss
     ),
     waterLossPerGrain: gallonsToLiters(imperialBrewSettings.waterLossPerGrain),
+    mashThickness: quartPoundsToLiterKilos(imperialBrewSettings.mashThickness),
   };
 };
 
@@ -119,5 +130,7 @@ export const brewSettingsToImperial = (
       metricBrewSettings.kettleTrubWaterLoss
     ),
     waterLossPerGrain: litersToGallons(metricBrewSettings.waterLossPerGrain),
+    mashThickness: literKilosToQuartPounds(metricBrewSettings.mashThickness),
   };
 };
+

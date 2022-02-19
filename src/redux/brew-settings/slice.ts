@@ -16,6 +16,8 @@ const defaultSettings: BrewSettings = {
   displayName: "",
   email: "",
   userId: "",
+  sparge: false,
+  mashThickness: 1.3,
 };
 interface BrewSettingsState {
   brewSettings: BrewSettings;

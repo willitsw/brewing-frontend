@@ -12,4 +12,6 @@ export interface BrewSettings {
   boilOffWaterLossRate: number;
   displayName: string;
   email: string;
+  sparge: boolean;
+  mashThickness: number;
 }
