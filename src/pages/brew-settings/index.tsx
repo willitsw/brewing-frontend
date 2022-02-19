@@ -19,16 +19,20 @@ import {
 } from "../../redux/brew-settings/slice";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { BrewSettings } from "../../types/brew-settings";
-import { gallonsToLiters } from "../../utils/converters";
+import { BrewSettings, MeasurementType } from "../../types/brew-settings";
+import {
+  brewSettingsToMetric,
+  brewSettingsToImperial,
+} from "../../utils/converters";
 
 import styles from "./index.module.css";
 
 const BrewSettings = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
-  const [localMeasurementType, setLocalMeasurementType] = useState(
+  const [measurementType, setMeasurementType] = useState<MeasurementType>(
     brewSettings.measurementType
   );
+
   const [form] = Form.useForm<BrewSettings>();
   const dispatch = useAppDispatch();
 
@@ -40,7 +44,11 @@ const BrewSettings = () => {
   }, []);
 
   const handleSave = (form: BrewSettings) => {
-    dispatch(processCreateUpdateBrewSettings(form));
+    const updatedBrewSettings: BrewSettings = {
+      ...form,
+      userId: brewSettings.userId,
+    };
+    dispatch(processCreateUpdateBrewSettings(updatedBrewSettings));
     message.success("Brew Settings have been updated.");
     dispatch(setPageIsClean(true));
   };
@@ -51,20 +59,22 @@ const BrewSettings = () => {
     );
   };
 
-  const handleOnValuesChange = (changedValues: any) => {
+  const handleOnFieldsChange = (changedFields: any) => {
     dispatch(setPageIsClean(false));
 
-    const changedValue = Object.keys(changedValues)[0];
-    if (changedValue === "measurementType") {
-      console.log("measurement type updated");
-      // const val = form.getFieldValue("batchSize");
-      // form.setFieldsValue(val);
-      // console.log(form.getFieldsValue());
-      form.validateFields(["batchSize"]);
+    if (changedFields[0].name[0] === "measurementType") {
+      // measurement type was changed, lets convert the recipe
+      if (changedFields[0].value === "metric") {
+        const oldSettings: BrewSettings = form.getFieldsValue();
+        form.setFieldsValue(brewSettingsToMetric(oldSettings));
+        setMeasurementType("metric");
+      } else {
+        const oldSettings: BrewSettings = form.getFieldsValue();
+        form.setFieldsValue(brewSettingsToImperial(oldSettings));
+        setMeasurementType("imperial");
+      }
     }
   };
-
-  console.log("heres the local measurement type", localMeasurementType);
 
   return (
     <Content pageTitle="Brew Settings">
@@ -78,7 +88,7 @@ const BrewSettings = () => {
         scrollToFirstError={true}
         autoComplete="off"
         layout="vertical"
-        onValuesChange={handleOnValuesChange}
+        onFieldsChange={handleOnFieldsChange}
       >
         <Typography.Title level={4}>General Defaults</Typography.Title>
         <Row justify="start" gutter={[12, 0]}>
@@ -87,53 +97,47 @@ const BrewSettings = () => {
               label="Author"
               name="author"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 350 }}
             >
               <Input />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={3} lg={3} xl={3}>
             <Form.Item
               label="Batch Size"
               name="batchSize"
               labelCol={{ span: 30, offset: 0 }}
-              shouldUpdate
+              style={{ width: 105 }}
             >
               <InputNumber
                 min="0"
                 max="100"
                 step="0.5"
-                formatter={(value) => {
-                  const m = form.getFieldValue("measurementType");
-                  console.log("m", m);
-                  if (form.getFieldValue("measurementType") === "metric") {
-                    return value
-                      ? `${gallonsToLiters(parseFloat(value))} L`
-                      : "0 L";
-                  }
-                  return value ? `${value} gal` : "0 gal";
-                }}
+                addonAfter={measurementType === "metric" ? "l" : "gal"}
               />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={3} lg={3} xl={3}>
             <Form.Item
               label="Boil Time"
               name="boilTime"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
             >
-              <InputNumber />
+              <InputNumber addonAfter="min" />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={3} lg={3} xl={3}>
             <Form.Item
-              label="Brewhouse Efficiency"
+              label="Efficiency"
               name="brewhouseEfficiency"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
             >
-              <InputNumber />
+              <InputNumber addonAfter="%" />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
             <Form.Item
               label="Measurement Type"
               name="measurementType"
@@ -150,40 +154,52 @@ const BrewSettings = () => {
         <Divider />
         <Typography.Title level={4}>Water Loss Constants</Typography.Title>
         <Row justify="start" gutter={[12, 0]}>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
             <Form.Item
-              label="Grain Water Loss / lb"
+              label="Grain Water Loss"
               name="waterLossPerGrain"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
             >
-              <InputNumber />
+              <InputNumber
+                addonAfter={measurementType === "metric" ? "lit" : "gal"}
+              />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
             <Form.Item
               label="Fermenter Dead Space"
               name="fermentorTrubWaterLoss"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
             >
-              <InputNumber />
+              <InputNumber
+                addonAfter={measurementType === "metric" ? "lit" : "gal"}
+              />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
             <Form.Item
               label="Kettle Dead Space"
               name="kettleTrubWaterLoss"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
             >
-              <InputNumber />
+              <InputNumber
+                addonAfter={measurementType === "metric" ? "lit" : "gal"}
+              />
             </Form.Item>
           </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Col xs={12} sm={12} md={4} lg={4} xl={4}>
             <Form.Item
-              label="Evaporation Water Loss / hr"
+              label="Evaporation Water Loss"
               name="boilOffWaterLossRate"
               labelCol={{ span: 30, offset: 0 }}
+              style={{ width: 105 }}
             >
-              <InputNumber />
+              <InputNumber
+                addonAfter={measurementType === "metric" ? "lit/hr" : "gal/hr"}
+              />
             </Form.Item>
           </Col>
         </Row>

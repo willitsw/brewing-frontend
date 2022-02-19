@@ -1,3 +1,5 @@
+import { BoldOutlined } from "@ant-design/icons";
+import { BrewSettings } from "../types/brew-settings";
 import { Fermentable, Hop, Recipe } from "../types/recipe";
 
 export const gallonsToLiters = (gallons: number): number => {
@@ -79,5 +81,43 @@ export const recipeToImperial = (metricRecipe: Recipe): Recipe => {
     measurementType: "imperial",
     hops: metricHops,
     fermentables: metricFermentables,
+  };
+};
+
+export const brewSettingsToMetric = (
+  imperialBrewSettings: BrewSettings
+): BrewSettings => {
+  return {
+    ...imperialBrewSettings,
+    batchSize: gallonsToLiters(imperialBrewSettings.batchSize),
+    boilOffWaterLossRate: gallonsToLiters(
+      imperialBrewSettings.boilOffWaterLossRate
+    ),
+    fermentorTrubWaterLoss: gallonsToLiters(
+      imperialBrewSettings.fermentorTrubWaterLoss
+    ),
+    kettleTrubWaterLoss: gallonsToLiters(
+      imperialBrewSettings.kettleTrubWaterLoss
+    ),
+    waterLossPerGrain: gallonsToLiters(imperialBrewSettings.waterLossPerGrain),
+  };
+};
+
+export const brewSettingsToImperial = (
+  metricBrewSettings: BrewSettings
+): BrewSettings => {
+  return {
+    ...metricBrewSettings,
+    batchSize: litersToGallons(metricBrewSettings.batchSize),
+    boilOffWaterLossRate: litersToGallons(
+      metricBrewSettings.boilOffWaterLossRate
+    ),
+    fermentorTrubWaterLoss: litersToGallons(
+      metricBrewSettings.fermentorTrubWaterLoss
+    ),
+    kettleTrubWaterLoss: litersToGallons(
+      metricBrewSettings.kettleTrubWaterLoss
+    ),
+    waterLossPerGrain: litersToGallons(metricBrewSettings.waterLossPerGrain),
   };
 };

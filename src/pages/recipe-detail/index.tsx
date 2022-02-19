@@ -26,6 +26,7 @@ import GeneralInfo from "./general-info";
 import Stats from "./stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
+import { selectBrewSettings } from "../../redux/brew-settings/slice";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -43,6 +44,7 @@ const defaultRecipe: Recipe = {
 };
 
 const RecipeDetailPage = () => {
+  const brewSettings = useAppSelector(selectBrewSettings);
   const [recipeForm] = Form.useForm<Recipe>();
   const { id } = useParams();
   const location = useLocation();
@@ -54,8 +56,9 @@ const RecipeDetailPage = () => {
   const [fg, setFg] = useState<number | null>(null);
   const [abv, setAbv] = useState<number | null>(null);
   const [ibu, setIbu] = useState<number | null>(null);
-  const [measurementType, setMeasurementType] =
-    useState<MeasurementType>("imperial");
+  const [measurementType, setMeasurementType] = useState<MeasurementType>(
+    brewSettings.measurementType
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
@@ -71,8 +74,12 @@ const RecipeDetailPage = () => {
       } else if (location.pathname.includes("/recipes/edit") && id) {
         workingRecipe = await getRecipeById(id);
       } else {
-        workingRecipe = defaultRecipe;
-        // TODO: add defaults from brew settings here
+        workingRecipe = { ...defaultRecipe };
+
+        workingRecipe.author = brewSettings.author;
+        workingRecipe.batchSize = brewSettings.batchSize;
+        workingRecipe.efficiency = brewSettings.brewhouseEfficiency;
+        workingRecipe.measurementType = brewSettings.measurementType;
       }
 
       recipeForm.setFieldsValue(workingRecipe);
@@ -124,7 +131,7 @@ const RecipeDetailPage = () => {
 
   const handleOnFieldsChange = (changedFields: any) => {
     if (changedFields[0].name[0] === "measurementType") {
-      // recipe type was changed, lets convert it
+      // recipe type was changed, lets convert the recipe
       if (changedFields[0].value === "metric") {
         const oldRecipe: Recipe = recipeForm.getFieldsValue();
         recipeForm.setFieldsValue(recipeToMetric(oldRecipe));
