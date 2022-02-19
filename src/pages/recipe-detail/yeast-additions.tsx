@@ -7,7 +7,7 @@ const YeastAdditions = () => {
   return (
     <>
       <Typography.Title level={4}>Yeast additions</Typography.Title>
-      <Form.List name="yeasts">
+      <Form.List name="cultures">
         {(fields, { add, remove }) => (
           <>
             {fields.length === 0

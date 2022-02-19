@@ -10,15 +10,17 @@ import {
   Select,
   Typography,
 } from "antd";
-import { RecipeHop } from ".";
 import DefaultHops from "../../data/default-hops";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { useAppSelector } from "../../redux/hooks";
-import { ouncesToGrams } from "../../utils/unit-conversions";
+import { MeasurementType } from "../../types/brew-settings";
+import { Hop } from "../../types/recipe";
+import { ouncesToGrams } from "../../utils/converters";
 import styles from "./index.module.css";
 
 interface HopAdditionsProps {
   recipeForm: FormInstance;
+  measurementType: MeasurementType;
 }
 
 const typeAheadOptions = DefaultHops.map((hop) => {
@@ -27,9 +29,8 @@ const typeAheadOptions = DefaultHops.map((hop) => {
   };
 });
 
-const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
+const HopAdditions = ({ recipeForm, measurementType }: HopAdditionsProps) => {
   const { Option } = Select;
-  const { measurementType } = useAppSelector(selectBrewSettings);
 
   const getInitialType = (index: number): string => {
     const hops = recipeForm.getFieldValue("hops");
@@ -47,12 +48,22 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
     const defaultHop = DefaultHops.find((hop) => hop.name === selection);
 
     if (defaultHop) {
-      const hops: RecipeHop[] = recipeForm.getFieldValue("hops");
-      hops[index].alpha = defaultHop.alpha;
-      hops[index].additionType = "add_to_boil";
-      hops[index].amount = 0;
-      hops[index].minutes = 0;
-      recipeForm.setFieldsValue(hops);
+      const hops: Hop[] = recipeForm.getFieldValue("hops");
+      hops[index].alphaAcid = defaultHop.alpha;
+      recipeForm.setFieldsValue({ hops });
+    }
+  };
+
+  const getHopTimeLabel = (index: number) => {
+    const hopItem: Hop = recipeForm.getFieldValue("hops")[index];
+
+    switch (hopItem.use) {
+      case "Boil":
+        return "min";
+      case "Dry hop":
+        return "days";
+      default:
+        return "min";
     }
   };
 
@@ -100,7 +111,7 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={7} sm={7} md={3} lg={3} xl={3}>
+                      <Col xs={7} sm={7} md={4} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
                           name={[name, "amount"]}
@@ -118,22 +129,17 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                             min="0"
                             max="100"
                             step="0.5"
-                            style={{ width: 72 }}
-                            formatter={(value) => {
-                              if (measurementType === "metric") {
-                                return value
-                                  ? `${ouncesToGrams(parseFloat(value))} g`
-                                  : "0 g";
-                              }
-                              return value ? `${value} oz` : "0 oz";
-                            }}
+                            style={{ width: 105 }}
+                            addonAfter={
+                              measurementType === "metric" ? "g" : "oz"
+                            }
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={6} sm={6} md={3} lg={3} xl={3}>
+                      <Col xs={6} sm={6} md={4} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
-                          name={[name, "alpha"]}
+                          name={[name, "alphaAcid"]}
                           label="Bitterness"
                           labelCol={{ span: 30, offset: 0 }}
                           initialValue={0}
@@ -148,19 +154,18 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                             min="0"
                             max="25"
                             step="0.1"
-                            formatter={(value) => {
-                              return value ? `${value} AA` : "0 AA";
-                            }}
+                            style={{ width: 105 }}
+                            addonAfter="AA"
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={8} sm={8} md={3} lg={3} xl={3}>
+                      <Col xs={8} sm={8} md={4} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
-                          name={[name, "additionType"]}
+                          name={[name, "use"]}
                           label="Add To"
                           labelCol={{ span: 30, offset: 0 }}
-                          initialValue={"add_to_boil"}
+                          initialValue={"Boil"}
                           rules={[
                             {
                               required: true,
@@ -173,36 +178,30 @@ const HopAdditions = ({ recipeForm }: HopAdditionsProps) => {
                               handleTypeChange(value, index)
                             }
                             value={getInitialType(index)}
-                            style={{ width: 90 }}
+                            style={{ width: 120 }}
                           >
-                            <Option value="add_to_boil">Boil</Option>
-                            <Option value="add_to_fermentation">Dry Hop</Option>
+                            <Option value="Boil">Boil</Option>
+                            <Option value="Dry hop">Dry hop</Option>
+                            <Option value="Flame out">Flame out</Option>
                           </Select>
                         </Form.Item>
                       </Col>
-                      <Col xs={6} sm={6} md={3} lg={3} xl={3}>
+                      <Col xs={6} sm={6} md={4} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
-                          name={[name, "minutes"]}
+                          name={[name, "timing"]}
                           label="Time"
                           labelCol={{ span: 30, offset: 0 }}
                           initialValue={0}
                         >
                           <InputNumber
+                            disabled={
+                              recipeForm.getFieldValue("hops")[index].use ===
+                              "Flame out"
+                            }
                             min={0}
-                            formatter={(value) => {
-                              const hopItem: RecipeHop =
-                                recipeForm.getFieldValue("hops")[index];
-
-                              switch (hopItem.additionType) {
-                                case "add_to_boil":
-                                  return `${value} min`;
-                                case "add_to_fermentation":
-                                  return `${value} days`;
-                                default:
-                                  return `${value} min`;
-                              }
-                            }}
+                            style={{ width: 105 }}
+                            addonAfter={getHopTimeLabel(index)}
                           />
                         </Form.Item>
                       </Col>

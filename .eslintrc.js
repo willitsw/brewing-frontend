@@ -25,5 +25,6 @@ module.exports = {
     quotes: ["error", "double"],
     semi: ["error", "always"],
     "@typescript-eslint/no-explicit-any": "off",
+    "brace-style": ["error", "1tbs"],
   },
 };

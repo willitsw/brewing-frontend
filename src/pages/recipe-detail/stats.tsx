@@ -17,7 +17,6 @@ const Stats = ({ srm, og, fg, abv, ibu }: StatsProps) => {
   const abvDisplay = abv?.toFixed(1) ?? null;
   const colorValue = srm == null ? 0 : srm < 40 ? srm : 40;
   const srmTag = "srm-" + colorValue;
-  console.log(srmTag);
   return (
     <>
       <Typography.Title level={4}>Stats</Typography.Title>

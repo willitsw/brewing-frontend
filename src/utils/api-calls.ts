@@ -1,5 +1,5 @@
-import { Recipe } from "../types/beer-interfaces";
 import { BrewSettings } from "../types/brew-settings";
+import { Recipe } from "../types/recipe";
 import makeRequest from "./request";
 
 // RECIPE ENDPOINTS

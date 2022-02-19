@@ -1,19 +1,19 @@
-import { RecipeGrain, RecipeHop, RecipeYeast } from "../pages/recipe-detail";
+import { Fermentable, Culture, Hop } from "../types/recipe";
 
 export const calculateSrm = (
   batchSizeGallons: number,
-  grains: RecipeGrain[]
+  fermentables: Fermentable[]
 ): number | null => {
-  if (!batchSizeGallons || !grains) {
+  if (!batchSizeGallons || !fermentables) {
     return null;
   }
   let srm = 0;
 
-  const actualGrains = grains.filter((grain) => !!grain);
+  const actualFermentables = fermentables.filter((grain) => !!grain);
 
-  actualGrains.forEach((grain) => {
-    if (grain.color && grain.amount && grain.gravity) {
-      srm += (grain.amount * grain.color) / batchSizeGallons;
+  actualFermentables.forEach((fermentable) => {
+    if (fermentable.lovibond && fermentable.amount && fermentable.gravity) {
+      srm += (fermentable.amount * fermentable.lovibond) / batchSizeGallons;
     }
   });
 
@@ -25,24 +25,24 @@ export const calculateSrm = (
 };
 
 export const calculateOg = (
-  grains: RecipeGrain[],
+  fermentables: Fermentable[],
   batchSizeGallons: number,
   efficiency: number
 ): number | null => {
-  if (!batchSizeGallons || grains.length === 0 || !efficiency) {
+  if (!batchSizeGallons || fermentables.length === 0 || !efficiency) {
     return null;
   }
 
-  const actualGrains = grains.filter(
-    (grain) =>
-      !!grain &&
-      grain.gravity &&
-      grain.amount &&
-      grain.gravity > 0 &&
-      grain.amount > 0
+  const actualFermentables = fermentables.filter(
+    (fermentable) =>
+      !!fermentable &&
+      fermentable.gravity &&
+      fermentable.amount &&
+      fermentable.gravity > 0 &&
+      fermentable.amount > 0
   );
 
-  const unadjustedOg = actualGrains.reduce((og, { gravity, amount }) => {
+  const unadjustedOg = actualFermentables.reduce((og, { gravity, amount }) => {
     const points = gravity - 1;
     return (og += points * amount);
   }, 0);
@@ -58,18 +58,18 @@ export const calculateOg = (
 
 export const calculateFg = (
   og: number | null,
-  yeasts: RecipeYeast[]
+  cultures: Culture[]
 ): number | null => {
-  if (!og || yeasts.length === 0) {
+  if (!og || cultures.length === 0) {
     return null;
   }
 
   const ogPercentage = og - 1;
 
   const averageAttenuation =
-    yeasts.reduce((att, yeast) => {
-      return (att += yeast.attenuation / 100);
-    }, 0) / yeasts.length;
+    cultures.reduce((att, culture) => {
+      return (att += culture.attenuation / 100);
+    }, 0) / cultures.length;
 
   const averageNotAttenuated = 1 - averageAttenuation;
 
@@ -91,7 +91,7 @@ export const calculateAbv = (
 
 export const calculateIbu = (
   og: number | null,
-  hops: RecipeHop[],
+  hops: Hop[],
   batchSize: number
 ): number | null => {
   if (!og) {
@@ -105,15 +105,10 @@ export const calculateIbu = (
   const actualHops = hops.filter((hop) => !!hop);
 
   actualHops.forEach((hop) => {
-    if (
-      hop.minutes &&
-      hop.amount &&
-      hop.additionType === "add_to_boil" &&
-      hop.alpha
-    ) {
-      const boilTimeFactor = (1 - Math.E ** (-0.04 * hop.minutes)) / 4.15;
+    if (hop.timing && hop.amount && hop.use === "Boil" && hop.alphaAcid) {
+      const boilTimeFactor = (1 - Math.E ** (-0.04 * hop.timing)) / 4.15;
       const aaUtilization = bignessFactor * boilTimeFactor;
-      const mgLtrAa = ((hop.alpha / 100) * hop.amount * 7490) / batchSize;
+      const mgLtrAa = ((hop.alphaAcid / 100) * hop.amount * 7490) / batchSize;
       const ibu = aaUtilization * mgLtrAa;
       totalIbu += ibu;
     }

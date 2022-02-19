@@ -10,15 +10,17 @@ import {
   Select,
   Typography,
 } from "antd";
-import { RecipeForm, RecipeGrain } from ".";
 import DefaultGrains from "../../data/default-grains";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { useAppSelector } from "../../redux/hooks";
-import { poundsToKilograms } from "../../utils/unit-conversions";
+import { MeasurementType } from "../../types/brew-settings";
+import { Fermentable, FermentableType, Recipe } from "../../types/recipe";
+import { poundsToKilograms } from "../../utils/converters";
 import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
-  recipeForm: FormInstance<RecipeForm>;
+  recipeForm: FormInstance<Recipe>;
+  measurementType: MeasurementType;
 }
 
 const typeAheadOptions = DefaultGrains.map((grain) => {
@@ -27,9 +29,11 @@ const typeAheadOptions = DefaultGrains.map((grain) => {
   };
 });
 
-const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
+const GrainAdditions = ({
+  recipeForm,
+  measurementType,
+}: GrainAdditionsProps) => {
   const { Option } = Select;
-  const { measurementType } = useAppSelector(selectBrewSettings);
 
   const handleGrainNameSelect = (selection: string) => {
     const defaultGrain = DefaultGrains.find(
@@ -37,35 +41,36 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
     );
 
     if (defaultGrain) {
-      const grains: RecipeGrain[] = recipeForm.getFieldValue("grains");
-      const grainIndexToModify = grains.findIndex(
-        (grain: RecipeGrain) => grain.name === defaultGrain.name
+      const fermentables: Fermentable[] =
+        recipeForm.getFieldValue("fermentables");
+      const indexToModify = fermentables.findIndex(
+        (fermentable: Fermentable) => fermentable.name === defaultGrain.name
       );
-      grains[grainIndexToModify].color = defaultGrain.lovibond;
-      grains[grainIndexToModify].gravity = defaultGrain.gravity;
-      grains[grainIndexToModify].type = defaultGrain.type;
-      grains[grainIndexToModify].amount = 0;
+      fermentables[indexToModify].lovibond = defaultGrain.lovibond;
+      fermentables[indexToModify].gravity = defaultGrain.gravity;
+      fermentables[indexToModify].type = defaultGrain.type;
 
-      recipeForm.setFieldsValue({ grains });
+      recipeForm.setFieldsValue({ fermentables });
     }
   };
 
   const handleTypeChange = (selection: string, index: number) => {
-    const grains = recipeForm.getFieldValue("grains");
-    grains[index].type = selection;
+    const fermentables: Fermentable[] =
+      recipeForm.getFieldValue("fermentables");
+    fermentables[index].type = selection as FermentableType;
 
-    recipeForm.setFieldsValue(grains);
+    recipeForm.setFieldsValue({ fermentables });
   };
 
   const getInitialType = (index: number): string => {
-    const grains = recipeForm.getFieldValue("grains");
+    const grains = recipeForm.getFieldValue("fermentables");
     return grains[index]?.type ?? "";
   };
 
   return (
     <>
       <Typography.Title level={4}>Grain additions</Typography.Title>
-      <Form.List name="grains">
+      <Form.List name="fermentables">
         {(fields, { add, remove }) => (
           <>
             {fields.length === 0
@@ -78,7 +83,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                       align="middle"
                       gutter={[12, 0]}
                     >
-                      <Col xs={16} sm={16} md={8} lg={8} xl={8}>
+                      <Col xs={16} sm={16} md={7} lg={7} xl={7}>
                         <Form.Item
                           {...restField}
                           name={[name, "name"]}
@@ -104,7 +109,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={7} sm={7} md={3} lg={3} xl={3}>
+                      <Col xs={7} sm={7} md={4} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
                           name={[name, "amount"]}
@@ -122,22 +127,17 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                             min="0"
                             max="100"
                             step="0.1"
-                            style={{ width: 72 }}
-                            formatter={(value) => {
-                              if (measurementType === "metric") {
-                                return value
-                                  ? `${poundsToKilograms(parseFloat(value))} kg`
-                                  : "0 kg";
-                              }
-                              return value ? `${value} lbs` : "0 lbs";
-                            }}
+                            style={{ width: 105 }}
+                            addonAfter={
+                              measurementType === "metric" ? "kg" : "lb"
+                            }
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={6} sm={6} md={3} lg={3} xl={3}>
+                      <Col xs={6} sm={6} md={3} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
-                          name={[name, "color"]}
+                          name={[name, "lovibond"]}
                           label="Color"
                           labelCol={{ span: 30, offset: 0 }}
                           initialValue={0}
@@ -152,10 +152,8 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                             min="0"
                             max="100"
                             step="0.1"
-                            style={{ width: 72 }}
-                            formatter={(value) => {
-                              return value ? `${value} Lov` : "0 Lov";
-                            }}
+                            style={{ width: 105 }}
+                            addonAfter="lov"
                           />
                         </Form.Item>
                       </Col>
@@ -182,7 +180,7 @@ const GrainAdditions = ({ recipeForm }: GrainAdditionsProps) => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={8} sm={8} md={4} lg={4} xl={4}>
+                      <Col xs={8} sm={8} md={5} lg={5} xl={5}>
                         <Form.Item
                           {...restField}
                           name={[name, "type"]}

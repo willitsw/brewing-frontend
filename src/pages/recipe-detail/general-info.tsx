@@ -1,12 +1,24 @@
-import { Typography, Form, Input, InputNumber, Radio, Col, Row } from "antd";
+import {
+  Typography,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Col,
+  Row,
+  FormInstance,
+} from "antd";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { useAppSelector } from "../../redux/hooks";
-import { gallonsToLiters, ouncesToGrams } from "../../utils/unit-conversions";
+import { MeasurementType } from "../../types/brew-settings";
+import { gallonsToLiters, ouncesToGrams } from "../../utils/converters";
 import styles from "./index.module.css";
 
-const GeneralInfo = () => {
-  const { measurementType } = useAppSelector(selectBrewSettings);
+interface GeneralInfoProps {
+  measurementType: MeasurementType;
+}
 
+const GeneralInfo = ({ measurementType }: GeneralInfoProps) => {
   return (
     <>
       <Typography.Title level={4}>General Info</Typography.Title>
@@ -42,32 +54,26 @@ const GeneralInfo = () => {
       </Row>
 
       <Row justify="start" gutter={[12, 0]}>
-        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+        <Col xs={12} sm={12} md={4} lg={4} xl={4}>
           <Form.Item
             label="Batch Size"
-            name="batchSizeValue"
+            name="batchSize"
             rules={[{ required: true, message: "A batch size is required." }]}
+            style={{ width: 105 }}
             labelCol={{ span: 30, offset: 0 }}
           >
             <InputNumber
               min="0"
               max="100"
               step="0.5"
-              formatter={(value) => {
-                if (measurementType === "metric") {
-                  return value
-                    ? `${gallonsToLiters(parseFloat(value))} L`
-                    : "0 L";
-                }
-                return value ? `${value} gal` : "0 gal";
-              }}
+              addonAfter={measurementType === "metric" ? "l" : "gal"}
             />
           </Form.Item>
         </Col>
-        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+        <Col xs={12} sm={12} md={4} lg={4} xl={4}>
           <Form.Item
             label="Efficiency"
-            name="efficiencyValue"
+            name="efficiency"
             rules={[
               {
                 required: true,
@@ -75,27 +81,36 @@ const GeneralInfo = () => {
               },
             ]}
             labelCol={{ span: 30, offset: 0 }}
+            style={{ width: 105 }}
           >
-            <InputNumber
-              min="0"
-              max="100"
-              step="1"
-              formatter={(value) => {
-                return value ? `${value} %` : "0 %";
-              }}
-            />
+            <InputNumber min="0" max="100" step="1" addonAfter="%" />
           </Form.Item>
         </Col>
-        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+        <Col xs={12} sm={12} md={6} lg={6} xl={6}>
           <Form.Item
             label="Brew Type"
             name="type"
             labelCol={{ span: 30, offset: 0 }}
             style={{ width: "250px" }}
+            initialValue="All grain"
           >
             <Radio.Group>
-              <Radio.Button value="all grain">All Grain</Radio.Button>
-              <Radio.Button value="extract">Extract</Radio.Button>
+              <Radio.Button value="All grain">All Grain</Radio.Button>
+              <Radio.Button value="Extract">Extract</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col xs={12} sm={12} md={6} lg={6} xl={6}>
+          <Form.Item
+            label="Measurement Type"
+            name="measurementType"
+            labelCol={{ span: 30, offset: 0 }}
+            style={{ width: "250px" }}
+            initialValue="imperial"
+          >
+            <Radio.Group>
+              <Radio.Button value="imperial">Imperial</Radio.Button>
+              <Radio.Button value="metric">Metric</Radio.Button>
             </Radio.Group>
           </Form.Item>
         </Col>

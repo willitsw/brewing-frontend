@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Recipe } from "../../types/beer-interfaces";
+import { Recipe } from "../../types/recipe";
 import {
   createUpdateRecipe,
   deleteRecipe,
@@ -21,7 +21,6 @@ const initialState: RecipeState = {
 export enum RecipeActionTypes {
   SetRecipeList = "recipes/setRecipeList",
   SetCurrentRecipe = "recipes/setCurrentRecipe",
-  SetGrainList = "recipes/setGrainList",
 }
 
 export const refreshRecipeList = createAsyncThunk(
@@ -74,11 +73,6 @@ export const recipeSlice = createSlice({
     },
     setCurrentRecipe: (state, action) => {
       state.currentRecipe = action.payload;
-    },
-    setGrainList: (state, action) => {
-      if (state.currentRecipe) {
-        state.currentRecipe.ingredients.fermentable_additions = action.payload;
-      }
     },
   },
   extraReducers: (builder) => {

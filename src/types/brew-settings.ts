@@ -1,7 +1,8 @@
+export type MeasurementType = "imperial" | "metric";
 export interface BrewSettings {
   userId: string; // User Id that owns it
   author: string;
-  measurementType: "imperial" | "metric";
+  measurementType: MeasurementType;
   batchSize: number;
   boilTime: number;
   brewhouseEfficiency: number;

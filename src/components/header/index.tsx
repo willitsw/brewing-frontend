@@ -60,7 +60,7 @@ const Header = () => {
     if (!isAuthenticated) {
       return (
         <Menu>
-          <Menu.Item icon={<LoginOutlined />}>
+          <Menu.Item key='login' icon={<LoginOutlined />}>
             <Button
               type="link"
               onClick={() => dispatch(setShowLoginModal(true))}
@@ -68,7 +68,7 @@ const Header = () => {
               Login
             </Button>
           </Menu.Item>
-          <Menu.Item icon={<PlusCircleOutlined />}>
+          <Menu.Item key='create-account' icon={<PlusCircleOutlined />}>
             <Button
               type="link"
               onClick={() => dispatch(setShowCreateAccountModal(true))}
@@ -81,7 +81,7 @@ const Header = () => {
     } else {
       return (
         <Menu>
-          <Menu.Item icon={<LogoutOutlined />}>
+          <Menu.Item key='logout' icon={<LogoutOutlined />}>
             <Button type="link" onClick={handleSignOut}>
               Logout
             </Button>

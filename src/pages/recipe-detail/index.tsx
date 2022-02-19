@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Content from "../../components/content";
-import { Recipe } from "../../types/beer-interfaces";
+import { Hop, Recipe } from "../../types/recipe";
+import { MeasurementType } from "../../types/brew-settings";
 import { v4 as uuid } from "uuid";
 import { getRecipeById } from "../../utils/api-calls";
 import { Form, Button, Space, Divider, Affix, message, Col, Row } from "antd";
-import { deepCloneObject } from "../../utils/helpers";
 import GrainAdditions from "./grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
@@ -14,12 +14,6 @@ import {
   selectCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import {
-  CultureAdditionType,
-  FermentableAdditionType,
-  HopAdditionType,
-  UseType,
-} from "../../types/beer-json";
-import {
   calculateFg,
   calculateOg,
   calculateSrm,
@@ -27,98 +21,41 @@ import {
   calculateIbu,
 } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
-import { selectCurrentUser } from "../../redux/user/slice";
 import YeastAdditions from "./yeast-additions";
 import GeneralInfo from "./general-info";
 import Stats from "./stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
-export interface RecipeGrain {
-  name: string;
-  amount: number;
-  color: number;
-  gravity: number;
-  type:
-    | "dry extract"
-    | "extract"
-    | "grain"
-    | "sugar"
-    | "fruit"
-    | "juice"
-    | "honey"
-    | "other";
-}
-
-export interface RecipeHop {
-  name: string;
-  amount: number | null;
-  alpha: number;
-  additionType: UseType | null;
-  minutes: number | null;
-}
-
-export interface RecipeYeast {
-  name: string;
-  attenuation: number;
-}
-
-export interface RecipeForm {
-  name: string;
-  author: string;
-  batchSizeValue: number;
-  efficiencyValue: number;
-  type:
-    | "cider"
-    | "kombucha"
-    | "soda"
-    | "other"
-    | "mead"
-    | "wine"
-    | "extract"
-    | "partial mash"
-    | "all grain";
-  description?: string;
-  grains: RecipeGrain[];
-  hops: RecipeHop[];
-  yeasts: RecipeYeast[];
-}
+import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
   description: "",
   author: "",
-  batch_size: {
-    unit: "gal",
-    value: 5,
-  },
-  efficiency: {
-    brewhouse: {
-      unit: "%",
-      value: 65,
-    },
-  },
+  batchSize: 5,
   id: uuid(),
-  ingredients: {
-    fermentable_additions: [],
-    hop_additions: [],
-    culture_additions: [],
-  },
-  type: "all grain",
+  fermentables: [],
+  hops: [],
+  cultures: [],
+  type: "All grain",
   user: "bob",
+  measurementType: "imperial",
+  efficiency: 70,
 };
 
 const RecipeDetailPage = () => {
-  const [recipeForm] = Form.useForm<RecipeForm>();
+  const [recipeForm] = Form.useForm<Recipe>();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const recipe = useAppSelector(selectCurrentRecipe);
-  const currentUser = useAppSelector(selectCurrentUser);
   const [srm, setSrm] = useState<number | null>(null);
   const [og, setOg] = useState<number | null>(null);
   const [fg, setFg] = useState<number | null>(null);
   const [abv, setAbv] = useState<number | null>(null);
   const [ibu, setIbu] = useState<number | null>(null);
+  const [measurementType, setMeasurementType] =
+    useState<MeasurementType>("imperial");
   const [loading, setLoading] = useState<boolean>(true);
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
@@ -126,7 +63,7 @@ const RecipeDetailPage = () => {
 
   useEffect(() => {
     const onComponentLoad = async () => {
-      let workingRecipe;
+      let workingRecipe: Recipe;
       if (location.pathname.includes("/recipes/duplicate") && id) {
         workingRecipe = await getRecipeById(id);
         workingRecipe.name = `Copy of ${workingRecipe.name}`;
@@ -135,57 +72,18 @@ const RecipeDetailPage = () => {
         workingRecipe = await getRecipeById(id);
       } else {
         workingRecipe = defaultRecipe;
+        // TODO: add defaults from brew settings here
       }
 
-      const grainsArray: RecipeGrain[] =
-        workingRecipe.ingredients.fermentable_additions.map((grain) => {
-          return {
-            name: grain.name,
-            amount: grain.amount?.value ?? 0,
-            color: grain.color?.value ?? 0,
-            gravity: grain.yield?.potential?.value ?? 0,
-            type: grain.type,
-          };
-        });
+      recipeForm.setFieldsValue(workingRecipe);
 
-      const hopsArray: RecipeHop[] =
-        workingRecipe.ingredients.hop_additions?.map((hop) => {
-          return {
-            name: hop.name,
-            amount: hop.amount?.value ?? null,
-            alpha: hop.alpha_acid.value,
-            additionType: hop.timing.use ?? null,
-            minutes: hop.timing.time?.value ?? null,
-          };
-        }) ?? [];
-
-      const yeastArray: RecipeYeast[] =
-        workingRecipe.ingredients.culture_additions?.map((yeast) => {
-          return {
-            name: yeast.name,
-            attenuation: yeast.attenuation?.value ?? 0,
-          };
-        }) ?? [];
-
-      recipeForm.setFieldsValue({
-        name: workingRecipe.name,
-        author: workingRecipe.author,
-        batchSizeValue: workingRecipe.batch_size.value,
-        efficiencyValue: workingRecipe.efficiency.brewhouse.value,
-        type: workingRecipe.type,
-        description: workingRecipe.description,
-        grains: grainsArray,
-        hops: hopsArray,
-        yeasts: yeastArray,
-      });
-
-      setSrm(calculateSrm(workingRecipe.batch_size.value, grainsArray));
+      setSrm(calculateSrm(workingRecipe.batchSize, workingRecipe.fermentables));
       const workingOg = calculateOg(
-        grainsArray,
-        workingRecipe.batch_size.value,
-        workingRecipe.efficiency.brewhouse.value
+        workingRecipe.fermentables,
+        workingRecipe.batchSize,
+        workingRecipe.efficiency
       );
-      const workingFg = calculateFg(workingOg, yeastArray);
+      const workingFg = calculateFg(workingOg, workingRecipe.cultures);
       const workingAbv = calculateAbv(workingOg, workingFg);
 
       setOg(workingOg);
@@ -194,8 +92,8 @@ const RecipeDetailPage = () => {
 
       const workingIbu = calculateIbu(
         workingOg,
-        hopsArray,
-        workingRecipe.batch_size.value
+        workingRecipe.hops,
+        workingRecipe.batchSize
       );
       setIbu(workingIbu);
 
@@ -214,75 +112,10 @@ const RecipeDetailPage = () => {
     );
   };
 
-  const handleSave = (recipeForm: RecipeForm) => {
-    const submitCopy: Recipe = deepCloneObject(recipe);
-    submitCopy.name = recipeForm.name;
-    submitCopy.description = recipeForm.description;
-    submitCopy.author = recipeForm.author;
-    submitCopy.batch_size.value = recipeForm.batchSizeValue;
-    submitCopy.efficiency.brewhouse.value = recipeForm.efficiencyValue;
-    submitCopy.type = recipeForm.type;
-    submitCopy.user = currentUser?.uid ?? "";
-
-    const fermentableAdditions: FermentableAdditionType[] =
-      recipeForm.grains.map((grain: RecipeGrain): FermentableAdditionType => {
-        return {
-          name: grain.name,
-          amount: {
-            unit: "lb",
-            value: grain.amount ?? 0,
-          },
-          color: {
-            unit: "Lovi",
-            value: grain.color ?? 0,
-          },
-          type: grain.type,
-          yield: {
-            potential: {
-              unit: "sg",
-              value: grain.gravity ?? 0,
-            },
-          },
-        };
-      });
-    submitCopy.ingredients.fermentable_additions = fermentableAdditions;
-
-    const hopAdditions: HopAdditionType[] = recipeForm.hops.map(
-      (hop: RecipeHop): HopAdditionType => {
-        return {
-          name: hop.name,
-          alpha_acid: { value: hop.alpha, unit: "%" },
-          timing: {
-            time: {
-              unit: "min",
-              value: hop.minutes ?? 0,
-            },
-            use: hop.additionType ?? undefined,
-          },
-          amount: {
-            unit: "oz",
-            value: hop.amount ?? 0,
-          },
-        };
-      }
-    );
-    submitCopy.ingredients.hop_additions = hopAdditions;
-
-    const yeastAdditions: CultureAdditionType[] = recipeForm.yeasts.map(
-      (yeast: RecipeYeast): CultureAdditionType => {
-        return {
-          name: yeast.name,
-          form: "liquid",
-          type: "ale",
-          attenuation: { unit: "%", value: yeast.attenuation },
-        };
-      }
-    );
-    submitCopy.ingredients.culture_additions = yeastAdditions;
-
-    dispatch(processCreateUpdateRecipe(submitCopy));
+  const handleSave = (recipeForm: Recipe) => {
+    dispatch(processCreateUpdateRecipe(recipeForm));
     dispatch(setPageIsClean(true));
-    message.success(`${submitCopy.name} has been saved.`);
+    message.success(`${recipeForm.name} has been saved.`);
   };
 
   const goBackToRecipeList = () => {
@@ -290,10 +123,24 @@ const RecipeDetailPage = () => {
   };
 
   const handleOnFieldsChange = (changedFields: any) => {
-    if (changedFields[0].name.includes("additionType")) {
-      const hops: RecipeHop[] = recipeForm.getFieldValue("hops");
+    if (changedFields[0].name[0] === "measurementType") {
+      // recipe type was changed, lets convert it
+      if (changedFields[0].value === "metric") {
+        const oldRecipe: Recipe = recipeForm.getFieldsValue();
+        recipeForm.setFieldsValue(recipeToMetric(oldRecipe));
+        setMeasurementType("metric");
+      } else {
+        const oldRecipe: Recipe = recipeForm.getFieldsValue();
+        recipeForm.setFieldsValue(recipeToImperial(oldRecipe));
+        setMeasurementType("imperial");
+      }
+    }
+
+    if (changedFields[0].name.includes("use")) {
+      // hops use was changed, lets reset the timing value
+      const hops: Hop[] = recipeForm.getFieldValue("hops");
       const indexToChange = changedFields[0].name[1];
-      hops[indexToChange].minutes = 0;
+      hops[indexToChange].timing = 0;
       recipeForm.setFieldsValue({ hops });
     }
   };
@@ -303,10 +150,10 @@ const RecipeDetailPage = () => {
 
     const changedValue = Object.keys(changedValues)[0];
     if (
-      changedValue === "grains" ||
-      changedValue === "batchSizeValue" ||
-      changedValue === "efficiencyValue" ||
-      changedValue === "yeasts" ||
+      changedValue === "fermentables" ||
+      changedValue === "batchSize" ||
+      changedValue === "efficiency" ||
+      changedValue === "cultures" ||
       changedValue === "hops"
     ) {
       updateStats();
@@ -314,33 +161,36 @@ const RecipeDetailPage = () => {
   };
 
   const updateStats = () => {
-    const recipe = recipeForm.getFieldsValue();
-    setSrm(calculateSrm(recipe.batchSizeValue, recipe.grains));
+    const workingRecipe = recipeForm.getFieldsValue();
+    setSrm(calculateSrm(workingRecipe.batchSize, workingRecipe.fermentables));
     const workingOg = calculateOg(
-      recipe.grains,
-      recipe.batchSizeValue,
-      recipe.efficiencyValue
+      workingRecipe.fermentables,
+      workingRecipe.batchSize,
+      workingRecipe.efficiency
     );
-    const workingFg = calculateFg(workingOg, recipe.yeasts);
+    const workingFg = calculateFg(workingOg, workingRecipe.cultures);
     const abv = calculateAbv(workingOg, workingFg);
     setOg(workingOg);
     setFg(workingFg);
     setAbv(abv);
     const workingIbu = calculateIbu(
       workingOg,
-      recipe.hops,
-      recipe.batchSizeValue
+      workingRecipe.hops,
+      workingRecipe.batchSize
     );
     setIbu(workingIbu);
   };
 
   const formSections = (
     <>
-      <GeneralInfo />
+      <GeneralInfo measurementType={measurementType} />
       <Divider />
-      <GrainAdditions recipeForm={recipeForm} />
+      <GrainAdditions
+        recipeForm={recipeForm}
+        measurementType={measurementType}
+      />
       <Divider />
-      <HopAdditions recipeForm={recipeForm} />
+      <HopAdditions recipeForm={recipeForm} measurementType={measurementType} />
       <Divider />
       <YeastAdditions />
       <Divider />

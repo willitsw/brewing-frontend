@@ -11,7 +11,7 @@ import {
   Row,
   Typography,
 } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Content from "../../components/content";
 import {
   processCreateUpdateBrewSettings,
@@ -20,11 +20,15 @@ import {
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { BrewSettings } from "../../types/brew-settings";
+import { gallonsToLiters } from "../../utils/converters";
 
 import styles from "./index.module.css";
 
 const BrewSettings = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
+  const [localMeasurementType, setLocalMeasurementType] = useState(
+    brewSettings.measurementType
+  );
   const [form] = Form.useForm<BrewSettings>();
   const dispatch = useAppDispatch();
 
@@ -47,6 +51,21 @@ const BrewSettings = () => {
     );
   };
 
+  const handleOnValuesChange = (changedValues: any) => {
+    dispatch(setPageIsClean(false));
+
+    const changedValue = Object.keys(changedValues)[0];
+    if (changedValue === "measurementType") {
+      console.log("measurement type updated");
+      // const val = form.getFieldValue("batchSize");
+      // form.setFieldsValue(val);
+      // console.log(form.getFieldsValue());
+      form.validateFields(["batchSize"]);
+    }
+  };
+
+  console.log("heres the local measurement type", localMeasurementType);
+
   return (
     <Content pageTitle="Brew Settings">
       <Form
@@ -59,7 +78,7 @@ const BrewSettings = () => {
         scrollToFirstError={true}
         autoComplete="off"
         layout="vertical"
-        onValuesChange={() => dispatch(setPageIsClean(false))}
+        onValuesChange={handleOnValuesChange}
       >
         <Typography.Title level={4}>General Defaults</Typography.Title>
         <Row justify="start" gutter={[12, 0]}>
@@ -77,8 +96,23 @@ const BrewSettings = () => {
               label="Batch Size"
               name="batchSize"
               labelCol={{ span: 30, offset: 0 }}
+              shouldUpdate
             >
-              <InputNumber />
+              <InputNumber
+                min="0"
+                max="100"
+                step="0.5"
+                formatter={(value) => {
+                  const m = form.getFieldValue("measurementType");
+                  console.log("m", m);
+                  if (form.getFieldValue("measurementType") === "metric") {
+                    return value
+                      ? `${gallonsToLiters(parseFloat(value))} L`
+                      : "0 L";
+                  }
+                  return value ? `${value} gal` : "0 gal";
+                }}
+              />
             </Form.Item>
           </Col>
           <Col xs={12} sm={12} md={8} lg={8} xl={8}>

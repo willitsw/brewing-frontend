@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Recipe } from "../../types/beer-interfaces";
 import { Link, useNavigate } from "react-router-dom";
 import { Table, Button, Space, Tooltip } from "antd";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
@@ -13,6 +12,7 @@ import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
 import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
 import { getRecipesByUser } from "../../utils/api-calls";
+import { Recipe } from "../../types/recipe";
 
 const RecipeListTable = () => {
   const dispatch = useAppDispatch();
