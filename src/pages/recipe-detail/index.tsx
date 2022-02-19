@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Content from "../../components/content";
 import { Hop, Recipe } from "../../types/recipe";
 import { MeasurementType } from "../../types/brew-settings";
+import { Stats } from "../../types/stats";
 import { v4 as uuid } from "uuid";
 import { getRecipeById } from "../../utils/api-calls";
 import { Form, Button, Space, Divider, Affix, message, Col, Row } from "antd";
@@ -12,6 +13,7 @@ import {
   processCreateUpdateRecipe,
   RecipeActionTypes,
   selectCurrentRecipe,
+  setCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import {
   calculateFg,
@@ -19,11 +21,12 @@ import {
   calculateSrm,
   calculateAbv,
   calculateIbu,
+  getStats,
 } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
 import YeastAdditions from "./yeast-additions";
 import GeneralInfo from "./general-info";
-import Stats from "./stats";
+import StatsSection from "./stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
@@ -44,6 +47,14 @@ const defaultRecipe: Recipe = {
   efficiency: 70,
 };
 
+const defaultStats: Stats = {
+  abv: 0,
+  ibu: 0,
+  og: 0,
+  fg: 0,
+  srm: 0,
+};
+
 const RecipeDetailPage = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
   const currentUser = useAppSelector(selectCurrentUser);
@@ -53,11 +64,7 @@ const RecipeDetailPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const recipe = useAppSelector(selectCurrentRecipe);
-  const [srm, setSrm] = useState<number | null>(null);
-  const [og, setOg] = useState<number | null>(null);
-  const [fg, setFg] = useState<number | null>(null);
-  const [abv, setAbv] = useState<number | null>(null);
-  const [ibu, setIbu] = useState<number | null>(null);
+  const [stats, setStats] = useState<Stats>(defaultStats);
   const [measurementType, setMeasurementType] = useState<MeasurementType>(
     brewSettings.measurementType
   );
@@ -85,36 +92,10 @@ const RecipeDetailPage = () => {
         workingRecipe.user = currentUser?.uid ?? "";
       }
 
+      setStats(getStats(workingRecipe));
+
       form.setFieldsValue(workingRecipe);
-
-      if (workingRecipe.measurementType === "metric") {
-        workingRecipe = recipeToImperial(workingRecipe);
-      }
-
-      setSrm(calculateSrm(workingRecipe.batchSize, workingRecipe.fermentables));
-      const workingOg = calculateOg(
-        workingRecipe.fermentables,
-        workingRecipe.batchSize,
-        workingRecipe.efficiency
-      );
-      const workingFg = calculateFg(workingOg, workingRecipe.cultures);
-      const workingAbv = calculateAbv(workingOg, workingFg);
-
-      setOg(workingOg);
-      setFg(workingFg);
-      setAbv(workingAbv);
-
-      const workingIbu = calculateIbu(
-        workingOg,
-        workingRecipe.hops,
-        workingRecipe.batchSize
-      );
-      setIbu(workingIbu);
-
-      dispatch({
-        type: RecipeActionTypes.SetCurrentRecipe,
-        payload: workingRecipe,
-      });
+      dispatch(setCurrentRecipe(workingRecipe));
       setLoading(false);
     };
     onComponentLoad();
@@ -127,9 +108,14 @@ const RecipeDetailPage = () => {
   };
 
   const handleSave = (recipeForm: Recipe) => {
-    dispatch(processCreateUpdateRecipe(recipeForm));
+    const newRecipe: Recipe = {
+      ...recipeForm,
+      id: recipe?.id ?? "",
+      user: recipe?.user ?? "",
+    };
+    dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));
-    message.success(`${recipeForm.name} has been saved.`);
+    message.success(`${newRecipe.name} has been saved.`);
   };
 
   const goBackToRecipeList = () => {
@@ -179,27 +165,8 @@ const RecipeDetailPage = () => {
   };
 
   const updateStats = () => {
-    let workingRecipe: Recipe = form.getFieldsValue();
-    if (workingRecipe.measurementType === "metric") {
-      workingRecipe = recipeToImperial(workingRecipe);
-    }
-    setSrm(calculateSrm(workingRecipe.batchSize, workingRecipe.fermentables));
-    const workingOg = calculateOg(
-      workingRecipe.fermentables,
-      workingRecipe.batchSize,
-      workingRecipe.efficiency
-    );
-    const workingFg = calculateFg(workingOg, workingRecipe.cultures);
-    const abv = calculateAbv(workingOg, workingFg);
-    setOg(workingOg);
-    setFg(workingFg);
-    setAbv(abv);
-    const workingIbu = calculateIbu(
-      workingOg,
-      workingRecipe.hops,
-      workingRecipe.batchSize
-    );
-    setIbu(workingIbu);
+    const workingRecipe: Recipe = form.getFieldsValue();
+    setStats(getStats(workingRecipe));
   };
 
   const formSections = (
@@ -224,7 +191,7 @@ const RecipeDetailPage = () => {
           </Col>
           <Col xs={0} sm={0} md={0} lg={8} xl={8}>
             <Affix offsetTop={10}>
-              <Stats srm={srm} og={og} fg={fg} abv={abv} ibu={ibu} />
+              <StatsSection stats={stats} />
             </Affix>
           </Col>
         </Row>
@@ -234,7 +201,7 @@ const RecipeDetailPage = () => {
     return (
       <>
         {formSections}
-        <Stats srm={srm} og={og} fg={fg} abv={abv} ibu={ibu} />
+        <StatsSection stats={stats} />
         <Divider />
       </>
     );
@@ -253,9 +220,8 @@ const RecipeDetailPage = () => {
       layout="vertical"
       onValuesChange={handleOnValuesChange}
       onFieldsChange={handleOnFieldsChange}
+      preserve
     >
-      <Form.Item name="id" hidden />
-      <Form.Item name="user" hidden />
       <Content
         isLoading={loading}
         pageTitle={!loading ? recipe?.name ?? "" : ""}

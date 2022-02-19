@@ -1,4 +1,6 @@
-import { Fermentable, Culture, Hop } from "../types/recipe";
+import { Fermentable, Culture, Hop, Recipe } from "../types/recipe";
+import { Stats } from "../types/stats";
+import { recipeToImperial } from "./converters";
 
 export const calculateSrm = (
   batchSizeGallons: number,
@@ -115,4 +117,28 @@ export const calculateIbu = (
   });
 
   return Math.round(totalIbu);
+};
+
+export const getStats = (recipe: Recipe): Stats => {
+  if (recipe.measurementType === "metric") {
+    recipe = recipeToImperial(recipe);
+  }
+
+  const srm = calculateSrm(recipe.batchSize, recipe.fermentables);
+  const og = calculateOg(
+    recipe.fermentables,
+    recipe.batchSize,
+    recipe.efficiency
+  );
+  const fg = calculateFg(og, recipe.cultures);
+  const abv = calculateAbv(og, fg);
+  const ibu = calculateIbu(og, recipe.hops, recipe.batchSize);
+
+  return {
+    srm,
+    og,
+    fg,
+    abv,
+    ibu,
+  };
 };

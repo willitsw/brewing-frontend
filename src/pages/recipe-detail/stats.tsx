@@ -3,15 +3,13 @@ import styles from "./index.module.css";
 import hop from "./hop2.png";
 import beer from "./beer.png";
 import sixer from "./sixer.png";
+import { Stats } from "../../types/stats";
 interface StatsProps {
-  srm: number | null;
-  og: number | null;
-  fg: number | null;
-  abv: number | null;
-  ibu: number | null;
+  stats: Stats;
 }
 
-const Stats = ({ srm, og, fg, abv, ibu }: StatsProps) => {
+const Stats = ({ stats }: StatsProps) => {
+  const { og, fg, abv, srm, ibu } = stats;
   const ogDisplay = og?.toFixed(3) ?? null;
   const fgDisplay = fg?.toFixed(3) ?? null;
   const abvDisplay = abv?.toFixed(1) ?? null;
