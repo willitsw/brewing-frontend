@@ -1,6 +1,7 @@
+import { BrewSettings } from "../types/brew-settings";
 import { Fermentable, Culture, Hop, Recipe } from "../types/recipe";
 import { Stats } from "../types/stats";
-import { recipeToImperial } from "./converters";
+import { gallonsToLiters, recipeToImperial } from "./converters";
 
 export const calculateSrm = (
   batchSizeGallons: number,
@@ -119,8 +120,66 @@ export const calculateIbu = (
   return Math.round(totalIbu);
 };
 
-export const getStats = (recipe: Recipe): Stats => {
-  if (recipe.measurementType === "metric") {
+const getGrainPounds = (grains: Fermentable[]): number => {
+  return grains.reduce((pounds, currentFermentable) => {
+    if (!currentFermentable.amount || currentFermentable.type !== "Grain") {
+      return pounds;
+    }
+    return pounds + currentFermentable.amount;
+  }, 0);
+};
+
+export const calculateWaterLoss = (
+  recipe: Recipe,
+  brewSettings: BrewSettings
+) => {
+  let waterLoss = 0;
+
+  waterLoss += brewSettings.fermentorTrubWaterLoss;
+  waterLoss += brewSettings.kettleTrubWaterLoss;
+
+  const boilHours = brewSettings.boilTime / 60;
+  const evaporationLoss = brewSettings.boilOffWaterLossRate * boilHours;
+  waterLoss += evaporationLoss;
+
+  const grainPounds = getGrainPounds(recipe.fermentables);
+  const quartsLostFromGrain = grainPounds * brewSettings.waterLossPerGrain;
+  waterLoss += quartsLostFromGrain / 4;
+
+  return waterLoss;
+};
+
+export const calculateStrikeWater = (
+  recipe: Recipe,
+  brewSettings: BrewSettings,
+  waterLoss: number
+) => {
+  if (!brewSettings.sparge) {
+    return recipe.batchSize + waterLoss;
+  }
+
+  const grainPounds = getGrainPounds(recipe.fermentables);
+  const quartsNeeded = grainPounds * brewSettings.mashThickness;
+  return quartsNeeded / 4;
+};
+
+export const calculateHotLiquor = (
+  recipe: Recipe,
+  brewSettings: BrewSettings,
+  strikeWater: number,
+  waterLoss: number
+) => {
+  if (!brewSettings.sparge) return 0;
+
+  const totalWater = recipe.batchSize + waterLoss;
+
+  return totalWater - strikeWater;
+};
+
+export const getStats = (recipe: Recipe, brewSettings: BrewSettings): Stats => {
+  const isMetric = recipe.measurementType === "metric";
+
+  if (isMetric) {
     recipe = recipeToImperial(recipe);
   }
 
@@ -134,11 +193,23 @@ export const getStats = (recipe: Recipe): Stats => {
   const abv = calculateAbv(og, fg);
   const ibu = calculateIbu(og, recipe.hops, recipe.batchSize);
 
+  const waterLoss = calculateWaterLoss(recipe, brewSettings);
+  const strikeWater = calculateStrikeWater(recipe, brewSettings, waterLoss);
+  const hotLiquor = calculateHotLiquor(
+    recipe,
+    brewSettings,
+    strikeWater,
+    waterLoss
+  );
+
   return {
     srm,
     og,
     fg,
     abv,
     ibu,
+    strikeWater: isMetric ? gallonsToLiters(strikeWater) : strikeWater,
+    hotLiquor: isMetric ? gallonsToLiters(hotLiquor) : hotLiquor,
+    waterLoss: isMetric ? gallonsToLiters(waterLoss) : waterLoss,
   };
 };

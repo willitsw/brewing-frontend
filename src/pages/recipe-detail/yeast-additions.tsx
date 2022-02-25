@@ -1,9 +1,32 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, InputNumber, Row, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  FormInstance,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Typography,
+} from "antd";
 
 import styles from "./index.module.css";
 
-const YeastAdditions = () => {
+interface HopAdditionsProps {
+  form: FormInstance;
+}
+
+const YeastAdditions = ({ form }: HopAdditionsProps) => {
+  const { Option } = Select;
+
+  const handleTypeChange = (selection: string, index: number) => {
+    const hops = form.getFieldValue("hops");
+    hops[index].type = selection;
+
+    form.setFieldsValue(hops);
+  };
+
   return (
     <>
       <Typography.Title level={4}>Yeast additions</Typography.Title>
@@ -12,7 +35,7 @@ const YeastAdditions = () => {
           <>
             {fields.length === 0
               ? "No yeasts yet - feel free to add some!"
-              : fields.map(({ key, name, ...restField }) => {
+              : fields.map(({ key, name, ...restField }, index) => {
                   return (
                     <Row
                       key={key}
@@ -47,10 +70,39 @@ const YeastAdditions = () => {
                             min="0"
                             max="100"
                             step="1"
-                            formatter={(value) => {
-                              return value ? `${value} %` : "0 %";
-                            }}
+                            addonAfter="%"
                           />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={8} sm={8} md={4} lg={4} xl={4}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "type"]}
+                          label="Type"
+                          labelCol={{ span: 30, offset: 0 }}
+                          initialValue={"Dry"}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
+                        >
+                          <Select style={{ width: 120 }}>
+                            <Option value="Dry">Dry</Option>
+                            <Option value="Liquid">Liquid</Option>
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col xs={8} sm={8} md={9} lg={9} xl={9}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "notes"]}
+                          label="Notes"
+                          labelCol={{ span: 30, offset: 0 }}
+                          initialValue={""}
+                        >
+                          <Input style={{ width: 275 }} />
                         </Form.Item>
                       </Col>
                       <Col span={1}>

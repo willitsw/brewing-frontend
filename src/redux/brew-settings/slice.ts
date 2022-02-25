@@ -11,7 +11,7 @@ const defaultSettings: BrewSettings = {
   kettleTrubWaterLoss: 0.25,
   fermentorTrubWaterLoss: 0.25,
   boilOffWaterLossRate: 1.5,
-  waterLossPerGrain: 0.125,
+  waterLossPerGrain: 0.5,
   author: "",
   displayName: "",
   email: "",

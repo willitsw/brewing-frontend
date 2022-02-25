@@ -47,12 +47,11 @@ export interface Hop {
   amount: number;
 }
 
-export type CultureType = "Ale" | "Lager" | "Other";
 export type CultureForm = "Liquid" | "Dry";
 
 export interface Culture {
   name: string;
   attenuation: number;
-  type: CultureType;
   form: CultureForm;
+  notes: string;
 }

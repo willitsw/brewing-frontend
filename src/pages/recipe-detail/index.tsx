@@ -53,6 +53,9 @@ const defaultStats: Stats = {
   og: 0,
   fg: 0,
   srm: 0,
+  strikeWater: 0,
+  hotLiquor: 0,
+  waterLoss: 0,
 };
 
 const RecipeDetailPage = () => {
@@ -92,7 +95,7 @@ const RecipeDetailPage = () => {
         workingRecipe.user = currentUser?.uid ?? "";
       }
 
-      setStats(getStats(workingRecipe));
+      setStats(getStats(workingRecipe, brewSettings));
 
       form.setFieldsValue(workingRecipe);
       dispatch(setCurrentRecipe(workingRecipe));
@@ -166,7 +169,7 @@ const RecipeDetailPage = () => {
 
   const updateStats = () => {
     const workingRecipe: Recipe = form.getFieldsValue();
-    setStats(getStats(workingRecipe));
+    setStats(getStats(workingRecipe, brewSettings));
   };
 
   const formSections = (
@@ -177,7 +180,7 @@ const RecipeDetailPage = () => {
       <Divider />
       <HopAdditions form={form} measurementType={measurementType} />
       <Divider />
-      <YeastAdditions />
+      <YeastAdditions form={form} />
       <Divider />
     </>
   );
@@ -191,7 +194,7 @@ const RecipeDetailPage = () => {
           </Col>
           <Col xs={0} sm={0} md={0} lg={8} xl={8}>
             <Affix offsetTop={10}>
-              <StatsSection stats={stats} />
+              <StatsSection stats={stats} measurementType={measurementType} />
             </Affix>
           </Col>
         </Row>
@@ -201,7 +204,7 @@ const RecipeDetailPage = () => {
     return (
       <>
         {formSections}
-        <StatsSection stats={stats} />
+        <StatsSection stats={stats} measurementType={measurementType} />
         <Divider />
       </>
     );

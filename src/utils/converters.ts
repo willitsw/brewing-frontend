@@ -109,7 +109,9 @@ export const brewSettingsToMetric = (
     kettleTrubWaterLoss: gallonsToLiters(
       imperialBrewSettings.kettleTrubWaterLoss
     ),
-    waterLossPerGrain: gallonsToLiters(imperialBrewSettings.waterLossPerGrain),
+    waterLossPerGrain: quartPoundsToLiterKilos(
+      imperialBrewSettings.waterLossPerGrain
+    ),
     mashThickness: quartPoundsToLiterKilos(imperialBrewSettings.mashThickness),
   };
 };
@@ -129,7 +131,9 @@ export const brewSettingsToImperial = (
     kettleTrubWaterLoss: litersToGallons(
       metricBrewSettings.kettleTrubWaterLoss
     ),
-    waterLossPerGrain: litersToGallons(metricBrewSettings.waterLossPerGrain),
+    waterLossPerGrain: literKilosToQuartPounds(
+      metricBrewSettings.waterLossPerGrain
+    ),
     mashThickness: literKilosToQuartPounds(metricBrewSettings.mashThickness),
   };
 };

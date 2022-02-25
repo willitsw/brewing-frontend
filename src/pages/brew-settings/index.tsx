@@ -63,8 +63,6 @@ const BrewSettings = () => {
   };
 
   const handleOnFieldsChange = (changedFields: any) => {
-    console.log(form.getFieldsValue());
-
     if (changedFields.length === 0) {
       return null;
     }
@@ -171,11 +169,14 @@ const BrewSettings = () => {
             <Form.Item
               label="Grain Water Loss"
               name="waterLossPerGrain"
-              labelCol={{ span: 30, offset: 0 }}
-              style={{ width: 105 }}
+              labelCol={{ span: 20, offset: 0 }}
+              style={{ width: 115 }}
             >
               <InputNumber
-                addonAfter={measurementType === "metric" ? "lit" : "gal"}
+                min="0"
+                max="100"
+                step="0.1"
+                addonAfter={measurementType === "metric" ? "l/kg" : "qt/lb"}
               />
             </Form.Item>
           </Col>
