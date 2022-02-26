@@ -17,6 +17,7 @@ export interface Recipe {
   fermentables: Fermentable[];
   hops: Hop[];
   cultures: Culture[];
+  nonFermentables: NonFermentable[];
 }
 
 export type FermentableType =
@@ -53,5 +54,11 @@ export interface Culture {
   name: string;
   attenuation: number;
   form: CultureForm;
+  notes: string;
+}
+
+export interface NonFermentable {
+  name: string;
+  amount: string;
   notes: string;
 }

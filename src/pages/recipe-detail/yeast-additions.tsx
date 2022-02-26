@@ -3,7 +3,6 @@ import {
   Button,
   Col,
   Form,
-  FormInstance,
   Input,
   InputNumber,
   Row,
@@ -13,19 +12,8 @@ import {
 
 import styles from "./index.module.css";
 
-interface HopAdditionsProps {
-  form: FormInstance;
-}
-
-const YeastAdditions = ({ form }: HopAdditionsProps) => {
+const YeastAdditions = () => {
   const { Option } = Select;
-
-  const handleTypeChange = (selection: string, index: number) => {
-    const hops = form.getFieldValue("hops");
-    hops[index].type = selection;
-
-    form.setFieldsValue(hops);
-  };
 
   return (
     <>

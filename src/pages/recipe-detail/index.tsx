@@ -11,18 +11,10 @@ import GrainAdditions from "./grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processCreateUpdateRecipe,
-  RecipeActionTypes,
   selectCurrentRecipe,
   setCurrentRecipe,
 } from "../../redux/recipe-list/slice";
-import {
-  calculateFg,
-  calculateOg,
-  calculateSrm,
-  calculateAbv,
-  calculateIbu,
-  getStats,
-} from "../../utils/beer-math";
+import { getStats } from "../../utils/beer-math";
 import HopAdditions from "./hop-additions";
 import YeastAdditions from "./yeast-additions";
 import GeneralInfo from "./general-info";
@@ -31,6 +23,7 @@ import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { selectCurrentUser } from "../../redux/user/slice";
+import MiscAdditions from "./misc-additions";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -45,6 +38,7 @@ const defaultRecipe: Recipe = {
   user: "bob",
   measurementType: "imperial",
   efficiency: 70,
+  nonFermentables: [],
 };
 
 const defaultStats: Stats = {
@@ -157,11 +151,14 @@ const RecipeDetailPage = () => {
 
     const changedValue = Object.keys(changedValues)[0];
     if (
-      changedValue === "fermentables" ||
-      changedValue === "batchSize" ||
-      changedValue === "efficiency" ||
-      changedValue === "cultures" ||
-      changedValue === "hops"
+      [
+        "fermentables",
+        "batchSize",
+        "efficiency",
+        "cultures",
+        "hops",
+        "measurementType",
+      ].includes(changedValue)
     ) {
       updateStats();
     }
@@ -180,7 +177,9 @@ const RecipeDetailPage = () => {
       <Divider />
       <HopAdditions form={form} measurementType={measurementType} />
       <Divider />
-      <YeastAdditions form={form} />
+      <YeastAdditions />
+      <Divider />
+      <MiscAdditions />
       <Divider />
     </>
   );
