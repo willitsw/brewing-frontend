@@ -45,6 +45,10 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
   const getHopTimeLabel = (index: number) => {
     const hopItem: Hop = form.getFieldValue("hops")[index];
 
+    if (!hopItem) {
+      return "min";
+    }
+
     switch (hopItem.use) {
       case "Boil":
         return "min";
@@ -53,6 +57,11 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
       default:
         return "min";
     }
+  };
+
+  const isTimeDisabled = (index: number) => {
+    const hop = form.getFieldValue("hops")[index];
+    return hop && hop.use === "Flame out";
   };
 
   return (
@@ -177,10 +186,7 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
                           initialValue={0}
                         >
                           <InputNumber
-                            disabled={
-                              form.getFieldValue("hops")[index].use ===
-                              "Flame out"
-                            }
+                            disabled={isTimeDisabled(index)}
                             min={0}
                             style={{ width: 105 }}
                             addonAfter={getHopTimeLabel(index)}
