@@ -11,11 +11,8 @@ import {
   Typography,
 } from "antd";
 import DefaultGrains from "../../data/default-grains";
-import { selectBrewSettings } from "../../redux/brew-settings/slice";
-import { useAppSelector } from "../../redux/hooks";
 import { MeasurementType } from "../../types/brew-settings";
 import { Fermentable, FermentableType, Recipe } from "../../types/recipe";
-import { poundsToKilograms } from "../../utils/converters";
 import styles from "./index.module.css";
 
 interface GrainAdditionsProps {
@@ -48,18 +45,6 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
 
       form.setFieldsValue({ fermentables });
     }
-  };
-
-  const handleTypeChange = (selection: string, index: number) => {
-    const fermentables: Fermentable[] = form.getFieldValue("fermentables");
-    fermentables[index].type = selection as FermentableType;
-
-    form.setFieldsValue({ fermentables });
-  };
-
-  const getInitialType = (index: number): string => {
-    const grains = form.getFieldValue("fermentables");
-    return grains[index]?.type ?? "";
   };
 
   return (
@@ -116,7 +101,7 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                               message: "How much?",
                             },
                           ]}
-                          initialValue={0}
+                          initialValue="0"
                         >
                           <InputNumber
                             min="0"
@@ -189,13 +174,7 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                           ]}
                           initialValue="grain"
                         >
-                          <Select
-                            onChange={(value: string) =>
-                              handleTypeChange(value, index)
-                            }
-                            value={getInitialType(index)}
-                            style={{ width: 120 }}
-                          >
+                          <Select style={{ width: 120 }}>
                             <Option value="grain">Grain</Option>
                             <Option value="extract">Liquid Extract</Option>
                             <Option value="dry extract">Dry Extract</Option>

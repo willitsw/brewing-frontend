@@ -53,13 +53,13 @@ const YeastAdditions = () => {
                           name={[name, "attenuation"]}
                           label="Attenuation"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue="77"
                         >
                           <InputNumber
                             min="0"
                             max="100"
                             step="1"
                             addonAfter="%"
-                            defaultValue="77"
                           />
                         </Form.Item>
                       </Col>
