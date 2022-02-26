@@ -59,6 +59,7 @@ const YeastAdditions = () => {
                             max="100"
                             step="1"
                             addonAfter="%"
+                            defaultValue="77"
                           />
                         </Form.Item>
                       </Col>

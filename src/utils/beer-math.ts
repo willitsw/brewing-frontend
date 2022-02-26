@@ -71,7 +71,11 @@ export const calculateFg = (
 
   const averageAttenuation =
     cultures.reduce((att, culture) => {
-      return (att += culture.attenuation / 100);
+      if (culture && culture.attenuation) {
+        return (att += culture.attenuation / 100);
+      } else {
+        return att;
+      }
     }, 0) / cultures.length;
 
   const averageNotAttenuated = 1 - averageAttenuation;

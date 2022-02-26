@@ -32,18 +32,6 @@ const typeAheadOptions = DefaultHops.map((hop) => {
 const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
   const { Option } = Select;
 
-  const getInitialType = (index: number): string => {
-    const hops = form.getFieldValue("hops");
-    return hops[index]?.type ?? "add_to_boil";
-  };
-
-  const handleTypeChange = (selection: string, index: number) => {
-    const hops = form.getFieldValue("hops");
-    hops[index].type = selection;
-
-    form.setFieldsValue(hops);
-  };
-
   const handleHopNameSelect = (selection: string, index: number) => {
     const defaultHop = DefaultHops.find((hop) => hop.name === selection);
 
@@ -173,13 +161,7 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
                             },
                           ]}
                         >
-                          <Select
-                            onChange={(value: string) =>
-                              handleTypeChange(value, index)
-                            }
-                            value={getInitialType(index)}
-                            style={{ width: 120 }}
-                          >
+                          <Select style={{ width: 120 }}>
                             <Option value="Boil">Boil</Option>
                             <Option value="Dry hop">Dry hop</Option>
                             <Option value="Flame out">Flame out</Option>
