@@ -1,18 +1,5 @@
-import {
-  Typography,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Col,
-  Row,
-  FormInstance,
-} from "antd";
-import { selectBrewSettings } from "../../redux/brew-settings/slice";
-import { useAppSelector } from "../../redux/hooks";
-import { MeasurementType } from "../../types/brew-settings";
-import { gallonsToLiters, ouncesToGrams } from "../../utils/converters";
-import styles from "./index.module.css";
+import { Typography, Form, Input, InputNumber, Radio, Col, Row } from "antd";
+import { MeasurementType } from "../../../types/brew-settings";
 
 interface GeneralInfoProps {
   measurementType: MeasurementType;

@@ -10,7 +10,7 @@ import {
   Typography,
 } from "antd";
 
-import styles from "./index.module.css";
+import styles from "../index.module.css";
 
 const YeastAdditions = () => {
   const { Option } = Select;
@@ -83,7 +83,7 @@ const YeastAdditions = () => {
                           </Select>
                         </Form.Item>
                       </Col>
-                      <Col xs={8} sm={8} md={9} lg={9} xl={9}>
+                      <Col xs={8} sm={8} md={8} lg={8} xl={8}>
                         <Form.Item
                           {...restField}
                           name={[name, "notes"]}
@@ -91,7 +91,7 @@ const YeastAdditions = () => {
                           labelCol={{ span: 30, offset: 0 }}
                           initialValue={""}
                         >
-                          <Input style={{ width: 275 }} />
+                          <Input style={{ width: 265 }} />
                         </Form.Item>
                       </Col>
                       <Col span={1}>

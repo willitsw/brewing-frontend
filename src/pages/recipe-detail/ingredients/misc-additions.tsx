@@ -1,7 +1,7 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Form, Input, Row, Typography } from "antd";
 
-import styles from "./index.module.css";
+import styles from "../index.module.css";
 
 const MiscAdditions = () => {
   return (
@@ -46,14 +46,14 @@ const MiscAdditions = () => {
                           <Input style={{ width: 90 }} />
                         </Form.Item>
                       </Col>
-                      <Col xs={16} sm={16} md={13} lg={13} xl={13}>
+                      <Col xs={16} sm={16} md={12} lg={12} xl={12}>
                         <Form.Item
                           {...restField}
                           name={[name, "notes"]}
                           label="Other Notes"
                           labelCol={{ span: 30, offset: 0 }}
                         >
-                          <Input style={{ width: 420 }} />
+                          <Input style={{ width: 400 }} />
                         </Form.Item>
                       </Col>
 

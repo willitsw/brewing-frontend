@@ -6,8 +6,18 @@ import { MeasurementType } from "../../types/brew-settings";
 import { Stats } from "../../types/stats";
 import { v4 as uuid } from "uuid";
 import { getRecipeById } from "../../utils/api-calls";
-import { Form, Button, Space, Divider, Affix, message, Col, Row } from "antd";
-import GrainAdditions from "./grain-additions";
+import {
+  Form,
+  Button,
+  Space,
+  Divider,
+  Affix,
+  message,
+  Col,
+  Row,
+  Tabs,
+} from "antd";
+import GrainAdditions from "./ingredients/grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processCreateUpdateRecipe,
@@ -15,15 +25,15 @@ import {
   setCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import { getStats } from "../../utils/beer-math";
-import HopAdditions from "./hop-additions";
-import YeastAdditions from "./yeast-additions";
-import GeneralInfo from "./general-info";
-import StatsSection from "./stats";
+import HopAdditions from "./ingredients/hop-additions";
+import YeastAdditions from "./ingredients/yeast-additions";
+import GeneralInfo from "./ingredients/general-info";
+import StatsSection from "./statistics/stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { selectCurrentUser } from "../../redux/user/slice";
-import MiscAdditions from "./misc-additions";
+import MiscAdditions from "./ingredients/misc-additions";
 
 const defaultRecipe: Recipe = {
   name: "New Recipe",
@@ -171,16 +181,26 @@ const RecipeDetailPage = () => {
 
   const formSections = (
     <>
-      <GeneralInfo measurementType={measurementType} />
-      <Divider />
-      <GrainAdditions form={form} measurementType={measurementType} />
-      <Divider />
-      <HopAdditions form={form} measurementType={measurementType} />
-      <Divider />
-      <YeastAdditions />
-      <Divider />
-      <MiscAdditions />
-      <Divider />
+      <Tabs defaultActiveKey="1">
+        <Tabs.TabPane tab="Ingredients" key="1">
+          <GeneralInfo measurementType={measurementType} />
+          <Divider />
+          <GrainAdditions form={form} measurementType={measurementType} />
+          <Divider />
+          <HopAdditions form={form} measurementType={measurementType} />
+          <Divider />
+          <YeastAdditions />
+          <Divider />
+          <MiscAdditions />
+          <Divider />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Process" key="2">
+          Under construction
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Water Chemistry" key="3">
+          Under construction
+        </Tabs.TabPane>
+      </Tabs>
     </>
   );
 

@@ -1,11 +1,11 @@
 import { Col, Row, Statistic, Typography } from "antd";
-import styles from "./index.module.css";
+import styles from "../index.module.css";
 import hop from "./hop2.png";
 import beer from "./beer.png";
 import sixer from "./sixer.png";
 import water from "./water.png";
-import { Stats } from "../../types/stats";
-import { MeasurementType } from "../../types/brew-settings";
+import { Stats } from "../../../types/stats";
+import { MeasurementType } from "../../../types/brew-settings";
 interface StatsProps {
   stats: Stats;
   measurementType: MeasurementType;

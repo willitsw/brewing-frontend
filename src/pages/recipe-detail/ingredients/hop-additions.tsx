@@ -10,51 +10,65 @@ import {
   Select,
   Typography,
 } from "antd";
-import DefaultGrains from "../../data/default-grains";
-import { MeasurementType } from "../../types/brew-settings";
-import { Fermentable, FermentableType, Recipe } from "../../types/recipe";
-import styles from "./index.module.css";
+import DefaultHops from "../../../data/default-hops";
+import { MeasurementType } from "../../../types/brew-settings";
+import { Hop } from "../../../types/recipe";
+import styles from "../index.module.css";
 
-interface GrainAdditionsProps {
-  form: FormInstance<Recipe>;
+interface HopAdditionsProps {
+  form: FormInstance;
   measurementType: MeasurementType;
 }
 
-const typeAheadOptions = DefaultGrains.map((grain) => {
+const typeAheadOptions = DefaultHops.map((hop) => {
   return {
-    value: grain.name,
+    value: hop.name,
   };
 });
 
-const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
+const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
   const { Option } = Select;
 
-  const handleGrainNameSelect = (selection: string) => {
-    const defaultGrain = DefaultGrains.find(
-      (grain) => grain.name === selection
-    );
+  const handleHopNameSelect = (selection: string, index: number) => {
+    const defaultHop = DefaultHops.find((hop) => hop.name === selection);
 
-    if (defaultGrain) {
-      const fermentables: Fermentable[] = form.getFieldValue("fermentables");
-      const indexToModify = fermentables.findIndex(
-        (fermentable: Fermentable) => fermentable.name === defaultGrain.name
-      );
-      fermentables[indexToModify].lovibond = defaultGrain.lovibond;
-      fermentables[indexToModify].gravity = defaultGrain.gravity;
-      fermentables[indexToModify].type = defaultGrain.type;
-
-      form.setFieldsValue({ fermentables });
+    if (defaultHop) {
+      const hops: Hop[] = form.getFieldValue("hops");
+      hops[index].alphaAcid = defaultHop.alpha;
+      form.setFieldsValue({ hops });
     }
+  };
+
+  const getHopTimeLabel = (index: number) => {
+    const hopItem: Hop = form.getFieldValue("hops")[index];
+
+    if (!hopItem) {
+      return "min";
+    }
+
+    switch (hopItem.use) {
+      case "Boil":
+        return "min";
+      case "Dry hop":
+        return "days";
+      default:
+        return "min";
+    }
+  };
+
+  const isTimeDisabled = (index: number) => {
+    const hop = form.getFieldValue("hops")[index];
+    return hop && hop.use === "Flame out";
   };
 
   return (
     <>
-      <Typography.Title level={4}>Grain additions</Typography.Title>
-      <Form.List name="fermentables">
+      <Typography.Title level={4}>Hop additions</Typography.Title>
+      <Form.List name="hops">
         {(fields, { add, remove }) => (
           <>
             {fields.length === 0
-              ? "No grains yet - feel free to add some!"
+              ? "No hops yet - feel free to add some!"
               : fields.map(({ key, name, ...restField }, index) => {
                   return (
                     <Row
@@ -72,7 +86,7 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                           rules={[
                             {
                               required: true,
-                              message: "Please name your grain.",
+                              message: "Please name your hop.",
                             },
                           ]}
                         >
@@ -84,8 +98,10 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                                 .toUpperCase()
                                 .indexOf(inputValue.toUpperCase()) !== -1
                             }
-                            onSelect={handleGrainNameSelect}
-                            placeholder="Grain Name"
+                            onSelect={(selection: string) =>
+                              handleHopNameSelect(selection, index)
+                            }
+                            placeholder="Hop Name"
                           />
                         </Form.Item>
                       </Col>
@@ -95,30 +111,30 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                           name={[name, "amount"]}
                           label="Amount"
                           labelCol={{ span: 30, offset: 0 }}
+                          initialValue={0}
                           rules={[
                             {
                               required: true,
                               message: "How much?",
                             },
                           ]}
-                          initialValue="0"
                         >
                           <InputNumber
                             min="0"
                             max="100"
-                            step="0.1"
+                            step="0.5"
                             style={{ width: 105 }}
                             addonAfter={
-                              measurementType === "metric" ? "kg" : "lb"
+                              measurementType === "metric" ? "g" : "oz"
                             }
                           />
                         </Form.Item>
                       </Col>
-                      <Col xs={6} sm={6} md={3} lg={4} xl={4}>
+                      <Col xs={6} sm={6} md={4} lg={4} xl={4}>
                         <Form.Item
                           {...restField}
-                          name={[name, "lovibond"]}
-                          label="Color"
+                          name={[name, "alphaAcid"]}
+                          label="Bitterness"
                           labelCol={{ span: 30, offset: 0 }}
                           initialValue={0}
                           rules={[
@@ -130,55 +146,48 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                         >
                           <InputNumber
                             min="0"
-                            max="100"
+                            max="25"
                             step="0.1"
                             style={{ width: 105 }}
-                            addonAfter="lov"
+                            addonAfter="AA"
                           />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={8} sm={8} md={4} lg={4} xl={4}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "use"]}
+                          label="Add To"
+                          labelCol={{ span: 30, offset: 0 }}
+                          initialValue={"Boil"}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Required",
+                            },
+                          ]}
+                        >
+                          <Select style={{ width: 120 }}>
+                            <Option value="Boil">Boil</Option>
+                            <Option value="Dry hop">Dry hop</Option>
+                            <Option value="Flame out">Flame out</Option>
+                          </Select>
                         </Form.Item>
                       </Col>
                       <Col xs={6} sm={6} md={3} lg={3} xl={3}>
                         <Form.Item
                           {...restField}
-                          name={[name, "gravity"]}
-                          label="Gravity"
+                          name={[name, "timing"]}
+                          label="Time"
                           labelCol={{ span: 30, offset: 0 }}
-                          initialValue={"1.000"}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Required",
-                            },
-                          ]}
+                          initialValue={0}
                         >
                           <InputNumber
-                            stringMode
-                            min="1"
-                            max="2"
-                            step="0.001"
-                            style={{ width: 84 }}
+                            disabled={isTimeDisabled(index)}
+                            min={0}
+                            style={{ width: 95 }}
+                            addonAfter={getHopTimeLabel(index)}
                           />
-                        </Form.Item>
-                      </Col>
-                      <Col xs={8} sm={8} md={5} lg={5} xl={5}>
-                        <Form.Item
-                          {...restField}
-                          name={[name, "type"]}
-                          label="Type"
-                          labelCol={{ span: 30, offset: 0 }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Required",
-                            },
-                          ]}
-                          initialValue="grain"
-                        >
-                          <Select style={{ width: 120 }}>
-                            <Option value="grain">Grain</Option>
-                            <Option value="extract">Liquid Extract</Option>
-                            <Option value="dry extract">Dry Extract</Option>
-                          </Select>
                         </Form.Item>
                       </Col>
                       <Col span={1}>
@@ -198,7 +207,7 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
                   block
                   icon={<PlusOutlined />}
                 >
-                  Add a grain
+                  Add a hop
                 </Button>
               </Col>
             </Row>
@@ -209,4 +218,4 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
   );
 };
 
-export default GrainAdditions;
+export default HopAdditions;
