@@ -1,10 +1,10 @@
-import { FermentableType } from "../types/recipe";
+import { BrewingTypes as BT } from "brewing-shared";
 
 interface DefaultGrain {
   name: string;
   lovibond: number;
   gravity: number;
-  type: FermentableType;
+  type: BT.FermentableType;
 }
 
 // came from homebrewacademy.com

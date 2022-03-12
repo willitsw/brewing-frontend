@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Content from "../../components/content";
-import { Hop, Recipe } from "../../types/recipe";
-import { MeasurementType } from "../../types/brew-settings";
-import { Stats } from "../../types/stats";
 import { v4 as uuid } from "uuid";
 import { getRecipeById } from "../../utils/api-calls";
 import {
@@ -34,8 +31,9 @@ import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { selectCurrentUser } from "../../redux/user/slice";
 import MiscAdditions from "./ingredients/misc-additions";
+import { BrewingTypes as BT } from "brewing-shared";
 
-const defaultRecipe: Recipe = {
+const defaultRecipe: BT.Recipe = {
   name: "New Recipe",
   description: "",
   author: "",
@@ -51,7 +49,7 @@ const defaultRecipe: Recipe = {
   nonFermentables: [],
 };
 
-const defaultStats: Stats = {
+const defaultStats: BT.Stats = {
   abv: 0,
   ibu: 0,
   og: 0,
@@ -65,14 +63,14 @@ const defaultStats: Stats = {
 const RecipeDetailPage = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
   const currentUser = useAppSelector(selectCurrentUser);
-  const [form] = Form.useForm<Recipe>();
+  const [form] = Form.useForm<BT.Recipe>();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const recipe = useAppSelector(selectCurrentRecipe);
-  const [stats, setStats] = useState<Stats>(defaultStats);
-  const [measurementType, setMeasurementType] = useState<MeasurementType>(
+  const [stats, setStats] = useState<BT.Stats>(defaultStats);
+  const [measurementType, setMeasurementType] = useState<BT.MeasurementType>(
     brewSettings.measurementType
   );
   const [loading, setLoading] = useState<boolean>(true);
@@ -82,7 +80,7 @@ const RecipeDetailPage = () => {
 
   useEffect(() => {
     const onComponentLoad = async () => {
-      let workingRecipe: Recipe;
+      let workingRecipe: BT.Recipe;
       if (location.pathname.includes("/recipes/duplicate") && id) {
         workingRecipe = await getRecipeById(id);
         workingRecipe.name = `Copy of ${workingRecipe.name}`;
@@ -114,8 +112,8 @@ const RecipeDetailPage = () => {
     );
   };
 
-  const handleSave = (recipeForm: Recipe) => {
-    const newRecipe: Recipe = {
+  const handleSave = (recipeForm: BT.Recipe) => {
+    const newRecipe: BT.Recipe = {
       ...recipeForm,
       id: recipe?.id ?? "",
       user: recipe?.user ?? "",
@@ -137,11 +135,11 @@ const RecipeDetailPage = () => {
     if (changedFields[0].name[0] === "measurementType") {
       // recipe type was changed, lets convert the recipe
       if (changedFields[0].value === "metric") {
-        const oldRecipe: Recipe = form.getFieldsValue();
+        const oldRecipe: BT.Recipe = form.getFieldsValue();
         form.setFieldsValue(recipeToMetric(oldRecipe));
         setMeasurementType("metric");
       } else {
-        const oldRecipe: Recipe = form.getFieldsValue();
+        const oldRecipe: BT.Recipe = form.getFieldsValue();
         form.setFieldsValue(recipeToImperial(oldRecipe));
         setMeasurementType("imperial");
       }
@@ -149,7 +147,7 @@ const RecipeDetailPage = () => {
 
     if (changedFields[0].name.includes("use")) {
       // hops use was changed, lets reset the timing value
-      const hops: Hop[] = form.getFieldValue("hops");
+      const hops: BT.Hop[] = form.getFieldValue("hops");
       const indexToChange = changedFields[0].name[1];
       hops[indexToChange].timing = 0;
       form.setFieldsValue({ hops });
@@ -175,7 +173,7 @@ const RecipeDetailPage = () => {
   };
 
   const updateStats = () => {
-    const workingRecipe: Recipe = form.getFieldsValue();
+    const workingRecipe: BT.Recipe = form.getFieldsValue();
     setStats(getStats(workingRecipe, brewSettings));
   };
 

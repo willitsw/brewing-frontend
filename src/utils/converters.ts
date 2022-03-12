@@ -1,6 +1,4 @@
-import { BoldOutlined } from "@ant-design/icons";
-import { BrewSettings } from "../types/brew-settings";
-import { Fermentable, Hop, Recipe } from "../types/recipe";
+import { BrewingTypes as BT } from "brewing-shared";
 
 export const gallonsToLiters = (gallons: number): number => {
   const rawLiters = gallons * 3.78541;
@@ -42,15 +40,15 @@ export const literKilosToQuartPounds = (literKilos: number) => {
   return parseFloat(rawQuartPounds.toFixed(1));
 };
 
-export const recipeToMetric = (imperialRecipe: Recipe): Recipe => {
-  const metricHops: Hop[] = imperialRecipe.hops.map((hop) => {
+export const recipeToMetric = (imperialRecipe: BT.Recipe): BT.Recipe => {
+  const metricHops: BT.Hop[] = imperialRecipe.hops.map((hop) => {
     return {
       ...hop,
       amount: ouncesToGrams(hop.amount),
     };
   });
 
-  const metricFermentables: Fermentable[] = imperialRecipe.fermentables.map(
+  const metricFermentables: BT.Fermentable[] = imperialRecipe.fermentables.map(
     (fermentable) => {
       return {
         ...fermentable,
@@ -68,15 +66,15 @@ export const recipeToMetric = (imperialRecipe: Recipe): Recipe => {
   };
 };
 
-export const recipeToImperial = (metricRecipe: Recipe): Recipe => {
-  const metricHops: Hop[] = metricRecipe.hops.map((hop) => {
+export const recipeToImperial = (metricRecipe: BT.Recipe): BT.Recipe => {
+  const metricHops: BT.Hop[] = metricRecipe.hops.map((hop) => {
     return {
       ...hop,
       amount: gramsToOunces(hop.amount),
     };
   });
 
-  const metricFermentables: Fermentable[] = metricRecipe.fermentables.map(
+  const metricFermentables: BT.Fermentable[] = metricRecipe.fermentables.map(
     (fermentable) => {
       return {
         ...fermentable,
@@ -95,8 +93,8 @@ export const recipeToImperial = (metricRecipe: Recipe): Recipe => {
 };
 
 export const brewSettingsToMetric = (
-  imperialBrewSettings: BrewSettings
-): BrewSettings => {
+  imperialBrewSettings: BT.BrewSettings
+): BT.BrewSettings => {
   return {
     ...imperialBrewSettings,
     batchSize: gallonsToLiters(imperialBrewSettings.batchSize),
@@ -117,8 +115,8 @@ export const brewSettingsToMetric = (
 };
 
 export const brewSettingsToImperial = (
-  metricBrewSettings: BrewSettings
-): BrewSettings => {
+  metricBrewSettings: BT.BrewSettings
+): BT.BrewSettings => {
   return {
     ...metricBrewSettings,
     batchSize: litersToGallons(metricBrewSettings.batchSize),
@@ -137,4 +135,3 @@ export const brewSettingsToImperial = (
     mashThickness: literKilosToQuartPounds(metricBrewSettings.mashThickness),
   };
 };
-

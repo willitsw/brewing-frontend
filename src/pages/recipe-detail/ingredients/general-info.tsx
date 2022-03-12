@@ -1,5 +1,5 @@
 import { Typography, Form, Input, InputNumber, Radio, Col, Row } from "antd";
-import { MeasurementType } from "../../../types/brew-settings";
+import { MeasurementType } from "brewing-shared/src/types/brewing-types";
 
 interface GeneralInfoProps {
   measurementType: MeasurementType;

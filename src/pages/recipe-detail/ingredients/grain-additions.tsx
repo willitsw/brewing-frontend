@@ -10,9 +10,12 @@ import {
   Select,
   Typography,
 } from "antd";
+import {
+  Fermentable,
+  MeasurementType,
+  Recipe,
+} from "brewing-shared/src/types/brewing-types";
 import DefaultGrains from "../../../data/default-grains";
-import { MeasurementType } from "../../../types/brew-settings";
-import { Fermentable, Recipe } from "../../../types/recipe";
 import styles from "../index.module.css";
 
 interface GrainAdditionsProps {

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { BrewSettings } from "../../types/brew-settings";
 import { createUpdateBrewSettings } from "../../utils/api-calls";
+import { BrewSettings } from "brewing-shared/src/types/brewing-types";
 
 const defaultSettings: BrewSettings = {
   batchSize: 5,

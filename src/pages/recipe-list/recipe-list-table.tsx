@@ -12,7 +12,7 @@ import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
 import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
 import { getRecipesByUser } from "../../utils/api-calls";
-import { Recipe } from "../../types/recipe";
+import { BrewingTypes as BT } from "brewing-shared";
 
 const RecipeListTable = () => {
   const dispatch = useAppDispatch();
@@ -48,7 +48,7 @@ const RecipeListTable = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text: string, record: Recipe) => (
+      render: (text: string, record: BT.Recipe) => (
         <Link to={"/recipes/edit/" + record.id}>{text}</Link>
       ),
     },
@@ -67,7 +67,7 @@ const RecipeListTable = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: Recipe) => (
+      render: (text: string, record: BT.Recipe) => (
         <Space>
           <Tooltip title="Duplicate">
             <Button

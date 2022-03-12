@@ -21,22 +21,22 @@ import {
 } from "../../redux/brew-settings/slice";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { BrewSettings, MeasurementType } from "../../types/brew-settings";
 import {
   brewSettingsToMetric,
   brewSettingsToImperial,
 } from "../../utils/converters";
+import { BrewingTypes as BT } from "brewing-shared";
 
 import styles from "./index.module.css";
 
 const BrewSettings = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
-  const [measurementType, setMeasurementType] = useState<MeasurementType>(
+  const [measurementType, setMeasurementType] = useState<BT.MeasurementType>(
     brewSettings.measurementType
   );
   const [sparge, setSparge] = useState<boolean>(brewSettings.sparge);
 
-  const [form] = Form.useForm<BrewSettings>();
+  const [form] = Form.useForm<BT.BrewSettings>();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -46,8 +46,8 @@ const BrewSettings = () => {
     onComponentLoad();
   }, []);
 
-  const handleSave = (form: BrewSettings) => {
-    const updatedBrewSettings: BrewSettings = {
+  const handleSave = (form: BT.BrewSettings) => {
+    const updatedBrewSettings: BT.BrewSettings = {
       ...form,
       userId: brewSettings.userId,
     };
@@ -72,11 +72,11 @@ const BrewSettings = () => {
     if (changedFields[0].name[0] === "measurementType") {
       // measurement type was changed, lets convert the recipe
       if (changedFields[0].value === "metric") {
-        const oldSettings: BrewSettings = form.getFieldsValue();
+        const oldSettings: BT.BrewSettings = form.getFieldsValue();
         form.setFieldsValue(brewSettingsToMetric(oldSettings));
         setMeasurementType("metric");
       } else {
-        const oldSettings: BrewSettings = form.getFieldsValue();
+        const oldSettings: BT.BrewSettings = form.getFieldsValue();
         form.setFieldsValue(brewSettingsToImperial(oldSettings));
         setMeasurementType("imperial");
       }

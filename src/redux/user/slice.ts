@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BeerUser } from "../../types/user";
 import type { RootState } from "../store";
 import { constants } from "../../constants";
+import { BeerUser } from "brewing-shared/src/types/brewing-types";
 
 const defaultCurrentUser: BeerUser | null = constants.useAuth
   ? null

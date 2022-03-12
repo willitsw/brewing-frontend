@@ -10,9 +10,8 @@ import {
   Select,
   Typography,
 } from "antd";
+import { MeasurementType, Hop } from "brewing-shared/src/types/brewing-types";
 import DefaultHops from "../../../data/default-hops";
-import { MeasurementType } from "../../../types/brew-settings";
-import { Hop } from "../../../types/recipe";
 import styles from "../index.module.css";
 
 interface HopAdditionsProps {
@@ -36,23 +35,6 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
       const hops: Hop[] = form.getFieldValue("hops");
       hops[index].alphaAcid = defaultHop.alpha;
       form.setFieldsValue({ hops });
-    }
-  };
-
-  const getHopTimeLabel = (index: number) => {
-    const hopItem: Hop = form.getFieldValue("hops")[index];
-
-    if (!hopItem) {
-      return "min";
-    }
-
-    switch (hopItem.use) {
-      case "Boil":
-        return "min";
-      case "Dry hop":
-        return "days";
-      default:
-        return "min";
     }
   };
 
@@ -186,7 +168,7 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
                             disabled={isTimeDisabled(index)}
                             min={0}
                             style={{ width: 95 }}
-                            addonAfter={getHopTimeLabel(index)}
+                            addonAfter={"min"}
                           />
                         </Form.Item>
                       </Col>

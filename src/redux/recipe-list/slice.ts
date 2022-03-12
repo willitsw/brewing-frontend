@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Recipe } from "../../types/recipe";
+import { Recipe } from "brewing-shared/src/types/brewing-types";
 import {
   createUpdateRecipe,
   deleteRecipe,
