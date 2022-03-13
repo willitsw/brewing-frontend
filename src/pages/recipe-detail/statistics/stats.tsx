@@ -5,6 +5,8 @@ import beer from "./beer.png";
 import sixer from "./sixer.png";
 import water from "./water.png";
 import { BrewingTypes as BT } from "brewing-shared";
+import React from "react";
+
 interface StatsProps {
   stats: BT.Stats;
   measurementType: BT.MeasurementType;

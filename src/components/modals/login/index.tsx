@@ -16,6 +16,7 @@ import {
   setShowLoginModal,
 } from "../../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
+import React from "react";
 
 declare const window: any;
 

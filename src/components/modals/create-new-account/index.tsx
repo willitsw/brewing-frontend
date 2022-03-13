@@ -15,6 +15,7 @@ import {
   selectShowCreateAccountModal,
 } from "../../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
+import React from "react";
 
 interface FormValues {
   email: string;

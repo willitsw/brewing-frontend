@@ -9,6 +9,8 @@ import { useAppDispatch } from "../../redux/hooks";
 import { setGlobalIsLoading } from "../../redux/misc/slice";
 import { clearUser, setUser } from "../../redux/user/slice";
 import { getBrewSettings } from "../../utils/api-calls";
+import React from "react";
+
 interface AuthProviderProps {
   children: React.ReactNode;
 }

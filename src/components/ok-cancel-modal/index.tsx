@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Modal } from "antd";
+import React from "react";
 
 interface OkCancelModalProps {
   onSubmit: any;

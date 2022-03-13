@@ -1,6 +1,7 @@
 import { Layout, Typography, Space } from "antd";
 import Loading from "../loading";
 import styles from "./index.module.css";
+import React from "react";
 
 interface ContentProps {
   pageTitle: string;

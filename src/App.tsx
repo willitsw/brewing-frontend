@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import PageLayout from "./components/page-layout";
 import AuthProvider from "./components/auth-provider";
+import React from "react";
 
 export enum RouteSegments {
   Home = "/home",

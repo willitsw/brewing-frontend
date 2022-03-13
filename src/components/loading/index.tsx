@@ -1,5 +1,6 @@
 import styles from "./index.module.css";
 import { Spin } from "antd";
+import React from "react";
 
 interface LoadingProps {
   isLoading: boolean;

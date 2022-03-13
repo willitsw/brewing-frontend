@@ -18,6 +18,7 @@ import {
   setShowCreateAccountModal,
   setShowLoginModal,
 } from "../../redux/global-modals/slice";
+import React from "react";
 
 const Header = () => {
   const auth = getAuth();

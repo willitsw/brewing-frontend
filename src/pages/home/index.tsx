@@ -7,6 +7,7 @@ import {
 } from "../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
+import React from "react";
 
 const HomePage = () => {
   const auth = getAuth();

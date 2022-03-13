@@ -32,6 +32,7 @@ import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { selectCurrentUser } from "../../redux/user/slice";
 import MiscAdditions from "./ingredients/misc-additions";
 import { BrewingTypes as BT } from "brewing-shared";
+import React from "react";
 
 const defaultRecipe: BT.Recipe = {
   name: "New Recipe",

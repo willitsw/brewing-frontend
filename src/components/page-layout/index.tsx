@@ -11,6 +11,7 @@ import Header from "../header";
 import GlobalModals from "../global-modals";
 import { selectGlobalIsLoading } from "../../redux/misc/slice";
 import Loading from "../loading";
+import React from "react";
 
 const PageLayout = () => {
   const isAuthenticated = useAppSelector(userIsAuthenticated);

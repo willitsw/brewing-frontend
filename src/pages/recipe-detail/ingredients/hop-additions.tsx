@@ -13,6 +13,7 @@ import {
 import { MeasurementType, Hop } from "brewing-shared/src/types/brewing-types";
 import DefaultHops from "../../../data/default-hops";
 import styles from "../index.module.css";
+import React from "react";
 
 interface HopAdditionsProps {
   form: FormInstance;
