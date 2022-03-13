@@ -12,7 +12,7 @@ module.exports = {
     filename: "index.[contenthash].bundle.js",
     publicPath: "/",
   },
-  devtool: "eval-cheap-source-map",
+  devtool: "source-map",
   mode: process.env.NODE_ENV || "development",
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
@@ -39,6 +39,11 @@ module.exports = {
       {
         test: /\.(jpg|jpeg|png|gif|mp3|svg|ico)$/,
         use: ["file-loader"],
+      },
+      {
+        test: /\.js$/,
+        enforce: "pre",
+        use: ["source-map-loader"],
       },
     ],
   },
