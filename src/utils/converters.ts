@@ -40,55 +40,35 @@ export const literKilosToQuartPounds = (literKilos: number) => {
   return parseFloat(rawQuartPounds.toFixed(1));
 };
 
-export const recipeToMetric = (imperialRecipe: BT.Recipe): BT.Recipe => {
-  const metricHops: BT.Hop[] = imperialRecipe.hops.map((hop) => {
-    return {
-      ...hop,
-      amount: ouncesToGrams(hop.amount),
-    };
+export const recipeToMetric = (recipe: BT.Recipe): BT.Recipe => {
+  recipe.ingredients.forEach((ingredient) => {
+    if (ingredient.type === "Hop") {
+      ingredient.amount = ouncesToGrams(ingredient.amount);
+    } else if (ingredient.type === "Fermentable") {
+      ingredient.amount = poundsToKilograms(ingredient.amount);
+    }
   });
 
-  const metricFermentables: BT.Fermentable[] = imperialRecipe.fermentables.map(
-    (fermentable) => {
-      return {
-        ...fermentable,
-        amount: poundsToKilograms(fermentable.amount),
-      };
-    }
-  );
-
   return {
-    ...imperialRecipe,
-    batchSize: gallonsToLiters(imperialRecipe.batchSize),
+    ...recipe,
+    batchSize: gallonsToLiters(recipe.batchSize),
     measurementType: "metric",
-    hops: metricHops,
-    fermentables: metricFermentables,
   };
 };
 
-export const recipeToImperial = (metricRecipe: BT.Recipe): BT.Recipe => {
-  const metricHops: BT.Hop[] = metricRecipe.hops.map((hop) => {
-    return {
-      ...hop,
-      amount: gramsToOunces(hop.amount),
-    };
+export const recipeToImperial = (recipe: BT.Recipe): BT.Recipe => {
+  recipe.ingredients.forEach((ingredient) => {
+    if (ingredient.type === "Hop") {
+      ingredient.amount = gramsToOunces(ingredient.amount);
+    } else if (ingredient.type === "Fermentable") {
+      ingredient.amount = kilogramsToPounds(ingredient.amount);
+    }
   });
 
-  const metricFermentables: BT.Fermentable[] = metricRecipe.fermentables.map(
-    (fermentable) => {
-      return {
-        ...fermentable,
-        amount: kilogramsToPounds(fermentable.amount),
-      };
-    }
-  );
-
   return {
-    ...metricRecipe,
-    batchSize: litersToGallons(metricRecipe.batchSize),
+    ...recipe,
+    batchSize: litersToGallons(recipe.batchSize),
     measurementType: "imperial",
-    hops: metricHops,
-    fermentables: metricFermentables,
   };
 };
 

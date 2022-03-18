@@ -10,14 +10,14 @@ import {
   Select,
   Typography,
 } from "antd";
-import { MeasurementType, Hop } from "brewing-shared/src/types/brewing-types";
+import { BrewingTypes as BT } from "brewing-shared";
 import DefaultHops from "../../../data/default-hops";
 import styles from "../index.module.css";
 import React from "react";
 
 interface HopAdditionsProps {
   form: FormInstance;
-  measurementType: MeasurementType;
+  measurementType: BT.MeasurementType;
 }
 
 const typeAheadOptions = DefaultHops.map((hop) => {
@@ -33,7 +33,7 @@ const HopAdditions = ({ form, measurementType }: HopAdditionsProps) => {
     const defaultHop = DefaultHops.find((hop) => hop.name === selection);
 
     if (defaultHop) {
-      const hops: Hop[] = form.getFieldValue("hops");
+      const hops: BT.Hop[] = form.getFieldValue("hops");
       hops[index].alphaAcid = defaultHop.alpha;
       form.setFieldsValue({ hops });
     }

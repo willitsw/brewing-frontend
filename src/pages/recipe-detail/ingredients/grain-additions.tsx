@@ -10,18 +10,14 @@ import {
   Select,
   Typography,
 } from "antd";
-import {
-  Fermentable,
-  MeasurementType,
-  Recipe,
-} from "brewing-shared/src/types/brewing-types";
+import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 import DefaultGrains from "../../../data/default-grains";
 import styles from "../index.module.css";
 
 interface GrainAdditionsProps {
-  form: FormInstance<Recipe>;
-  measurementType: MeasurementType;
+  form: FormInstance<BT.Recipe>;
+  measurementType: BT.MeasurementType;
 }
 
 const typeAheadOptions = DefaultGrains.map((grain) => {
@@ -39,15 +35,14 @@ const GrainAdditions = ({ form, measurementType }: GrainAdditionsProps) => {
     );
 
     if (defaultGrain) {
-      const fermentables: Fermentable[] = form.getFieldValue("fermentables");
-      const indexToModify = fermentables.findIndex(
-        (fermentable: Fermentable) => fermentable.name === defaultGrain.name
-      );
-      fermentables[indexToModify].lovibond = defaultGrain.lovibond;
-      fermentables[indexToModify].gravity = defaultGrain.gravity;
-      fermentables[indexToModify].type = defaultGrain.type;
-
-      form.setFieldsValue({ fermentables });
+      // const fermentables: Fermentable[] = form.getFieldValue("fermentables");
+      // const indexToModify = fermentables.findIndex(
+      //   (fermentable: Fermentable) => fermentable.name === defaultGrain.name
+      // );
+      // fermentables[indexToModify].lovibond = defaultGrain.lovibond;
+      // fermentables[indexToModify].gravity = defaultGrain.gravity;
+      // fermentables[indexToModify].type = defaultGrain.type;
+      // form.setFieldsValue({ fermentables });
     }
   };
 

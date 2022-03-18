@@ -14,7 +14,6 @@ import {
   Row,
   Tabs,
 } from "antd";
-import GrainAdditions from "./ingredients/grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processCreateUpdateRecipe,
@@ -22,15 +21,12 @@ import {
   setCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import { getStats } from "../../utils/beer-math";
-import HopAdditions from "./ingredients/hop-additions";
-import YeastAdditions from "./ingredients/yeast-additions";
 import GeneralInfo from "./ingredients/general-info";
 import StatsSection from "./statistics/stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { selectCurrentUser } from "../../redux/user/slice";
-import MiscAdditions from "./ingredients/misc-additions";
 import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 
@@ -40,14 +36,11 @@ const defaultRecipe: BT.Recipe = {
   author: "",
   batchSize: 5,
   id: uuid(),
-  fermentables: [],
-  hops: [],
-  cultures: [],
   type: "All grain",
   user: "bob",
   measurementType: "imperial",
   efficiency: 70,
-  nonFermentables: [],
+  ingredients: [],
 };
 
 const defaultStats: BT.Stats = {
@@ -146,13 +139,13 @@ const RecipeDetailPage = () => {
       }
     }
 
-    if (changedFields[0].name.includes("use")) {
-      // hops use was changed, lets reset the timing value
-      const hops: BT.Hop[] = form.getFieldValue("hops");
-      const indexToChange = changedFields[0].name[1];
-      hops[indexToChange].timing = 0;
-      form.setFieldsValue({ hops });
-    }
+    // if (changedFields[0].name.includes("use")) {
+    //   // hops use was changed, lets reset the timing value
+    //   const hops: BT.Hop[] = form.getFieldValue("hops");
+    //   const indexToChange = changedFields[0].name[1];
+    //   hops[indexToChange].timing = 0;
+    //   form.setFieldsValue({ hops });
+    // }
   };
 
   const handleOnValuesChange = (changedValues: any) => {
@@ -183,7 +176,7 @@ const RecipeDetailPage = () => {
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Ingredients" key="1">
           <GeneralInfo measurementType={measurementType} />
-          <Divider />
+          {/* <Divider />
           <GrainAdditions form={form} measurementType={measurementType} />
           <Divider />
           <HopAdditions form={form} measurementType={measurementType} />
@@ -191,7 +184,7 @@ const RecipeDetailPage = () => {
           <YeastAdditions />
           <Divider />
           <MiscAdditions />
-          <Divider />
+          <Divider /> */}
         </Tabs.TabPane>
         <Tabs.TabPane tab="Process" key="2">
           Under construction
