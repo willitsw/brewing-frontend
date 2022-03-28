@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   signInWithRedirect,
   signInWithCustomToken,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { useState } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
@@ -56,6 +57,19 @@ const LoginModal = () => {
     onCancel();
   };
 
+  const handleCreateAccount = async () => {
+    setModalLoading(true);
+    try {
+      await form.validateFields();
+      const values: FormValues = form.getFieldsValue();
+      await createUserWithEmailAndPassword(auth, values.email, values.password);
+    } catch (error) {
+      console.log("email / password signup failed:", error);
+    }
+    setModalLoading(false);
+    onCancel();
+  };
+
   const handleSubmit = async () => {
     setModalLoading(true);
     try {
@@ -103,7 +117,6 @@ const LoginModal = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               label="Password"
               name="password"
@@ -114,6 +127,13 @@ const LoginModal = () => {
             >
               <Input.Password />
             </Form.Item>
+            <Button
+              style={{ float: "right" }}
+              onClick={handleCreateAccount}
+              type="link"
+            >
+              Create Account
+            </Button>
           </>
         )}
       </Form>
