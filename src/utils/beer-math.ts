@@ -110,7 +110,7 @@ export const calculateIbu = (
   const actualHops = hops.filter((hop) => !!hop);
 
   actualHops.forEach((hop) => {
-    if (hop.timing && hop.amount && hop.alphaAcid) {
+    if (hop.timing && hop.amount && hop.alphaAcid && hop.step === "Boil") {
       const boilTimeFactor = (1 - Math.E ** (-0.04 * hop.timing)) / 4.15;
       const aaUtilization = bignessFactor * boilTimeFactor;
       const mgLtrAa = ((hop.alphaAcid / 100) * hop.amount * 7490) / batchSize;
@@ -193,8 +193,9 @@ export const getStats = (
     recipe = recipeToImperial(recipe);
   }
 
-  const { Hop, Fermentable, Culture } =
-    RecipeUtils.sortIngredientsByType(recipe);
+  const { Hop, Fermentable, Culture } = RecipeUtils.sortIngredientsByType(
+    recipe.ingredients
+  );
 
   const srm = calculateSrm(recipe.batchSize, Fermentable);
   const og = calculateOg(Fermentable, recipe.batchSize, recipe.efficiency);
