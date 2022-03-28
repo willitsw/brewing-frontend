@@ -18,6 +18,7 @@ import {
   setShowCreateAccountModal,
   setShowLoginModal,
 } from "../../redux/global-modals/slice";
+import React from "react";
 
 const Header = () => {
   const auth = getAuth();
@@ -109,6 +110,7 @@ const Header = () => {
             mode="horizontal"
             onClick={handleMenuClick}
             selectedKeys={[currentPage]}
+            style={{ justifyContent: "flex-end" }}
           >
             <Menu.Item key={"/home"}>Home</Menu.Item>
             <Menu.Item key={"/recipes/list"} disabled={!isAuthenticated}>

@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { createUpdateBrewSettings } from "../../utils/api-calls";
-import { BrewSettings } from "brewing-shared/src/types/brewing-types";
+import { BrewingTypes as BT } from "brewing-shared";
 
-const defaultSettings: BrewSettings = {
+const defaultSettings: BT.BrewSettings = {
   batchSize: 5,
   boilTime: 60,
   brewhouseEfficiency: 70,
@@ -20,7 +20,7 @@ const defaultSettings: BrewSettings = {
   mashThickness: 1.3,
 };
 interface BrewSettingsState {
-  brewSettings: BrewSettings;
+  brewSettings: BT.BrewSettings;
 }
 
 const initialState: BrewSettingsState = {
@@ -34,7 +34,7 @@ export enum RecipeActionTypes {
 
 export const processCreateUpdateBrewSettings = createAsyncThunk(
   "brewSettings/updateBrewSettings",
-  async (brewSettings: BrewSettings, { getState, dispatch }) => {
+  async (brewSettings: BT.BrewSettings, { getState, dispatch }) => {
     await createUpdateBrewSettings(brewSettings);
     dispatch(setBrewSettings(brewSettings));
   }
@@ -44,7 +44,7 @@ export const brewSettingsSlice = createSlice({
   name: "brew-settings",
   initialState,
   reducers: {
-    setBrewSettings: (state, action: { payload: BrewSettings }) => {
+    setBrewSettings: (state, action: { payload: BT.BrewSettings }) => {
       state.brewSettings = action.payload;
     },
     clearBrewSettings: (state) => {

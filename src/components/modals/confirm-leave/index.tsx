@@ -6,6 +6,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import type { History, Blocker, Transition } from "history";
 import { UNSAFE_NavigationContext } from "react-router-dom";
+import React from "react";
 
 const ConfirmLeaveModal = () => {
   const pageIsClean = useAppSelector(selectPageIsClean);

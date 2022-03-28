@@ -26,6 +26,7 @@ import {
   brewSettingsToImperial,
 } from "../../utils/converters";
 import { BrewingTypes as BT } from "brewing-shared";
+import React from "react";
 
 import styles from "./index.module.css";
 

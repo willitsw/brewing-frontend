@@ -1,5 +1,6 @@
 import Content from "../../components/content";
 import RecipeListTable from "./recipe-list-table";
+import React from "react";
 
 const RecipeListPage = () => {
   return (
