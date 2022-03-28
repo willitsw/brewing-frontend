@@ -169,23 +169,21 @@ const RecipeDetailPage = () => {
   };
 
   const formSections = (
-    <>
-      <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="General Info" key="1">
-          <GeneralInfo measurementType={measurementType} />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Ingredients" key="2">
-          <Ingredients
-            ingredients={ingredients}
-            measurementType={measurementType}
-            setIngredients={handleSetIngredients}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Water Chemistry" key="3">
-          Under construction
-        </Tabs.TabPane>
-      </Tabs>
-    </>
+    <Tabs defaultActiveKey="1">
+      <Tabs.TabPane tab="General Info" key="1">
+        <GeneralInfo measurementType={measurementType} />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab="Ingredients" key="2">
+        <Ingredients
+          ingredients={ingredients}
+          measurementType={measurementType}
+          setIngredients={handleSetIngredients}
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab="Water Chemistry" key="3">
+        Under construction
+      </Tabs.TabPane>
+    </Tabs>
   );
 
   const getLayout = () => {
