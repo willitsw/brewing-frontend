@@ -36,6 +36,7 @@ const defaultRecipe: BT.Recipe = {
   author: "",
   batchSize: 5,
   id: uuid(),
+  userId: "",
   type: "All grain",
   measurementType: "imperial",
   efficiency: 70,
@@ -109,6 +110,7 @@ const RecipeDetailPage = () => {
     const newRecipe: BT.Recipe = {
       ...recipeForm,
       id: recipe?.id ?? "",
+      userId: brewSettings.id ?? "",
     };
     dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));
