@@ -1,5 +1,5 @@
 import { gallonsToLiters, recipeToImperial } from "./converters";
-import { BrewingTypes as BT } from "brewing-shared";
+import { BrewingTypes as BT, RecipeUtils } from "brewing-shared";
 
 export const calculateSrm = (
   batchSizeGallons: number,
@@ -13,7 +13,7 @@ export const calculateSrm = (
   const actualFermentables = fermentables.filter((grain) => !!grain);
 
   actualFermentables.forEach((fermentable) => {
-    if (fermentable.lovibond && fermentable.amount && fermentable.gravity) {
+    if (fermentable.lovibond && fermentable.amount && fermentable.potential) {
       srm += (fermentable.amount * fermentable.lovibond) / batchSizeGallons;
     }
   });
@@ -37,16 +37,19 @@ export const calculateOg = (
   const actualFermentables = fermentables.filter(
     (fermentable) =>
       !!fermentable &&
-      fermentable.gravity &&
+      fermentable.potential &&
       fermentable.amount &&
-      fermentable.gravity > 0 &&
+      fermentable.potential > 0 &&
       fermentable.amount > 0
   );
 
-  const unadjustedOg = actualFermentables.reduce((og, { gravity, amount }) => {
-    const points = gravity - 1;
-    return (og += points * amount);
-  }, 0);
+  const unadjustedOg = actualFermentables.reduce(
+    (og, { potential, amount }) => {
+      const points = potential - 1;
+      return (og += points * amount);
+    },
+    0
+  );
 
   const actualEfficiency = efficiency / 100;
 
@@ -110,7 +113,7 @@ export const calculateIbu = (
   const actualHops = hops.filter((hop) => !!hop);
 
   actualHops.forEach((hop) => {
-    if (hop.timing && hop.amount && hop.alphaAcid) {
+    if (hop.timing && hop.amount && hop.alphaAcid && hop.step === "Boil") {
       const boilTimeFactor = (1 - Math.E ** (-0.04 * hop.timing)) / 4.15;
       const aaUtilization = bignessFactor * boilTimeFactor;
       const mgLtrAa = ((hop.alphaAcid / 100) * hop.amount * 7490) / batchSize;
@@ -127,7 +130,7 @@ const getGrainPounds = (grains: BT.Fermentable[]): number => {
     if (
       !currentFermentable ||
       !currentFermentable.amount ||
-      currentFermentable.type !== "Grain"
+      currentFermentable.form !== "Grain"
     ) {
       return pounds;
     }
@@ -136,8 +139,8 @@ const getGrainPounds = (grains: BT.Fermentable[]): number => {
 };
 
 export const calculateWaterLoss = (
-  recipe: BT.Recipe,
-  brewSettings: BT.BrewSettings
+  brewSettings: BT.User,
+  fermentables: BT.Fermentable[]
 ) => {
   let waterLoss = 0;
 
@@ -148,7 +151,7 @@ export const calculateWaterLoss = (
   const evaporationLoss = brewSettings.boilOffWaterLossRate * boilHours;
   waterLoss += evaporationLoss;
 
-  const grainPounds = getGrainPounds(recipe.fermentables);
+  const grainPounds = getGrainPounds(fermentables);
   const quartsLostFromGrain = grainPounds * brewSettings.waterLossPerGrain;
   waterLoss += quartsLostFromGrain / 4;
 
@@ -156,22 +159,23 @@ export const calculateWaterLoss = (
 };
 
 export const calculateStrikeWater = (
-  recipe: BT.Recipe,
-  brewSettings: BT.BrewSettings,
-  waterLoss: number
+  brewSettings: BT.User,
+  waterLoss: number,
+  fermentables: BT.Fermentable[],
+  batchSize: number
 ) => {
   if (!brewSettings.sparge) {
-    return recipe.batchSize + waterLoss;
+    return batchSize + waterLoss;
   }
 
-  const grainPounds = getGrainPounds(recipe.fermentables);
+  const grainPounds = getGrainPounds(fermentables);
   const quartsNeeded = grainPounds * brewSettings.mashThickness;
   return quartsNeeded / 4;
 };
 
 export const calculateHotLiquor = (
   recipe: BT.Recipe,
-  brewSettings: BT.BrewSettings,
+  brewSettings: BT.User,
   strikeWater: number,
   waterLoss: number
 ) => {
@@ -184,7 +188,7 @@ export const calculateHotLiquor = (
 
 export const getStats = (
   recipe: BT.Recipe,
-  brewSettings: BT.BrewSettings
+  brewSettings: BT.User
 ): BT.Stats => {
   const isMetric = recipe.measurementType === "metric";
 
@@ -192,18 +196,23 @@ export const getStats = (
     recipe = recipeToImperial(recipe);
   }
 
-  const srm = calculateSrm(recipe.batchSize, recipe.fermentables);
-  const og = calculateOg(
-    recipe.fermentables,
-    recipe.batchSize,
-    recipe.efficiency
+  const { Hop, Fermentable, Culture } = RecipeUtils.sortIngredientsByType(
+    recipe.ingredients
   );
-  const fg = calculateFg(og, recipe.cultures);
-  const abv = calculateAbv(og, fg);
-  const ibu = calculateIbu(og, recipe.hops, recipe.batchSize);
 
-  const waterLoss = calculateWaterLoss(recipe, brewSettings);
-  const strikeWater = calculateStrikeWater(recipe, brewSettings, waterLoss);
+  const srm = calculateSrm(recipe.batchSize, Fermentable);
+  const og = calculateOg(Fermentable, recipe.batchSize, recipe.efficiency);
+  const fg = calculateFg(og, Culture);
+  const abv = calculateAbv(og, fg);
+  const ibu = calculateIbu(og, Hop, recipe.batchSize);
+
+  const waterLoss = calculateWaterLoss(brewSettings, Fermentable);
+  const strikeWater = calculateStrikeWater(
+    brewSettings,
+    waterLoss,
+    Fermentable,
+    recipe.batchSize
+  );
   const hotLiquor = calculateHotLiquor(
     recipe,
     brewSettings,

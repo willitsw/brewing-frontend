@@ -23,16 +23,16 @@ export const createUpdateRecipe = async (
 
 // BREW SETTInGS ENDPOINTS
 
-export const getBrewSettings = async (): Promise<BT.BrewSettings> => {
-  return await makeRequest("/brew-settings", "GET");
+export const getBrewSettings = async (): Promise<BT.User> => {
+  return await makeRequest("/users", "GET");
 };
 
 export const deleteBrewSettings = async (id: string): Promise<void> => {
-  return await makeRequest(`/brew-settings/${id}`, "DELETE");
+  return await makeRequest(`/users/${id}`, "DELETE");
 };
 
 export const createUpdateBrewSettings = async (
-  brewSettings: BT.BrewSettings
-): Promise<BT.BrewSettings> => {
-  return await makeRequest("/brew-settings", "POST", brewSettings);
+  brewSettings: BT.User
+): Promise<BT.User> => {
+  return await makeRequest("/users", "POST", brewSettings);
 };

@@ -33,12 +33,6 @@ const HomePage = () => {
           <Space>
             <Button
               type="primary"
-              onClick={() => dispatch(setShowCreateAccountModal(true))}
-            >
-              Create an Account
-            </Button>
-            <Button
-              type="primary"
               onClick={() => dispatch(setShowLoginModal(true))}
             >
               Login

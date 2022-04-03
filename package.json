@@ -15,7 +15,7 @@
     "@ant-design/icons": "^4.7.0",
     "@reduxjs/toolkit": "^1.7.1",
     "antd": "^4.18.4",
-    "brewing-shared": "github:willitsw/brewing-shared#v0.0.6",
+    "brewing-shared": "github:willitsw/brewing-shared#v0.0.10",
     "firebase": "^9.6.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

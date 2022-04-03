@@ -61,20 +61,12 @@ const Header = () => {
     if (!isAuthenticated) {
       return (
         <Menu>
-          <Menu.Item key='login' icon={<LoginOutlined />}>
+          <Menu.Item key="login" icon={<LoginOutlined />}>
             <Button
               type="link"
               onClick={() => dispatch(setShowLoginModal(true))}
             >
               Login
-            </Button>
-          </Menu.Item>
-          <Menu.Item key='create-account' icon={<PlusCircleOutlined />}>
-            <Button
-              type="link"
-              onClick={() => dispatch(setShowCreateAccountModal(true))}
-            >
-              Create New Account
             </Button>
           </Menu.Item>
         </Menu>
@@ -110,6 +102,7 @@ const Header = () => {
             mode="horizontal"
             onClick={handleMenuClick}
             selectedKeys={[currentPage]}
+            style={{ justifyContent: "flex-end" }}
           >
             <Menu.Item key={"/home"}>Home</Menu.Item>
             <Menu.Item key={"/recipes/list"} disabled={!isAuthenticated}>

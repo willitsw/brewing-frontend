@@ -14,7 +14,6 @@ import {
   Row,
   Tabs,
 } from "antd";
-import GrainAdditions from "./ingredients/grain-additions";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import {
   processCreateUpdateRecipe,
@@ -22,17 +21,14 @@ import {
   setCurrentRecipe,
 } from "../../redux/recipe-list/slice";
 import { getStats } from "../../utils/beer-math";
-import HopAdditions from "./ingredients/hop-additions";
-import YeastAdditions from "./ingredients/yeast-additions";
-import GeneralInfo from "./ingredients/general-info";
+import GeneralInfo from "./general/general-info";
 import StatsSection from "./statistics/stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
-import { selectCurrentUser } from "../../redux/user/slice";
-import MiscAdditions from "./ingredients/misc-additions";
 import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
+import Ingredients from "./ingredients/ingredients";
 
 const defaultRecipe: BT.Recipe = {
   name: "New Recipe",
@@ -40,14 +36,11 @@ const defaultRecipe: BT.Recipe = {
   author: "",
   batchSize: 5,
   id: uuid(),
-  fermentables: [],
-  hops: [],
-  cultures: [],
+  userId: "",
   type: "All grain",
-  user: "bob",
   measurementType: "imperial",
   efficiency: 70,
-  nonFermentables: [],
+  ingredients: [],
 };
 
 const defaultStats: BT.Stats = {
@@ -63,7 +56,6 @@ const defaultStats: BT.Stats = {
 
 const RecipeDetailPage = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
-  const currentUser = useAppSelector(selectCurrentUser);
   const [form] = Form.useForm<BT.Recipe>();
   const { id } = useParams();
   const location = useLocation();
@@ -74,6 +66,7 @@ const RecipeDetailPage = () => {
   const [measurementType, setMeasurementType] = useState<BT.MeasurementType>(
     brewSettings.measurementType
   );
+  const [ingredients, setIngredients] = useState<BT.ValidIngredient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
@@ -91,14 +84,14 @@ const RecipeDetailPage = () => {
       } else {
         workingRecipe = { ...defaultRecipe };
 
-        workingRecipe.author = brewSettings.author;
+        workingRecipe.author = brewSettings.displayName;
         workingRecipe.batchSize = brewSettings.batchSize;
         workingRecipe.efficiency = brewSettings.brewhouseEfficiency;
         workingRecipe.measurementType = brewSettings.measurementType;
-        workingRecipe.user = currentUser?.uid ?? "";
       }
 
       setStats(getStats(workingRecipe, brewSettings));
+      setIngredients(workingRecipe.ingredients);
 
       form.setFieldsValue(workingRecipe);
       dispatch(setCurrentRecipe(workingRecipe));
@@ -117,7 +110,7 @@ const RecipeDetailPage = () => {
     const newRecipe: BT.Recipe = {
       ...recipeForm,
       id: recipe?.id ?? "",
-      user: recipe?.user ?? "",
+      userId: brewSettings.id ?? "",
     };
     dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));
@@ -136,22 +129,18 @@ const RecipeDetailPage = () => {
     if (changedFields[0].name[0] === "measurementType") {
       // recipe type was changed, lets convert the recipe
       if (changedFields[0].value === "metric") {
-        const oldRecipe: BT.Recipe = form.getFieldsValue();
-        form.setFieldsValue(recipeToMetric(oldRecipe));
+        const metricRecipe: BT.Recipe = recipeToMetric(form.getFieldsValue());
+        form.setFieldsValue(metricRecipe);
+        setIngredients(metricRecipe.ingredients);
         setMeasurementType("metric");
       } else {
-        const oldRecipe: BT.Recipe = form.getFieldsValue();
-        form.setFieldsValue(recipeToImperial(oldRecipe));
+        const imperialRecipe: BT.Recipe = recipeToImperial(
+          form.getFieldsValue()
+        );
+        form.setFieldsValue(imperialRecipe);
+        setIngredients(imperialRecipe.ingredients);
         setMeasurementType("imperial");
       }
-    }
-
-    if (changedFields[0].name.includes("use")) {
-      // hops use was changed, lets reset the timing value
-      const hops: BT.Hop[] = form.getFieldValue("hops");
-      const indexToChange = changedFields[0].name[1];
-      hops[indexToChange].timing = 0;
-      form.setFieldsValue({ hops });
     }
   };
 
@@ -159,48 +148,39 @@ const RecipeDetailPage = () => {
     dispatch(setPageIsClean(false));
 
     const changedValue = Object.keys(changedValues)[0];
-    if (
-      [
-        "fermentables",
-        "batchSize",
-        "efficiency",
-        "cultures",
-        "hops",
-        "measurementType",
-      ].includes(changedValue)
-    ) {
-      updateStats();
+    if (["batchSize", "efficiency", "measurementType"].includes(changedValue)) {
+      updateStats(ingredients);
     }
   };
 
-  const updateStats = () => {
+  const handleSetIngredients = (newIngredients: BT.ValidIngredient[]) => {
+    dispatch(setPageIsClean(false));
+    updateStats(newIngredients);
+    setIngredients(newIngredients);
+  };
+
+  const updateStats = (newIngredients: BT.ValidIngredient[]) => {
     const workingRecipe: BT.Recipe = form.getFieldsValue();
+    workingRecipe.ingredients = newIngredients;
     setStats(getStats(workingRecipe, brewSettings));
   };
 
   const formSections = (
-    <>
-      <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="Ingredients" key="1">
-          <GeneralInfo measurementType={measurementType} />
-          <Divider />
-          <GrainAdditions form={form} measurementType={measurementType} />
-          <Divider />
-          <HopAdditions form={form} measurementType={measurementType} />
-          <Divider />
-          <YeastAdditions />
-          <Divider />
-          <MiscAdditions />
-          <Divider />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Process" key="2">
-          Under construction
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Water Chemistry" key="3">
-          Under construction
-        </Tabs.TabPane>
-      </Tabs>
-    </>
+    <Tabs defaultActiveKey="1">
+      <Tabs.TabPane tab="General Info" key="1">
+        <GeneralInfo measurementType={measurementType} />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab="Ingredients" key="2">
+        <Ingredients
+          ingredients={ingredients}
+          measurementType={measurementType}
+          setIngredients={handleSetIngredients}
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab="Water Chemistry" key="3">
+        Under construction
+      </Tabs.TabPane>
+    </Tabs>
   );
 
   const getLayout = () => {

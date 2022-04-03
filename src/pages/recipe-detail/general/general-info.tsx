@@ -1,9 +1,9 @@
 import { Typography, Form, Input, InputNumber, Radio, Col, Row } from "antd";
-import { MeasurementType } from "brewing-shared/src/types/brewing-types";
+import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 
 interface GeneralInfoProps {
-  measurementType: MeasurementType;
+  measurementType: BT.MeasurementType;
 }
 
 const GeneralInfo = ({ measurementType }: GeneralInfoProps) => {

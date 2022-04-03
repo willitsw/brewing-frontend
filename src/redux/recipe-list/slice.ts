@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Recipe } from "brewing-shared/src/types/brewing-types";
+import { BrewingTypes as BT } from "brewing-shared";
 import {
   createUpdateRecipe,
   deleteRecipe,
@@ -9,8 +9,8 @@ import { deepCloneObject } from "../../utils/helpers";
 import type { RootState } from "../store";
 
 interface RecipeState {
-  recipeList: Recipe[];
-  currentRecipe: Recipe | null;
+  recipeList: BT.Recipe[];
+  currentRecipe: BT.Recipe | null;
 }
 
 const initialState: RecipeState = {
@@ -45,10 +45,12 @@ export const processDeleteRecipe = createAsyncThunk(
 
 export const processCreateUpdateRecipe = createAsyncThunk(
   "recipes/createUpdateRecipe",
-  async (recipe: Recipe, { getState, dispatch }) => {
+  async (recipe: BT.Recipe, { getState, dispatch }) => {
     await createUpdateRecipe(recipe);
     const state = getState() as RootState;
-    const newRecipeList: Recipe[] = deepCloneObject(state.recipes.recipeList);
+    const newRecipeList: BT.Recipe[] = deepCloneObject(
+      state.recipes.recipeList
+    );
     const currentRecipeIndex = newRecipeList.findIndex(
       ({ id }) => id === recipe.id
     );

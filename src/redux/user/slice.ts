@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { constants } from "../../constants";
-import { BeerUser } from "brewing-shared/src/types/brewing-types";
+import { BrewingTypes as BT } from "brewing-shared";
 
-const defaultCurrentUser: BeerUser | null = constants.useAuth
+const defaultCurrentUser: BT.BeerUser | null = constants.useAuth
   ? null
   : {
       displayName: "Local Dev User",
@@ -12,7 +12,7 @@ const defaultCurrentUser: BeerUser | null = constants.useAuth
       uid: "123456789",
     };
 interface UserState {
-  currentUser: BeerUser | null;
+  currentUser: BT.BeerUser | null;
   isAuthenticated: boolean;
 }
 
@@ -30,7 +30,7 @@ export const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    setUser: (state, action: { payload: BeerUser }) => {
+    setUser: (state, action: { payload: BT.BeerUser }) => {
       const newUser = action.payload;
       state.currentUser = newUser;
       state.isAuthenticated = !!newUser;
