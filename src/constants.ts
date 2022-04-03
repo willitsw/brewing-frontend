@@ -1,6 +1,6 @@
 const isLocal = process.env.NODE_ENV === "development";
 
-const useAuthLocally = true;
+const useAuthLocally = false;
 
 interface Constants {
   isLocal: boolean;

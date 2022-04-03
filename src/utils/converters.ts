@@ -73,8 +73,8 @@ export const recipeToImperial = (recipe: BT.Recipe): BT.Recipe => {
 };
 
 export const brewSettingsToMetric = (
-  imperialBrewSettings: BT.BrewSettings
-): BT.BrewSettings => {
+  imperialBrewSettings: BT.User
+): BT.User => {
   return {
     ...imperialBrewSettings,
     batchSize: gallonsToLiters(imperialBrewSettings.batchSize),
@@ -95,8 +95,8 @@ export const brewSettingsToMetric = (
 };
 
 export const brewSettingsToImperial = (
-  metricBrewSettings: BT.BrewSettings
-): BT.BrewSettings => {
+  metricBrewSettings: BT.User
+): BT.User => {
   return {
     ...metricBrewSettings,
     batchSize: litersToGallons(metricBrewSettings.batchSize),

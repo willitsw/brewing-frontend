@@ -26,7 +26,6 @@ import StatsSection from "./statistics/stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { recipeToImperial, recipeToMetric } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
-import { selectCurrentUser } from "../../redux/user/slice";
 import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 import Ingredients from "./ingredients/ingredients";
@@ -38,7 +37,6 @@ const defaultRecipe: BT.Recipe = {
   batchSize: 5,
   id: uuid(),
   type: "All grain",
-  user: "bob",
   measurementType: "imperial",
   efficiency: 70,
   ingredients: [],
@@ -57,7 +55,6 @@ const defaultStats: BT.Stats = {
 
 const RecipeDetailPage = () => {
   const brewSettings = useAppSelector(selectBrewSettings);
-  const currentUser = useAppSelector(selectCurrentUser);
   const [form] = Form.useForm<BT.Recipe>();
   const { id } = useParams();
   const location = useLocation();
@@ -86,11 +83,10 @@ const RecipeDetailPage = () => {
       } else {
         workingRecipe = { ...defaultRecipe };
 
-        workingRecipe.author = brewSettings.author;
+        workingRecipe.author = brewSettings.displayName;
         workingRecipe.batchSize = brewSettings.batchSize;
         workingRecipe.efficiency = brewSettings.brewhouseEfficiency;
         workingRecipe.measurementType = brewSettings.measurementType;
-        workingRecipe.user = currentUser?.uid ?? "";
       }
 
       setStats(getStats(workingRecipe, brewSettings));
@@ -113,7 +109,6 @@ const RecipeDetailPage = () => {
     const newRecipe: BT.Recipe = {
       ...recipeForm,
       id: recipe?.id ?? "",
-      user: recipe?.user ?? "",
     };
     dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));

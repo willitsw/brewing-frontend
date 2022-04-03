@@ -95,8 +95,8 @@ const IngredientModal = ({
     if (defaultGrain) {
       const ingredientToUpdate = form.getFieldsValue() as BT.Fermentable;
       ingredientToUpdate.lovibond = defaultGrain.lovibond;
-      ingredientToUpdate.gravity = defaultGrain.gravity;
-      ingredientToUpdate.fermentableType = defaultGrain.type;
+      ingredientToUpdate.potential = defaultGrain.gravity;
+      ingredientToUpdate.form = defaultGrain.type;
       form.setFieldsValue(ingredientToUpdate);
     }
   };
@@ -145,7 +145,7 @@ const IngredientModal = ({
               </Col>
               <Col span={10}>
                 <Form.Item
-                  name="fermentableType"
+                  name="form"
                   label="Type"
                   labelCol={{ span: 30, offset: 0 }}
                   rules={[
@@ -215,7 +215,7 @@ const IngredientModal = ({
               </Col>
               <Col span={8}>
                 <Form.Item
-                  name="gravity"
+                  name="potential"
                   label="Gravity"
                   labelCol={{ span: 30, offset: 0 }}
                   initialValue={"1.000"}

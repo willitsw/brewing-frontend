@@ -13,7 +13,7 @@ export const calculateSrm = (
   const actualFermentables = fermentables.filter((grain) => !!grain);
 
   actualFermentables.forEach((fermentable) => {
-    if (fermentable.lovibond && fermentable.amount && fermentable.gravity) {
+    if (fermentable.lovibond && fermentable.amount && fermentable.potential) {
       srm += (fermentable.amount * fermentable.lovibond) / batchSizeGallons;
     }
   });
@@ -37,16 +37,19 @@ export const calculateOg = (
   const actualFermentables = fermentables.filter(
     (fermentable) =>
       !!fermentable &&
-      fermentable.gravity &&
+      fermentable.potential &&
       fermentable.amount &&
-      fermentable.gravity > 0 &&
+      fermentable.potential > 0 &&
       fermentable.amount > 0
   );
 
-  const unadjustedOg = actualFermentables.reduce((og, { gravity, amount }) => {
-    const points = gravity - 1;
-    return (og += points * amount);
-  }, 0);
+  const unadjustedOg = actualFermentables.reduce(
+    (og, { potential, amount }) => {
+      const points = potential - 1;
+      return (og += points * amount);
+    },
+    0
+  );
 
   const actualEfficiency = efficiency / 100;
 
@@ -127,7 +130,7 @@ const getGrainPounds = (grains: BT.Fermentable[]): number => {
     if (
       !currentFermentable ||
       !currentFermentable.amount ||
-      currentFermentable.fermentableType !== "Grain"
+      currentFermentable.form !== "Grain"
     ) {
       return pounds;
     }
@@ -136,7 +139,7 @@ const getGrainPounds = (grains: BT.Fermentable[]): number => {
 };
 
 export const calculateWaterLoss = (
-  brewSettings: BT.BrewSettings,
+  brewSettings: BT.User,
   fermentables: BT.Fermentable[]
 ) => {
   let waterLoss = 0;
@@ -156,7 +159,7 @@ export const calculateWaterLoss = (
 };
 
 export const calculateStrikeWater = (
-  brewSettings: BT.BrewSettings,
+  brewSettings: BT.User,
   waterLoss: number,
   fermentables: BT.Fermentable[],
   batchSize: number
@@ -172,7 +175,7 @@ export const calculateStrikeWater = (
 
 export const calculateHotLiquor = (
   recipe: BT.Recipe,
-  brewSettings: BT.BrewSettings,
+  brewSettings: BT.User,
   strikeWater: number,
   waterLoss: number
 ) => {
@@ -185,7 +188,7 @@ export const calculateHotLiquor = (
 
 export const getStats = (
   recipe: BT.Recipe,
-  brewSettings: BT.BrewSettings
+  brewSettings: BT.User
 ): BT.Stats => {
   const isMetric = recipe.measurementType === "metric";
 
