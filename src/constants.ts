@@ -14,7 +14,7 @@ switch (process.env.APP_ENV) {
       isLocal: false,
       useAuth: true,
       apiUrl:
-        "https://o7djslll9h.execute-api.us-east-2.amazonaws.com/beer-backend-prod",
+        "https://o7djslll9h.execute-api.us-east-2.amazonaws.com/beer-backend",
     };
     break;
   case "development":
