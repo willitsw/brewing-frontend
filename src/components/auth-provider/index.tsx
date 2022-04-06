@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
-import { constants } from "../../constants";
+import constants from "../../constants";
 import {
   clearBrewSettings,
   setBrewSettings,

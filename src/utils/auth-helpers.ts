@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { constants } from "../constants";
+import constants from "../constants";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {

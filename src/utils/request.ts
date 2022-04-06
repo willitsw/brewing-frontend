@@ -1,4 +1,4 @@
-import { constants } from "../constants";
+import constants from "../constants";
 import { getToken } from "./auth-helpers";
 
 type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";

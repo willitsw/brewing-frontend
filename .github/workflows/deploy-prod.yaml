@@ -19,6 +19,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Build Dependencies
         run: npm ci
+      - name: Make .env
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_APP_ENV: production
       - name: Build React App
         run: npm run build
       - name: Delete old static files
