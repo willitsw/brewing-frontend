@@ -17,6 +17,14 @@ switch (process.env.APP_ENV) {
         "https://6l89tf8fp2.execute-api.us-east-2.amazonaws.com/beer-backend",
     };
     break;
+  case "staging":
+    constants = {
+      isLocal: false,
+      useAuth: true,
+      apiUrl:
+        "https://uvefvxdro8.execute-api.us-east-2.amazonaws.com/beer-backend",
+    };
+    break;
   case "development":
     constants = {
       isLocal: true,
@@ -27,7 +35,5 @@ switch (process.env.APP_ENV) {
   default:
     throw Error(`Invalid environment specified: ${process.env.APP_ENV}`);
 }
-
-console.log(constants);
 
 export default constants;

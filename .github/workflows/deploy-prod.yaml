@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   build:
@@ -19,16 +20,31 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Build Dependencies
         run: npm ci
-      - name: Make .env
+      - name: Make .env for production
+        if: github.ref == 'refs/heads/master'
         uses: SpicyPizza/create-envfile@v1.3
         with:
           envkey_APP_ENV: production
+      - name: Make .env for staging
+        if: github.ref == 'refs/heads/develop'
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_APP_ENV: staging
       - name: Build React App
         run: npm run build
-      - name: Delete old static files
+      - name: Delete old static files production
+        if: github.ref == 'refs/heads/master'
         run: aws s3 rm s3://www.whatalesyou.net --recursive
-      - name: Deploy app build to S3 bucket
+      - name: Delete old static files staging
+        if: github.ref == 'refs/heads/develop'
+        run: aws s3 rm s3://staging.whatalesyou.net --recursive
+      - name: Deploy app build to S3 bucket production
+        if: github.ref == 'refs/heads/master'
         run: aws s3 sync build s3://www.whatalesyou.net
+      - name: Deploy app build to S3 bucket staging
+        if: github.ref == 'refs/heads/develop'
+        run: aws s3 sync build s3://staging.whatalesyou.net
       - name: Invalidate CloudFront cache
+        if: github.ref == 'refs/heads/master'
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
