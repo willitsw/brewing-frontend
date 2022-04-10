@@ -11,3 +11,9 @@
 .title-with-nav{
     margin-top:10px;
 }
+
+.title-bar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

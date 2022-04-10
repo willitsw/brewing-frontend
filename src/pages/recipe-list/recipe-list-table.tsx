@@ -10,7 +10,11 @@ import OkCancelModal from "../../components/ok-cancel-modal";
 
 import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
-import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  PrinterOutlined,
+} from "@ant-design/icons";
 import { getRecipesByUser } from "../../utils/api-calls";
 import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
@@ -70,6 +74,15 @@ const RecipeListTable = () => {
       key: "action",
       render: (text: string, record: BT.Recipe) => (
         <Space>
+          <Tooltip title="Printer Friendly Version">
+            <Link to={"/recipes/print/" + record.id} target="_blank">
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<PrinterOutlined />}
+              />
+            </Link>
+          </Tooltip>
           <Tooltip title="Duplicate">
             <Button
               type="primary"

@@ -12,6 +12,7 @@ import GlobalModals from "../global-modals";
 import { selectGlobalIsLoading } from "../../redux/misc/slice";
 import Loading from "../loading";
 import React from "react";
+import RecipePrinterFriendly from "../../pages/recipe-printer-friendly";
 
 const PageLayout = () => {
   const isAuthenticated = useAppSelector(userIsAuthenticated);
@@ -34,6 +35,10 @@ const PageLayout = () => {
               <Route
                 path={"/recipes/duplicate/:id"}
                 element={<RecipeDetailPage />}
+              />
+              <Route
+                path={"/recipes/print/:id"}
+                element={<RecipePrinterFriendly />}
               />
               <Route path={"/brew-settings"} element={<BrewSettingsPage />} />
             </>
