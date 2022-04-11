@@ -73,6 +73,7 @@ const RecipeDetailPage = () => {
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
   );
+  const currentRecipe = useAppSelector(selectCurrentRecipe);
 
   useEffect(() => {
     const onComponentLoad = async () => {
@@ -114,6 +115,7 @@ const RecipeDetailPage = () => {
       id: recipe?.id ?? "",
       userId: brewSettings.id ?? "",
       updatedDate: RU.getDate(),
+      createdDate: currentRecipe.createdDate,
     };
     dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));
