@@ -88,20 +88,6 @@ const GeneralInfo = ({ measurementType }: GeneralInfoProps) => {
             </Radio.Group>
           </Form.Item>
         </Col>
-        <Col xs={12} sm={12} md={6} lg={6} xl={6}>
-          <Form.Item
-            label="Measurement Type"
-            name="measurementType"
-            labelCol={{ span: 30, offset: 0 }}
-            style={{ width: "250px" }}
-            initialValue="imperial"
-          >
-            <Radio.Group>
-              <Radio.Button value="imperial">Imperial</Radio.Button>
-              <Radio.Button value="metric">Metric</Radio.Button>
-            </Radio.Group>
-          </Form.Item>
-        </Col>
       </Row>
     </>
   );

@@ -132,14 +132,12 @@ const Ingredients = ({
     switch (step.type) {
       case "Chemistry":
         return (
-          <Descriptions.Item label="Amount">{step.amount}</Descriptions.Item>
+          <Descriptions.Item label="Amount">{`${step.amount} ${step.amountType}`}</Descriptions.Item>
         );
       case "Fermentable":
         return (
           <>
-            <Descriptions.Item label="Amount">{`${step.amount} ${
-              measurementType === "imperial" ? "lb" : "kg"
-            }`}</Descriptions.Item>
+            <Descriptions.Item label="Amount">{`${step.amount} ${step.amountType}`}</Descriptions.Item>
             <Descriptions.Item label="Lovibond">
               {step.lovibond}
             </Descriptions.Item>
@@ -154,9 +152,7 @@ const Ingredients = ({
       case "Hop":
         return (
           <>
-            <Descriptions.Item label="Amount">{`${step.amount} ${
-              measurementType === "imperial" ? "oz" : "g"
-            }`}</Descriptions.Item>
+            <Descriptions.Item label="Amount">{`${step.amount} ${step.amountType}`}</Descriptions.Item>
             <Descriptions.Item label="Alpha Acid">
               {step.alphaAcid}
             </Descriptions.Item>
@@ -165,6 +161,7 @@ const Ingredients = ({
       case "Culture":
         return (
           <>
+            <Descriptions.Item label="Amount">{`${step.amount} ${step.amountType}`}</Descriptions.Item>
             <Descriptions.Item label="Attenuation">
               {step.attenuation}%
             </Descriptions.Item>
@@ -176,7 +173,7 @@ const Ingredients = ({
       case "Misc":
         return (
           <>
-            <Descriptions.Item label="Amount">{step.amount}</Descriptions.Item>
+            <Descriptions.Item label="Amount">{`${step.amount} ${step.amountType}`}</Descriptions.Item>
           </>
         );
     }

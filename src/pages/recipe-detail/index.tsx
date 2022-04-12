@@ -65,9 +65,6 @@ const RecipeDetailPage = () => {
   const dispatch = useAppDispatch();
   const recipe = useAppSelector(selectCurrentRecipe);
   const [stats, setStats] = useState<BT.Stats>(defaultStats);
-  const [measurementType, setMeasurementType] = useState<BT.MeasurementType>(
-    brewSettings.measurementType
-  );
   const [ingredients, setIngredients] = useState<BT.ValidIngredient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDesktop] = useState<boolean>(
@@ -137,14 +134,12 @@ const RecipeDetailPage = () => {
         const metricRecipe: BT.Recipe = recipeToMetric(form.getFieldsValue());
         form.setFieldsValue(metricRecipe);
         setIngredients(metricRecipe.ingredients);
-        setMeasurementType("metric");
       } else {
         const imperialRecipe: BT.Recipe = recipeToImperial(
           form.getFieldsValue()
         );
         form.setFieldsValue(imperialRecipe);
         setIngredients(imperialRecipe.ingredients);
-        setMeasurementType("imperial");
       }
     }
   };
@@ -153,7 +148,7 @@ const RecipeDetailPage = () => {
     dispatch(setPageIsClean(false));
 
     const changedValue = Object.keys(changedValues)[0];
-    if (["batchSize", "efficiency", "measurementType"].includes(changedValue)) {
+    if (["batchSize", "efficiency"].includes(changedValue)) {
       updateStats(ingredients);
     }
   };
@@ -173,12 +168,12 @@ const RecipeDetailPage = () => {
   const formSections = (
     <Tabs defaultActiveKey="1">
       <Tabs.TabPane tab="General Info" key="1">
-        <GeneralInfo measurementType={measurementType} />
+        <GeneralInfo measurementType={brewSettings.measurementType} />
       </Tabs.TabPane>
       <Tabs.TabPane tab="Ingredients" key="2">
         <Ingredients
           ingredients={ingredients}
-          measurementType={measurementType}
+          measurementType={brewSettings.measurementType}
           setIngredients={handleSetIngredients}
         />
       </Tabs.TabPane>
@@ -197,7 +192,10 @@ const RecipeDetailPage = () => {
           </Col>
           <Col xs={0} sm={0} md={0} lg={8} xl={8}>
             <Affix offsetTop={10}>
-              <StatsSection stats={stats} measurementType={measurementType} />
+              <StatsSection
+                stats={stats}
+                measurementType={brewSettings.measurementType}
+              />
             </Affix>
           </Col>
         </Row>
@@ -207,7 +205,10 @@ const RecipeDetailPage = () => {
     return (
       <>
         {formSections}
-        <StatsSection stats={stats} measurementType={measurementType} />
+        <StatsSection
+          stats={stats}
+          measurementType={brewSettings.measurementType}
+        />
         <Divider />
       </>
     );

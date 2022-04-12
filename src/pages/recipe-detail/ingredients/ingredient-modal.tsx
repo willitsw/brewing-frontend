@@ -191,6 +191,25 @@ const IngredientModal = ({
                   />
                 </Form.Item>
               </Col>
+              <Col>
+                <Form.Item
+                  name="amountType"
+                  label="Amount Type"
+                  labelCol={{ span: 30, offset: 0 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Enter a type",
+                    },
+                  ]}
+                  initialValue={measurementType === "imperial" ? "lb" : "kg"}
+                >
+                  <Select style={{ width: 120 }}>
+                    <Select.Option value="lb">lb</Select.Option>
+                    <Select.Option value="kg">kg</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
               <Col span={8}>
                 <Form.Item
                   name="lovibond"
@@ -294,6 +313,25 @@ const IngredientModal = ({
                   />
                 </Form.Item>
               </Col>
+              <Col>
+                <Form.Item
+                  name="amountType"
+                  label="Amount Type"
+                  labelCol={{ span: 30, offset: 0 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Enter a type",
+                    },
+                  ]}
+                  initialValue={measurementType === "imperial" ? "oz" : "g"}
+                >
+                  <Select style={{ width: 120 }}>
+                    <Select.Option value="oz">oz</Select.Option>
+                    <Select.Option value="g">g</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
               <Col span={12}>
                 <Form.Item
                   name="alphaAcid"
@@ -341,6 +379,44 @@ const IngredientModal = ({
               <Col span={12}></Col>
             </Row>
             <Row>
+              <Col span={12}>
+                <Form.Item
+                  name="amount"
+                  label="Amount"
+                  labelCol={{ span: 30, offset: 0 }}
+                  initialValue={0}
+                  rules={[
+                    {
+                      required: true,
+                      message: "How much?",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    min="0"
+                    max="100"
+                    step="0.5"
+                    style={{ width: 105 }}
+                    addonAfter={measurementType === "metric" ? "g" : "oz"}
+                  />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item
+                  name="amountType"
+                  label="Amount Type"
+                  labelCol={{ span: 30, offset: 0 }}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Enter a type",
+                    },
+                  ]}
+                  initialValue="packages"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
               <Col span={12}>
                 <Form.Item
                   name="attenuation"
@@ -398,6 +474,22 @@ const IngredientModal = ({
                 <Input style={{ width: 180 }} />
               </Form.Item>
             </Col>
+            <Col>
+              <Form.Item
+                name="amountType"
+                label="Amount Type"
+                labelCol={{ span: 30, offset: 0 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Enter a type",
+                  },
+                ]}
+                initialValue="each"
+              >
+                <Input />
+              </Form.Item>
+            </Col>
           </Row>
         );
       case "Chemistry":
@@ -417,6 +509,24 @@ const IngredientModal = ({
                 initialValue="0"
               >
                 <Input style={{ width: 180 }} />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item
+                name="amountType"
+                label="Amount Type"
+                labelCol={{ span: 30, offset: 0 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Enter a type",
+                  },
+                ]}
+                initialValue="g"
+              >
+                <Select style={{ width: 120 }}>
+                  <Select.Option value="lb">g</Select.Option>
+                </Select>
               </Form.Item>
             </Col>
           </Row>
