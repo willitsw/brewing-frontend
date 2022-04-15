@@ -10,7 +10,6 @@ import {
 } from "antd";
 import { BrewingTypes as BT } from "brewing-shared";
 import React, { useEffect, useState } from "react";
-import { v4 as uuid } from "uuid";
 import { setPageIsClean } from "../../../redux/global-modals/slice";
 import { useAppDispatch } from "../../../redux/hooks";
 import DefaultGrains from "../../../data/default-grains";
@@ -58,10 +57,22 @@ const IngredientModal = ({
       form.setFieldsValue(ingredientToUpdate);
       setType(ingredientToUpdate.type);
     } else if (ingredientId) {
-      form.setFieldsValue({ id: uuid(), step: ingredientId as BT.Step });
+      form.setFieldsValue({ step: ingredientId as BT.Step });
+      setType(null);
       setStep(ingredientId as BT.Step);
     }
   }, [ingredientId]);
+
+  // useEffect(() => {
+  //   //form.resetFields();
+  //   //form.setFieldsValue({ step, type });
+  //   //setType(null);
+  // }, [step]);
+
+  useEffect(() => {
+    form.resetFields();
+    form.setFieldsValue({ step, type });
+  }, [type]);
 
   const handleOnFieldsChange = (changedFields: any) => {
     if (changedFields.length === 0) {
@@ -105,9 +116,15 @@ const IngredientModal = ({
     try {
       const values = await form.validateFields();
       updateRecipe(values);
-    } catch {
-      console.log("Invalid form.");
+    } catch (e) {
+      console.log("Invalid form.", e);
     }
+  };
+
+  const handleCancelClick = () => {
+    setType(null);
+    setStep(null);
+    handleCancel();
   };
 
   const renderTypeSpecificElements = () => {
@@ -116,7 +133,7 @@ const IngredientModal = ({
         return (
           <>
             <Row>
-              <Col span={14}>
+              <Col xs={24} sm={24} md={14} lg={14} xl={14}>
                 <Form.Item
                   name="name"
                   label="Name"
@@ -167,8 +184,6 @@ const IngredientModal = ({
                   </Select>
                 </Form.Item>
               </Col>
-            </Row>
-            <Row>
               <Col span={8}>
                 <Form.Item
                   name="amount"
@@ -187,11 +202,10 @@ const IngredientModal = ({
                     max="100"
                     step="0.1"
                     style={{ width: 105 }}
-                    addonAfter={measurementType === "metric" ? "kg" : "lb"}
                   />
                 </Form.Item>
               </Col>
-              <Col>
+              <Col span={8}>
                 <Form.Item
                   name="amountType"
                   label="Amount Type"
@@ -204,7 +218,7 @@ const IngredientModal = ({
                   ]}
                   initialValue={measurementType === "imperial" ? "lb" : "kg"}
                 >
-                  <Select style={{ width: 120 }}>
+                  <Select style={{ width: 100 }}>
                     <Select.Option value="lb">lb</Select.Option>
                     <Select.Option value="kg">kg</Select.Option>
                   </Select>
@@ -309,7 +323,6 @@ const IngredientModal = ({
                     max="100"
                     step="0.5"
                     style={{ width: 105 }}
-                    addonAfter={measurementType === "metric" ? "g" : "oz"}
                   />
                 </Form.Item>
               </Col>
@@ -376,7 +389,6 @@ const IngredientModal = ({
                   <Input style={{ width: 220 }} />
                 </Form.Item>
               </Col>
-              <Col span={12}></Col>
             </Row>
             <Row>
               <Col span={12}>
@@ -384,7 +396,7 @@ const IngredientModal = ({
                   name="amount"
                   label="Amount"
                   labelCol={{ span: 30, offset: 0 }}
-                  initialValue={0}
+                  initialValue={1}
                   rules={[
                     {
                       required: true,
@@ -395,13 +407,12 @@ const IngredientModal = ({
                   <InputNumber
                     min="0"
                     max="100"
-                    step="0.5"
+                    step="1"
                     style={{ width: 105 }}
-                    addonAfter={measurementType === "metric" ? "g" : "oz"}
                   />
                 </Form.Item>
               </Col>
-              <Col>
+              <Col span={12}>
                 <Form.Item
                   name="amountType"
                   label="Amount Type"
@@ -414,7 +425,7 @@ const IngredientModal = ({
                   ]}
                   initialValue="packages"
                 >
-                  <Input />
+                  <Input style={{ width: 115 }} />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -458,6 +469,21 @@ const IngredientModal = ({
       case "Misc":
         return (
           <Row>
+            <Col span={24}>
+              <Form.Item
+                name="name"
+                label="Name"
+                labelCol={{ span: 30, offset: 0 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please name your yeast.",
+                  },
+                ]}
+              >
+                <Input style={{ width: 220 }} />
+              </Form.Item>
+            </Col>
             <Col span={12}>
               <Form.Item
                 name="amount"
@@ -471,10 +497,10 @@ const IngredientModal = ({
                 ]}
                 initialValue="0"
               >
-                <Input style={{ width: 180 }} />
+                <Input style={{ width: 115 }} />
               </Form.Item>
             </Col>
-            <Col>
+            <Col span={12}>
               <Form.Item
                 name="amountType"
                 label="Amount Type"
@@ -487,7 +513,7 @@ const IngredientModal = ({
                 ]}
                 initialValue="each"
               >
-                <Input />
+                <Input style={{ width: 115 }} />
               </Form.Item>
             </Col>
           </Row>
@@ -495,6 +521,21 @@ const IngredientModal = ({
       case "Chemistry":
         return (
           <Row>
+            <Col span={24}>
+              <Form.Item
+                name="name"
+                label="Name"
+                labelCol={{ span: 30, offset: 0 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please name your yeast.",
+                  },
+                ]}
+              >
+                <Input style={{ width: 220 }} />
+              </Form.Item>
+            </Col>
             <Col span={12}>
               <Form.Item
                 name="amount"
@@ -508,10 +549,10 @@ const IngredientModal = ({
                 ]}
                 initialValue="0"
               >
-                <Input style={{ width: 180 }} />
+                <Input style={{ width: 115 }} />
               </Form.Item>
             </Col>
-            <Col>
+            <Col span={12}>
               <Form.Item
                 name="amountType"
                 label="Amount Type"
@@ -522,11 +563,9 @@ const IngredientModal = ({
                     message: "Enter a type",
                   },
                 ]}
-                initialValue="g"
+                initialValue="grams"
               >
-                <Select style={{ width: 120 }}>
-                  <Select.Option value="lb">g</Select.Option>
-                </Select>
+                <Input style={{ width: 115 }} />
               </Form.Item>
             </Col>
           </Row>
@@ -541,7 +580,8 @@ const IngredientModal = ({
       title="Add/Edit Ingredient"
       visible={!!ingredientId}
       onOk={handleSaveForm}
-      onCancel={handleCancel}
+      onCancel={handleCancelClick}
+      destroyOnClose
       forceRender
     >
       <Form
@@ -556,7 +596,7 @@ const IngredientModal = ({
         preserve={false}
       >
         <Row justify="start" gutter={[12, 0]}>
-          <Col span={8}>
+          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
             <Form.Item
               label="Brewing Step"
               name="step"
@@ -572,7 +612,7 @@ const IngredientModal = ({
               </Select>
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
             <Form.Item
               label="Ingredient Type"
               name="type"
@@ -588,8 +628,8 @@ const IngredientModal = ({
               </Select>
             </Form.Item>
           </Col>
-          <Col span={8}>
-            {step !== "Bottle" && step !== "StrikeWater" && (
+          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+            {step !== "Bottle" && step !== "StrikeWater" && step !== "Mash" && (
               <Form.Item
                 name="timing"
                 label="Time"

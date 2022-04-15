@@ -113,6 +113,7 @@ const RecipeDetailPage = () => {
       userId: brewSettings.id ?? "",
       updatedDate: RU.getDate(),
       createdDate: currentRecipe.createdDate,
+      ingredients,
     };
     dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));

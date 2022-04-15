@@ -19,6 +19,7 @@ import ingredient from "./ingredient.png";
 import yeast from "./yeast.png";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import IngredientModal from "./ingredient-modal";
+import { v4 as uuid } from "uuid";
 
 interface IngredientsProps {
   measurementType: BT.MeasurementType;
@@ -74,7 +75,10 @@ const Ingredients = ({
   ];
 
   const handleUpdateRecipe = (ingredient: BT.ValidIngredient) => {
-    ingredient.id = selectedIngredientId;
+    const ingredientToUpdate = ingredients.find(
+      ({ id }) => selectedIngredientId === id
+    );
+    ingredient.id = ingredientToUpdate?.id ?? uuid();
     const newIngredients = [...ingredients];
     const ingredientIndexToReplace = newIngredients.findIndex(
       ({ id }) => id === ingredient.id
@@ -235,6 +239,7 @@ const Ingredients = ({
           </div>
         );
       })}
+      {/* {selectedIngredientId && ( */}
       <IngredientModal
         handleCancel={() => setSelectedIngredientId(null)}
         ingredientId={selectedIngredientId}
@@ -242,6 +247,7 @@ const Ingredients = ({
         updateRecipe={handleUpdateRecipe}
         measurementType={measurementType}
       />
+
       <Modal
         title="Delete Ingredient?"
         onCancel={() => setIngredientToDelete(null)}
