@@ -42,33 +42,43 @@ export const literKilosToQuartPounds = (literKilos: number) => {
 
 export const recipeToMetric = (recipe: BT.Recipe): BT.Recipe => {
   recipe.ingredients.forEach((ingredient) => {
-    if (ingredient.type === "Hop") {
+    if (ingredient.type === "Hop" && ingredient.amountType === "oz") {
       ingredient.amount = ouncesToGrams(ingredient.amount);
-    } else if (ingredient.type === "Fermentable") {
+    } else if (
+      ingredient.type === "Fermentable" &&
+      ingredient.amountType === "lb"
+    ) {
       ingredient.amount = poundsToKilograms(ingredient.amount);
     }
   });
 
   return {
     ...recipe,
-    batchSize: gallonsToLiters(recipe.batchSize),
-    measurementType: "metric",
+    batchSize:
+      recipe.measurementType === "metric"
+        ? recipe.batchSize
+        : gallonsToLiters(recipe.batchSize),
   };
 };
 
 export const recipeToImperial = (recipe: BT.Recipe): BT.Recipe => {
   recipe.ingredients.forEach((ingredient) => {
-    if (ingredient.type === "Hop") {
+    if (ingredient.type === "Hop" && ingredient.amountType === "g") {
       ingredient.amount = gramsToOunces(ingredient.amount);
-    } else if (ingredient.type === "Fermentable") {
+    } else if (
+      ingredient.type === "Fermentable" &&
+      ingredient.amountType === "kg"
+    ) {
       ingredient.amount = kilogramsToPounds(ingredient.amount);
     }
   });
 
   return {
     ...recipe,
-    batchSize: litersToGallons(recipe.batchSize),
-    measurementType: "imperial",
+    batchSize:
+      recipe.measurementType === "imperial"
+        ? recipe.batchSize
+        : litersToGallons(recipe.batchSize),
   };
 };
 

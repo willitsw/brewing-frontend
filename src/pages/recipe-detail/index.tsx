@@ -24,7 +24,7 @@ import { getStats } from "../../utils/beer-math";
 import GeneralInfo from "./general/general-info";
 import StatsSection from "./statistics/stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
-import { recipeToImperial, recipeToMetric } from "../../utils/converters";
+import { gallonsToLiters, litersToGallons } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
 import { BrewingTypes as BT, RecipeUtils as RU } from "brewing-shared";
 import React from "react";
@@ -131,16 +131,17 @@ const RecipeDetailPage = () => {
     if (changedFields[0].name[0] === "measurementType") {
       // recipe type was changed, lets convert the recipe
       if (changedFields[0].value === "metric") {
-        const metricRecipe: BT.Recipe = recipeToMetric(form.getFieldsValue());
-        form.setFieldsValue(metricRecipe);
-        setIngredients(metricRecipe.ingredients);
-      } else {
-        const imperialRecipe: BT.Recipe = recipeToImperial(
-          form.getFieldsValue()
+        const metricBatchSize: number = gallonsToLiters(
+          form.getFieldValue("batchSize")
         );
-        form.setFieldsValue(imperialRecipe);
-        setIngredients(imperialRecipe.ingredients);
+        form.setFieldsValue({ batchSize: metricBatchSize });
+      } else {
+        const imperialBatchSize: number = litersToGallons(
+          form.getFieldValue("batchSize")
+        );
+        form.setFieldsValue({ batchSize: imperialBatchSize });
       }
+      updateStats(ingredients);
     }
   };
 
@@ -159,16 +160,18 @@ const RecipeDetailPage = () => {
     setIngredients(newIngredients);
   };
 
-  const updateStats = (newIngredients: BT.ValidIngredient[]) => {
+  const updateStats = (newIngredients: BT.ValidIngredient[] = null) => {
     const workingRecipe: BT.Recipe = form.getFieldsValue();
-    workingRecipe.ingredients = newIngredients;
+    if (newIngredients !== null) {
+      workingRecipe.ingredients = newIngredients;
+    }
     setStats(getStats(workingRecipe, brewSettings));
   };
 
   const formSections = (
     <Tabs defaultActiveKey="1">
       <Tabs.TabPane tab="General Info" key="1">
-        <GeneralInfo measurementType={brewSettings.measurementType} />
+        <GeneralInfo measurementType={form.getFieldValue("measurementType")} />
       </Tabs.TabPane>
       <Tabs.TabPane tab="Ingredients" key="2">
         <Ingredients
@@ -194,7 +197,7 @@ const RecipeDetailPage = () => {
             <Affix offsetTop={10}>
               <StatsSection
                 stats={stats}
-                measurementType={brewSettings.measurementType}
+                measurementType={form.getFieldValue("measurementType")}
               />
             </Affix>
           </Col>
@@ -207,7 +210,7 @@ const RecipeDetailPage = () => {
         {formSections}
         <StatsSection
           stats={stats}
-          measurementType={brewSettings.measurementType}
+          measurementType={form.getFieldValue("measurementType")}
         />
         <Divider />
       </>

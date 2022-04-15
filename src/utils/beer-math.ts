@@ -1,4 +1,8 @@
-import { gallonsToLiters, recipeToImperial } from "./converters";
+import {
+  brewSettingsToImperial,
+  gallonsToLiters,
+  recipeToImperial,
+} from "./converters";
 import { BrewingTypes as BT, RecipeUtils } from "brewing-shared";
 
 export const calculateSrm = (
@@ -190,35 +194,41 @@ export const getStats = (
   recipe: BT.Recipe,
   brewSettings: BT.User
 ): BT.Stats => {
-  const isMetric = recipe.measurementType === "metric";
-
-  if (isMetric) {
-    recipe = recipeToImperial(recipe);
-  }
+  const adjustedRecipe = recipeToImperial(recipe);
+  const adjustedBrewSettings =
+    brewSettings.measurementType === "imperial"
+      ? brewSettings
+      : brewSettingsToImperial(brewSettings);
 
   const { Hop, Fermentable, Culture } = RecipeUtils.sortIngredientsByType(
-    recipe.ingredients
+    adjustedRecipe.ingredients
   );
 
-  const srm = calculateSrm(recipe.batchSize, Fermentable);
-  const og = calculateOg(Fermentable, recipe.batchSize, recipe.efficiency);
+  const srm = calculateSrm(adjustedRecipe.batchSize, Fermentable);
+  const og = calculateOg(
+    Fermentable,
+    adjustedRecipe.batchSize,
+    adjustedRecipe.efficiency
+  );
   const fg = calculateFg(og, Culture);
   const abv = calculateAbv(og, fg);
-  const ibu = calculateIbu(og, Hop, recipe.batchSize);
+  const ibu = calculateIbu(og, Hop, adjustedRecipe.batchSize);
 
-  const waterLoss = calculateWaterLoss(brewSettings, Fermentable);
+  const waterLoss = calculateWaterLoss(adjustedBrewSettings, Fermentable);
   const strikeWater = calculateStrikeWater(
-    brewSettings,
+    adjustedBrewSettings,
     waterLoss,
     Fermentable,
-    recipe.batchSize
+    adjustedRecipe.batchSize
   );
   const hotLiquor = calculateHotLiquor(
-    recipe,
-    brewSettings,
+    adjustedRecipe,
+    adjustedBrewSettings,
     strikeWater,
     waterLoss
   );
+
+  const isMetric = recipe.measurementType === "metric";
 
   return {
     srm,

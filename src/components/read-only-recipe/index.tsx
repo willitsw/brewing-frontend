@@ -39,9 +39,6 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
             {recipe.createdDate}
           </Descriptions.Item>
         )}
-        <Descriptions.Item label="Measurement Type">
-          {recipe.measurementType}
-        </Descriptions.Item>
         <Descriptions.Item label="Recipe Type">{recipe.type}</Descriptions.Item>
       </Descriptions>
       <Typography.Title level={3}>Ingredients</Typography.Title>
@@ -56,11 +53,7 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
                   </Typography.Title>
                 }
                 dataSource={Fermentable.map((fermentable) => {
-                  return `${fermentable.amount} ${
-                    recipe.measurementType === "imperial" ? "lb" : "kg"
-                  } ${fermentable.name} (${fermentable.form} - ${
-                    fermentable.lovibond
-                  } Lov)`;
+                  return `${fermentable.amount} ${fermentable.amountType} ${fermentable.name} (${fermentable.form} - ${fermentable.lovibond} Lov)`;
                 })}
                 renderItem={(item) => <List.Item>{item}</List.Item>}
               />
@@ -74,9 +67,7 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
               <List
                 header={<Typography.Title level={5}>- Hops -</Typography.Title>}
                 dataSource={Hop.map((hop) => {
-                  return `${hop.amount} ${
-                    recipe.measurementType === "imperial" ? "oz" : "g"
-                  } ${hop.name} ${hop.alphaAcid} AA`;
+                  return `${hop.amount} ${hop.amountType} ${hop.name} ${hop.alphaAcid} AA`;
                 })}
                 renderItem={(item) => <List.Item>{item}</List.Item>}
               />
