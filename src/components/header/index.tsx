@@ -1,21 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Layout, Menu, Image, Avatar, Dropdown, Button } from "antd";
-import styles from "./index.module.css";
+import {
+  Layout,
+  Menu,
+  Image,
+  Avatar,
+  Dropdown,
+  Button,
+  Typography,
+} from "antd";
 import beerIcon from "./beer-icon.png";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
-import {
-  LoginOutlined,
-  LogoutOutlined,
-  PlusCircleOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { getAuth, signOut } from "firebase/auth";
 import {
   selectPageIsClean,
   setPageIsClean,
-  setShowCreateAccountModal,
   setShowLoginModal,
 } from "../../redux/global-modals/slice";
 import React from "react";
@@ -30,6 +31,9 @@ const Header = () => {
   const pageIsClean = useAppSelector(selectPageIsClean);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [isPhone] = useState<boolean>(
+    window.matchMedia("(max-width: 500px)").matches
+  );
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -38,6 +42,8 @@ const Header = () => {
       setCurrentPage("/recipes/list");
     } else if (location.pathname.includes("brew-settings")) {
       setCurrentPage("/brew-settings");
+    } else if (location.pathname.includes("brew-log")) {
+      setCurrentPage("/brew-log/list");
     } else {
       setCurrentPage("/home");
     }
@@ -48,7 +54,6 @@ const Header = () => {
   }, [location, isAuthenticated]);
 
   const handleMenuClick = (newMenuItem: any) => {
-    //setCurrentPage(newMenuItem.key);
     navigate(newMenuItem.key);
   };
 
@@ -74,7 +79,7 @@ const Header = () => {
     } else {
       return (
         <Menu>
-          <Menu.Item key='logout' icon={<LogoutOutlined />}>
+          <Menu.Item key="logout" icon={<LogoutOutlined />}>
             <Button type="link" onClick={handleSignOut}>
               Logout
             </Button>
@@ -84,29 +89,63 @@ const Header = () => {
     }
   };
 
+  const menuStyle: any = { justifyContent: "flex-end", flexGrow: 1 };
+  if (isPhone) {
+    menuStyle.width = 100;
+  }
+
   return (
     <Header>
-      <div className={`${styles["header-layout"]} beer-max-width`}>
-        <div className={styles["header-left-items"]}>
-          <div className="logo">
+      <div
+        className="beer-max-width"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          margin: "auto",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            marginRight: "20px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-end",
+            }}
+          >
             <Image
-              className={styles.icon}
+              style={{ paddingBottom: "5px", marginRight: 10 }}
               width={40}
               src={beerIcon}
               preview={false}
             />
+            <Typography.Title
+              style={{ color: "rgba(255, 255, 255, 0.85)", marginLeft: 10 }}
+              level={isPhone ? 5 : 3}
+            >
+              What Ales You
+            </Typography.Title>
           </div>
           <Menu
-            className={styles.menu}
             theme="dark"
             mode="horizontal"
             onClick={handleMenuClick}
             selectedKeys={[currentPage]}
-            style={{ justifyContent: "flex-end" }}
+            style={menuStyle}
           >
             <Menu.Item key={"/home"}>Home</Menu.Item>
             <Menu.Item key={"/recipes/list"} disabled={!isAuthenticated}>
               Recipes
+            </Menu.Item>
+            <Menu.Item key={"/brew-log/list"} disabled={!isAuthenticated}>
+              Brew Log
             </Menu.Item>
             <Menu.Item key={"/brew-settings"} disabled={!isAuthenticated}>
               Brew Settings
@@ -114,9 +153,9 @@ const Header = () => {
           </Menu>
         </div>
         <Dropdown overlay={getUserMenu()} trigger={["click"]}>
-          <div className={styles.avatar}>
+          <div style={{ paddingTop: 0, cursor: "pointer" }}>
             {currentUser?.photoUrl ? (
-              <Avatar size="large" src={currentUser.photoUrl} />
+              <Avatar size="large" src={currentUser?.photoUrl} />
             ) : (
               <Avatar size="large" icon={<UserOutlined />} />
             )}

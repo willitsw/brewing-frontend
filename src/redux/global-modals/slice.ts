@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 
-interface GlobalModalsState {
+export interface GlobalModalsState {
   showLoginModal: boolean;
   showCreateAccountModal: boolean;
   pageIsClean: boolean;

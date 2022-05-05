@@ -11,7 +11,7 @@ const defaultCurrentUser: BT.BeerUser | null = constants.useAuth
       photoUrl: null,
       uid: "123456789",
     };
-interface UserState {
+export interface UserState {
   currentUser: BT.BeerUser | null;
   isAuthenticated: boolean;
 }

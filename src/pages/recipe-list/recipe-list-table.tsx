@@ -8,7 +8,6 @@ import {
 } from "../../redux/recipe-list/slice";
 import OkCancelModal from "../../components/ok-cancel-modal";
 
-import styles from "./index.module.css";
 import { Breakpoint } from "antd/lib/_util/responsiveObserve";
 import {
   CopyOutlined,
@@ -114,7 +113,7 @@ const RecipeListTable = () => {
   return (
     <>
       <Button
-        className={styles["new-entity-button"]}
+        style={{ marginBottom: 10 }}
         type="primary"
         onClick={() => navigate("/recipes/new")}
       >

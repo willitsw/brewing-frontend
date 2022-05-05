@@ -26,9 +26,10 @@ import StatsSection from "./statistics/stats";
 import { setPageIsClean } from "../../redux/global-modals/slice";
 import { gallonsToLiters, litersToGallons } from "../../utils/converters";
 import { selectBrewSettings } from "../../redux/brew-settings/slice";
-import { BrewingTypes as BT, RecipeUtils as RU } from "brewing-shared";
+import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 import Ingredients from "./ingredients/ingredients";
+import moment from "moment";
 
 const defaultRecipe: BT.Recipe = {
   name: "New Recipe",
@@ -41,8 +42,8 @@ const defaultRecipe: BT.Recipe = {
   measurementType: "imperial",
   efficiency: 70,
   ingredients: [],
-  createdDate: RU.getDate(),
-  updatedDate: RU.getDate(),
+  createdDate: moment().toISOString(),
+  updatedDate: moment().toISOString(),
 };
 
 const defaultStats: BT.Stats = {
@@ -70,7 +71,6 @@ const RecipeDetailPage = () => {
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
   );
-  const currentRecipe = useAppSelector(selectCurrentRecipe);
 
   useEffect(() => {
     const onComponentLoad = async () => {
@@ -111,8 +111,8 @@ const RecipeDetailPage = () => {
       ...recipeForm,
       id: recipe?.id ?? "",
       userId: brewSettings.id ?? "",
-      updatedDate: RU.getDate(),
-      createdDate: currentRecipe.createdDate,
+      updatedDate: moment().toISOString(),
+      createdDate: recipe.createdDate,
       ingredients,
     };
     dispatch(processCreateUpdateRecipe(newRecipe));

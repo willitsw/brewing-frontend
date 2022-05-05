@@ -56,6 +56,7 @@ const IngredientModal = ({
     if (ingredientToUpdate) {
       form.setFieldsValue(ingredientToUpdate);
       setType(ingredientToUpdate.type);
+      setStep(ingredientToUpdate.step);
     } else if (ingredientId) {
       form.setFieldsValue({ step: ingredientId as BT.Step });
       setType(null);
@@ -608,7 +609,7 @@ const IngredientModal = ({
                 <Select.Option value="Mash">Mash</Select.Option>
                 <Select.Option value="Boil">Boil</Select.Option>
                 <Select.Option value="Fermentor">Fermentor</Select.Option>
-                <Select.Option value="Bottle">Bottle</Select.Option>
+                <Select.Option value="Bottle">Package</Select.Option>
               </Select>
             </Form.Item>
           </Col>

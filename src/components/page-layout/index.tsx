@@ -13,6 +13,8 @@ import { selectGlobalIsLoading } from "../../redux/misc/slice";
 import Loading from "../loading";
 import React from "react";
 import RecipePrinterFriendly from "../../pages/recipe-printer-friendly";
+import BrewLogListPage from "../../pages/brew-log-list";
+import BrewLogDetailPage from "../../pages/brew-log-detail";
 
 const PageLayout = () => {
   const isAuthenticated = useAppSelector(userIsAuthenticated);
@@ -41,6 +43,12 @@ const PageLayout = () => {
                 element={<RecipePrinterFriendly />}
               />
               <Route path={"/brew-settings"} element={<BrewSettingsPage />} />
+              <Route path={"/brew-log/list"} element={<BrewLogListPage />} />
+              <Route path={"/brew-log/new"} element={<BrewLogDetailPage />} />
+              <Route
+                path={"/brew-log/edit/:id"}
+                element={<BrewLogDetailPage />}
+              />
             </>
           )}
           <Route path="*" element={<HomePage />} />

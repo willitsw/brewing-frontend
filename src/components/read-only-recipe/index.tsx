@@ -43,7 +43,7 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
       </Descriptions>
       <Typography.Title level={3}>Ingredients</Typography.Title>
       <Row>
-        <Col span={8}>
+        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
           {Fermentable.length > 0 && (
             <>
               <List
@@ -61,7 +61,7 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
             </>
           )}
         </Col>
-        <Col span={8}>
+        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
           {Hop.length > 0 && (
             <>
               <List
@@ -75,7 +75,7 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
             </>
           )}
         </Col>
-        <Col span={8}>
+        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
           {Culture.length > 0 && (
             <>
               <List
@@ -93,14 +93,12 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
             </>
           )}
         </Col>
-        <Col span={8}>
+        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
           {Misc.length > 0 && (
             <>
               <List
                 header={
-                  <Typography.Title level={5}>
-                    - Misc. Ingredients -
-                  </Typography.Title>
+                  <Typography.Title level={5}>- Misc. -</Typography.Title>
                 }
                 dataSource={Misc.map((misc) => {
                   return `${misc.amount} ${misc.amountType ?? ""} ${misc.name}`;
@@ -111,14 +109,12 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
             </>
           )}
         </Col>
-        <Col span={8}>
+        <Col xs={12} sm={12} md={8} lg={8} xl={8}>
           {Chemistry.length > 0 && (
             <>
               <List
                 header={
-                  <Typography.Title level={5}>
-                    - Chemistry Ingredients -
-                  </Typography.Title>
+                  <Typography.Title level={5}>- Chemistry -</Typography.Title>
                 }
                 dataSource={Chemistry.map((chemical) => {
                   return `${chemical.amount} ${chemical.amountType ?? ""} ${
@@ -206,7 +202,9 @@ const ReadOnlyRecipe = ({ recipe }: ReadOnlyRecipeProps) => {
       {Bottle.length > 0 && (
         <>
           <List
-            header={<Typography.Title level={5}>- Bottle -</Typography.Title>}
+            header={
+              <Typography.Title level={5}>- Packaging -</Typography.Title>
+            }
             dataSource={Bottle.map((step, index) => {
               const stepNumber = index + 1;
               return `${stepNumber}. Add ${step.amount} ${

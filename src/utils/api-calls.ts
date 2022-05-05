@@ -36,3 +36,23 @@ export const createUpdateBrewSettings = async (
 ): Promise<BT.User> => {
   return await makeRequest("/users", "POST", brewSettings);
 };
+
+// BREW LOG ENDPOINTS
+
+export const getBrewLogsByUser = async (): Promise<BT.BrewLog[]> => {
+  return await makeRequest("/brew-logs", "GET");
+};
+
+export const getBrewLogById = async (brewLogId: string): Promise<BT.BrewLog> => {
+  return await makeRequest(`/brew-logs/${brewLogId}`, "GET");
+};
+
+export const deleteBrewLog = async (brewLogId: string): Promise<void> => {
+  return await makeRequest(`/brew-logs/${brewLogId}`, "DELETE");
+};
+
+export const createUpdateBrewLog = async (
+  brewLog: BT.BrewLog
+): Promise<BT.BrewLog> => {
+  return await makeRequest("/brew-logs", "POST", brewLog);
+};

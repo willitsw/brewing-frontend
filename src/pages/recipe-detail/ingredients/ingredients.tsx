@@ -68,7 +68,7 @@ const Ingredients = ({
       items: sortedIngredients.Fermentor,
     },
     {
-      title: "Bottle Additions",
+      title: "Packaging Additions",
       step: "Bottle",
       items: sortedIngredients.Bottle,
     },
@@ -146,10 +146,10 @@ const Ingredients = ({
               {step.lovibond}
             </Descriptions.Item>
             <Descriptions.Item label="Fermentable Type">
-              {step.fermentableType}
+              {step.form}
             </Descriptions.Item>
             <Descriptions.Item label="Gravity">
-              {step.gravity}
+              {step.potential}
             </Descriptions.Item>
           </>
         );

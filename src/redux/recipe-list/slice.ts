@@ -8,7 +8,7 @@ import {
 import { deepCloneObject } from "../../utils/helpers";
 import type { RootState } from "../store";
 
-interface RecipeState {
+export interface RecipeState {
   recipeList: BT.Recipe[];
   currentRecipe: BT.Recipe | null;
 }

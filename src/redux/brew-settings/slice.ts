@@ -18,7 +18,7 @@ const defaultSettings: BT.User = {
   sparge: false,
   mashThickness: 1.3,
 };
-interface BrewSettingsState {
+export interface BrewSettingsState {
   brewSettings: BT.User;
 }
 

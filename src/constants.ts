@@ -36,4 +36,6 @@ switch (process.env.APP_ENV) {
     throw Error(`Invalid environment specified: ${process.env.APP_ENV}`);
 }
 
+export const DATE_FORMAT = "MM/DD/YYYY";
+
 export default constants;

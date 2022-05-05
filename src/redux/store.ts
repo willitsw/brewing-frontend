@@ -1,17 +1,19 @@
-import { configureStore } from "@reduxjs/toolkit";
-import RecipesReducer from "./recipe-list/slice";
-import UserReducer from "./user/slice";
-import BrewSettingsReducer from "./brew-settings/slice";
-import GlobalModalsReducer from "./global-modals/slice";
-import MiscReducer from "./misc/slice";
+import { AnyAction, configureStore, Reducer } from "@reduxjs/toolkit";
+import RecipesReducer, { RecipeState } from "./recipe-list/slice";
+import UserReducer, { UserState } from "./user/slice";
+import BrewSettingsReducer, { BrewSettingsState } from "./brew-settings/slice";
+import GlobalModalsReducer, { GlobalModalsState } from "./global-modals/slice";
+import MiscReducer, { MiscState } from "./misc/slice";
+import BrewLogReducer, { BrewLogState } from "./brew-log/slice";
 
 export const store = configureStore({
   reducer: {
-    recipes: RecipesReducer,
-    user: UserReducer,
-    brewSettings: BrewSettingsReducer,
-    globalModals: GlobalModalsReducer,
-    misc: MiscReducer,
+    recipes: RecipesReducer as Reducer<RecipeState, AnyAction>,
+    user: UserReducer as Reducer<UserState, AnyAction>,
+    brewSettings: BrewSettingsReducer as Reducer<BrewSettingsState, AnyAction>,
+    globalModals: GlobalModalsReducer as Reducer<GlobalModalsState, AnyAction>,
+    misc: MiscReducer as Reducer<MiscState, AnyAction>,
+    brewLogs: BrewLogReducer as Reducer<BrewLogState, AnyAction>,
   },
 });
 

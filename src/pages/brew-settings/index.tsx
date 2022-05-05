@@ -107,7 +107,7 @@ const BrewSettings = () => {
               label="Author"
               name="author"
               labelCol={{ span: 30, offset: 0 }}
-              style={{ width: 350 }}
+              style={{ width: "100%" }}
             >
               <Input />
             </Form.Item>
