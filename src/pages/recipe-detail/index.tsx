@@ -181,9 +181,9 @@ const RecipeDetailPage = () => {
           setIngredients={handleSetIngredients}
         />
       </Tabs.TabPane>
-      <Tabs.TabPane tab="Water Chemistry" key="3">
+      {/* <Tabs.TabPane tab="Water Chemistry" key="3">
         Under construction
-      </Tabs.TabPane>
+      </Tabs.TabPane> */}
     </Tabs>
   );
 

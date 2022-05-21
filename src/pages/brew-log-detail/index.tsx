@@ -235,7 +235,7 @@ const BrewLogDetailPage = () => {
               <Col span={24}>
                 <ConfigProvider renderEmpty={() => null}>
                   <Form.List name="gravityReadings">
-                    {(fields, { add, remove }) => (
+                    {(fields, { add }) => (
                       <List
                         header={
                           <div
