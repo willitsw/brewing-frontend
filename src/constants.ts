@@ -1,4 +1,4 @@
-const useAuthLocally = false;
+const useAuthLocally = true;
 
 interface Constants {
   isLocal: boolean;

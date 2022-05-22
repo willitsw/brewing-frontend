@@ -12,7 +12,12 @@ import {
 import beerIcon from "./beer-icon.png";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
-import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  LoginOutlined,
+  LogoutOutlined,
+  UserOutlined,
+  MoneyCollectOutlined,
+} from "@ant-design/icons";
 import { getAuth, signOut } from "firebase/auth";
 import {
   selectPageIsClean,
@@ -74,6 +79,15 @@ const Header = () => {
               Login
             </Button>
           </Menu.Item>
+          <Menu.Item key="donate" icon={<MoneyCollectOutlined />}>
+            <Button
+              type="link"
+              href="https://www.paypal.com/donate/?hosted_button_id=UJZ4HJW2BWWLG"
+              target="_blank"
+            >
+              Donate
+            </Button>
+          </Menu.Item>
         </Menu>
       );
     } else {
@@ -82,6 +96,15 @@ const Header = () => {
           <Menu.Item key="logout" icon={<LogoutOutlined />}>
             <Button type="link" onClick={handleSignOut}>
               Logout
+            </Button>
+          </Menu.Item>
+          <Menu.Item key="donate" icon={<MoneyCollectOutlined />}>
+            <Button
+              type="link"
+              href="https://www.paypal.com/donate/?hosted_button_id=UJZ4HJW2BWWLG"
+              target="_blank"
+            >
+              Donate
             </Button>
           </Menu.Item>
         </Menu>
