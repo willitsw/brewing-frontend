@@ -13,11 +13,11 @@ What Ales You helps you keep track of your brewing hobby, and gives you tools to
 These features are not listed in any particular order of priority.
 
 ### Water Chemistry
-**Effort - large**
+- **Effort - large**
 Bob wants to be able to calculate the acidity and mineral content of his water for each and every recipe. He would like a central place to configure his tap water profile, and that profile will be usable by all recipes. In each recipe, Bob wants tools to configure the proportions of tap water / RO water, acid additions, and mineral additions. All of these additions will update the overall acidity and mineral levels in real time as he builds and tweaks the recipe.
 
 ### Reporting
-**Effort - large**
+- **Effort - large**
 Stan would like to be able to generate some visualizations of his brewing over time, and possibly view some global trends in the homebrewing world:
 - Efficiency of brew sessions
 - Popularity of certain styles
@@ -25,8 +25,16 @@ Stan would like to be able to generate some visualizations of his brewing over t
 - Popularity of certain ingredients
 - ???
 
+### Featured Recipes
+- **Effort - Medium**
+McKenzie wants to see a rotating display of featured recipes on the home page.
+
+### Public Recipes
+- **Effort - Large**
+Helga wants to be able to search and rate public recipes.
+
 ### Misc Calculators
-**Effort - Medium**
+- **Effort - Medium**
 Jenny wants a page where she can use miscellaneous brewing calculators, such as:
 - ABV
 - Priming Sugar
@@ -34,13 +42,23 @@ Jenny wants a page where she can use miscellaneous brewing calculators, such as:
 - ???
 
 ### Enhanced Brew Log
-**Effort - Small**
+- **Effort - Small**
 Jorge would like the brew log to tell him some statistics for each brew session:
 - Realized ABV
 - Actual Efficiency
 - ???
 
 ### Hooch and Wine Spike
-**Effort - Medium**
+- **Effort - Medium**
 What would it take to make this app more useful to hoochers and wine makers? Is that feasable?
 
+
+# Tech Debt
+
+### Get rid of moment.js in the FE
+- **Effort - small**
+Moment.js is no longer being developed and should be switched out for Luxon
+
+### Spike - Node api frameworks for lambda
+- **Effort - medium**
+Is deploying the api as separate lambdas really the way to go? They are all very lightweight but each endpoint will have more cold starts because they are all separate lambda functions. Is there a very lightweight framework that actually works well deployed on lambda? Preferably stateless?
