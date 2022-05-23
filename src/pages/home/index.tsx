@@ -53,6 +53,41 @@ const HomePage = () => {
           </Button>
         </Col>
       </Row>
+      <Typography.Paragraph style={{ marginTop: 20 }}>
+        What Ales You helps you keep track of your brewing hobby, and gives you
+        tools to improve your skills. The app is driven and supported by the
+        homebrewing community, and as long as donations support its operational
+        costs, there will never be any ads, paywalls, or premium tiers.
+      </Typography.Paragraph>
+      <Typography.Title level={5}>Current Features</Typography.Title>
+      <Typography.Paragraph>
+        <ul>
+          <li>Design recipes</li>
+          <li>
+            Calculate the following:
+            <li>Gravity / ABV</li>
+            <li>SRM</li>
+            <li>IBU</li>
+            <li>Water Usage</li>
+          </li>
+          <li>Log brew sessions</li>
+          <li>Print recipes in a nice format</li>
+        </ul>
+      </Typography.Paragraph>
+      <Typography.Paragraph>
+        Do you have any great ideas for future functionality? Or would you like
+        to contribute to this project as a product manager, designer, or
+        developer? Please{" "}
+        <a href="mailto:whatalesyouadm@gmail.com">reach out</a> or{" "}
+        <a
+          target="_blank"
+          href="https://github.com/willitsw/brewing-frontend"
+          rel="noreferrer"
+        >
+          check out the codebase
+        </a>{" "}
+        to get involved!
+      </Typography.Paragraph>
     </Content>
   );
 };
