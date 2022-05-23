@@ -87,12 +87,10 @@ const BrewLogDetailPage = () => {
       if (recipeList?.length === 0) {
         const newRecipeList = await getRecipesByUser();
         dispatch(setRecipeList(newRecipeList));
-        return;
       }
       if (brewLogList?.length === 0) {
         const newBrewLogs = await getBrewLogsByUser();
         dispatch(setBrewLogList(newBrewLogs));
-        return;
       }
       let workingBrewLog: BT.BrewLog;
       if (location.pathname.includes("/brew-log/edit") && id) {
@@ -116,7 +114,7 @@ const BrewLogDetailPage = () => {
       setLoading(false);
     };
     onComponentLoad();
-  }, [recipeList, brewLogList]);
+  }, []);
 
   const handleSaveFailed = () => {
     message.error(
