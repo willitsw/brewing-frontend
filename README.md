@@ -2,11 +2,11 @@
 What Ales You helps you keep track of your brewing hobby, and gives you tools to improve your skills. The app is driven and supported by the homebrewing community, and as long as donations support its operational costs, there will never be any ads, paywalls, or premium tiers.
 
 # Table Of Contents
-[Front End Repo (You are already here...)](https://github.com/willitsw/brewing-frontend) - The FE is a React SPA that leans heavily on Ant Design for a component library, and it utilizes Redux for global state management.
-[Back End Repo](https://github.com/willitsw/brewing-backend) - The BE is a fairly simple CRUD api that stores information in AWS DynamoDB. Currently, it is deployed as a bunch of Node Lambdas, each wired up to API Gateway.
-[Shared Code Repo](https://github.com/willitsw/brewing-shared) - The shared repo is really just a place to hold shared interfaces and a little bit of shared business logic. Not a whole lot there right now, but it might grow in the future.
-[Infrastructure](https://github.com/willitsw/brewing-infra) - This holds all the IAC asset provisioning documentation. It is all currently deployed to AWS via Terraform.
-[Feature Roadmap](#feature-roadmap)
+- [Front End Repo (You are already here...)](https://github.com/willitsw/brewing-frontend) - The FE is a React SPA that leans heavily on Ant Design for a component library, and it utilizes Redux for global state management.
+- [Back End Repo](https://github.com/willitsw/brewing-backend) - The BE is a fairly simple CRUD api that stores information in AWS DynamoDB. Currently, it is deployed as a bunch of Node Lambdas, each wired up to API Gateway.
+- [Shared Code Repo](https://github.com/willitsw/brewing-shared) - The shared repo is really just a place to hold shared interfaces and a little bit of shared business logic. Not a whole lot there right now, but it might grow in the future.
+- [Infrastructure](https://github.com/willitsw/brewing-infra) - This holds all the IAC asset provisioning documentation. It is all currently deployed to AWS via Terraform.
+- [Feature Roadmap](#feature-roadmap)
 
 
 # Feature Roadmap
