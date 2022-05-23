@@ -18,6 +18,11 @@ These features are not listed in any particular order of priority.
 
 Bob wants to be able to calculate the acidity and mineral content of his water for each and every recipe. He would like a central place to configure his tap water profile, and that profile will be usable by all recipes. In each recipe, Bob wants tools to configure the proportions of tap water / RO water, acid additions, and mineral additions. All of these additions will update the overall acidity and mineral levels in real time as he builds and tweaks the recipe.
 
+### Import/Export Recipes
+**Effort - medium**
+
+Carl wants to be able to import and export recipes via BeerXML or BeerJSON.
+
 ### Reporting
 **Effort - large**
 
