@@ -82,3 +82,8 @@ Is deploying the api as separate lambdas really the way to go? They are all very
 **Effort - medium**
 
 Move our state and terraform operations to TF Cloud. Also, create two different projects there so that we can use the exact same code for staging and prod, instead of just duplicating resources.
+
+### Fix Facebook SSO
+**Effort - small**
+
+Facebook SSO doesn't work. The code is basically there, but for some reason it isn't working. Investigate/fix
