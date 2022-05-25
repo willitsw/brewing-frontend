@@ -5,12 +5,19 @@ import { setShowLoginModal } from "../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
 import React from "react";
+import { useAnalytics } from "../../utils/analytics";
 
 const HomePage = () => {
   const auth = getAuth();
   const isAuthenticated = useAppSelector(userIsAuthenticated);
   const currentUser = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
+  const { fireAnalyticsEvent } = useAnalytics();
+
+  const handleDonateClicked = () => {
+    fireAnalyticsEvent("Donate button clicked", { source: "home page" });
+  };
+
   return (
     <Content pageTitle="Home">
       <Row>
@@ -48,6 +55,7 @@ const HomePage = () => {
             type="primary"
             href="https://www.paypal.com/donate/?hosted_button_id=UJZ4HJW2BWWLG"
             target="_blank"
+            onClick={handleDonateClicked}
           >
             Donate
           </Button>
@@ -65,10 +73,12 @@ const HomePage = () => {
           <li>Design recipes</li>
           <li>
             Calculate the following:
-            <li>Gravity / ABV</li>
-            <li>SRM</li>
-            <li>IBU</li>
-            <li>Water Usage</li>
+            <ul>
+              <li>Gravity / ABV</li>
+              <li>SRM</li>
+              <li>IBU</li>
+              <li>Water Usage</li>
+            </ul>
           </li>
           <li>Log brew sessions</li>
           <li>Print recipes in a nice format</li>

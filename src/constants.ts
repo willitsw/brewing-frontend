@@ -4,6 +4,7 @@ interface Constants {
   isLocal: boolean;
   useAuth: boolean;
   apiUrl: string;
+  environment: "production" | "staging" | "development";
 }
 
 let constants: Constants;
@@ -15,6 +16,7 @@ switch (process.env.APP_ENV) {
       useAuth: true,
       apiUrl:
         "https://6l89tf8fp2.execute-api.us-east-2.amazonaws.com/beer-backend",
+      environment: process.env.APP_ENV,
     };
     break;
   case "staging":
@@ -23,6 +25,7 @@ switch (process.env.APP_ENV) {
       useAuth: true,
       apiUrl:
         "https://uvefvxdro8.execute-api.us-east-2.amazonaws.com/beer-backend",
+      environment: process.env.APP_ENV,
     };
     break;
   case "development":
@@ -30,6 +33,7 @@ switch (process.env.APP_ENV) {
       isLocal: true,
       useAuth: useAuthLocally,
       apiUrl: "http://localhost:5000",
+      environment: process.env.APP_ENV,
     };
     break;
   default:

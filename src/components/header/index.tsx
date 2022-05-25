@@ -25,6 +25,7 @@ import {
   setShowLoginModal,
 } from "../../redux/global-modals/slice";
 import React from "react";
+import { useAnalytics } from "../../utils/analytics";
 
 const Header = () => {
   const auth = getAuth();
@@ -39,6 +40,7 @@ const Header = () => {
   const [isPhone] = useState<boolean>(
     window.matchMedia("(max-width: 500px)").matches
   );
+  const { fireAnalyticsEvent } = useAnalytics();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -84,6 +86,11 @@ const Header = () => {
               type="link"
               href="https://www.paypal.com/donate/?hosted_button_id=UJZ4HJW2BWWLG"
               target="_blank"
+              onClick={() =>
+                fireAnalyticsEvent("Donate button clicked", {
+                  source: "header",
+                })
+              }
             >
               Donate
             </Button>
@@ -103,6 +110,11 @@ const Header = () => {
               type="link"
               href="https://www.paypal.com/donate/?hosted_button_id=UJZ4HJW2BWWLG"
               target="_blank"
+              onClick={() =>
+                fireAnalyticsEvent("Donate button clicked", {
+                  source: "header",
+                })
+              }
             >
               Donate
             </Button>

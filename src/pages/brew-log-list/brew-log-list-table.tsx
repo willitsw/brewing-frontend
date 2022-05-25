@@ -15,6 +15,7 @@ import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 import moment from "moment";
 import { DATE_FORMAT } from "../../constants";
+import { useAnalytics } from "../../utils/analytics";
 
 const BrewLogListTable = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ const BrewLogListTable = () => {
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const { fireAnalyticsEvent } = useAnalytics();
 
   useEffect(() => {
     const getBrewLogList = async () => {
@@ -35,6 +37,7 @@ const BrewLogListTable = () => {
   const handleDeleteBrewLog = async () => {
     if (idToDelete) {
       dispatch(processDeleteBrewLog(idToDelete));
+      fireAnalyticsEvent("Brew Log Deleted", { brewLogId: idToDelete });
     }
     setIdToDelete(null);
   };
@@ -92,7 +95,10 @@ const BrewLogListTable = () => {
       <Button
         style={{ marginBottom: 10 }}
         type="primary"
-        onClick={() => navigate("/brew-log/new")}
+        onClick={() => {
+          navigate("/brew-log/new");
+          fireAnalyticsEvent("Brew Log Created");
+        }}
       >
         New Brew Log
       </Button>

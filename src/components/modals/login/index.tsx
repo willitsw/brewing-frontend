@@ -18,6 +18,7 @@ import {
 } from "../../../redux/global-modals/slice";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import React from "react";
+import { useAnalytics } from "../../../utils/analytics";
 
 declare const window: any;
 
@@ -32,6 +33,7 @@ const LoginModal = () => {
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const showLoginModal = useAppSelector(selectShowLoginModal);
   const dispatch = useAppDispatch();
+  const { fireAnalyticsEvent } = useAnalytics();
 
   const auth = getAuth();
   const googleProvider = new GoogleAuthProvider();
@@ -42,6 +44,7 @@ const LoginModal = () => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithRedirect(auth, googleProvider);
+      fireAnalyticsEvent("Google Sign In");
     } catch (error) {
       console.log("google signup failed:", error);
     }
@@ -51,6 +54,7 @@ const LoginModal = () => {
   const handleFacebookSignIn = async () => {
     try {
       await signInWithRedirect(auth, facebookProvider);
+      fireAnalyticsEvent("Facebook Sign In");
     } catch (error) {
       console.log("facebook signup failed:", error);
     }
@@ -63,6 +67,7 @@ const LoginModal = () => {
       await form.validateFields();
       const values: FormValues = form.getFieldsValue();
       await createUserWithEmailAndPassword(auth, values.email, values.password);
+      fireAnalyticsEvent("Email/Password Account Created");
     } catch (error) {
       console.log("email / password signup failed:", error);
     }
@@ -80,6 +85,7 @@ const LoginModal = () => {
       } else {
         await signInWithEmailAndPassword(auth, values.email, values.password);
       }
+      fireAnalyticsEvent("Email/Password Sign In");
     } catch (error) {
       console.log("form submission failed:", error);
     }

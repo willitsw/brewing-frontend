@@ -17,6 +17,7 @@ import {
 import { getRecipesByUser } from "../../utils/api-calls";
 import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
+import { useAnalytics } from "../../utils/analytics";
 
 const RecipeListTable = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ const RecipeListTable = () => {
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const { fireAnalyticsEvent } = useAnalytics();
 
   const nameToDelete = idToDelete
     ? recipeList.find((recipe) => recipe.id === idToDelete)?.name
@@ -41,6 +43,7 @@ const RecipeListTable = () => {
   const handleDeleteRecipe = async () => {
     if (idToDelete) {
       dispatch(processDeleteRecipe(idToDelete));
+      fireAnalyticsEvent("Recipe Deleted", { recipeId: idToDelete });
     }
     setIdToDelete(null);
   };
@@ -79,6 +82,11 @@ const RecipeListTable = () => {
                 type="primary"
                 shape="circle"
                 icon={<PrinterOutlined />}
+                onClick={() => {
+                  fireAnalyticsEvent("Printer Friendly Recipe Viewed", {
+                    recipeId: record.id,
+                  });
+                }}
               />
             </Link>
           </Tooltip>
@@ -87,7 +95,12 @@ const RecipeListTable = () => {
               type="primary"
               shape="circle"
               icon={<CopyOutlined />}
-              onClick={() => navigate("/recipes/duplicate/" + record.id)}
+              onClick={() => {
+                navigate("/recipes/duplicate/" + record.id);
+                fireAnalyticsEvent("Recipe Duplicated", {
+                  recipeId: record.id,
+                });
+              }}
             />
           </Tooltip>
           <Tooltip title="Delete">
@@ -115,7 +128,10 @@ const RecipeListTable = () => {
       <Button
         style={{ marginBottom: 10 }}
         type="primary"
-        onClick={() => navigate("/recipes/new")}
+        onClick={() => {
+          navigate("/recipes/new");
+          fireAnalyticsEvent("New Recipe Created");
+        }}
       >
         New Recipe
       </Button>

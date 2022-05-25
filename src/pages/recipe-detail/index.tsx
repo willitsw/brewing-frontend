@@ -30,6 +30,7 @@ import { BrewingTypes as BT } from "brewing-shared";
 import React from "react";
 import Ingredients from "./ingredients/ingredients";
 import moment from "moment";
+import { useAnalytics } from "../../utils/analytics";
 
 const defaultRecipe: BT.Recipe = {
   name: "New Recipe",
@@ -71,6 +72,7 @@ const RecipeDetailPage = () => {
   const [isDesktop] = useState<boolean>(
     window.matchMedia("(min-width: 1200px)").matches
   );
+  const { fireAnalyticsEvent } = useAnalytics();
 
   useEffect(() => {
     const onComponentLoad = async () => {
@@ -118,6 +120,7 @@ const RecipeDetailPage = () => {
     dispatch(processCreateUpdateRecipe(newRecipe));
     dispatch(setPageIsClean(true));
     message.success(`${newRecipe.name} has been saved.`);
+    fireAnalyticsEvent("Recipe Saved", { recipeId: recipe.id });
   };
 
   const goBackToRecipeList = () => {

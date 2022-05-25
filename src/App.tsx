@@ -4,6 +4,7 @@ import { store } from "./redux/store";
 import PageLayout from "./components/page-layout";
 import AuthProvider from "./components/auth-provider";
 import React from "react";
+import { AnalyticsProvider } from "./utils/analytics";
 
 export enum RouteSegments {
   Home = "/home",
@@ -14,11 +15,13 @@ export enum RouteSegments {
 const App = () => {
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <BrowserRouter>
-          <PageLayout />
-        </BrowserRouter>
-      </AuthProvider>
+      <BrowserRouter>
+        <AnalyticsProvider>
+          <AuthProvider>
+            <PageLayout />
+          </AuthProvider>
+        </AnalyticsProvider>
+      </BrowserRouter>
     </Provider>
   );
 };

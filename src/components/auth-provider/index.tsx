@@ -42,10 +42,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      console.log("user is logged in");
-      console.log(user);
       dispatch(
         setUser({
           displayName: user.displayName,
@@ -57,12 +53,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const brewSettings = await getBrewSettings();
       dispatch(setBrewSettings(brewSettings));
       dispatch(setGlobalIsLoading(false));
-      // ...
     } else {
-      // User is signed out
-      // ...
       if (constants.useAuth) {
-        console.log("user is logged out");
         dispatch(clearUser());
         dispatch(clearBrewSettings());
         dispatch(setGlobalIsLoading(false));
