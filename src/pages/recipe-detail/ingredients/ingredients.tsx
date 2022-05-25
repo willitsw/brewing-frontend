@@ -120,7 +120,7 @@ const Ingredients = ({
   );
 
   const getTiming = (step: BT.Ingredient) => {
-    if (step.step === "Boil" || step.step === "Mash") {
+    if (step.step === "Boil") {
       return (
         <Descriptions.Item label="Timing">{step.timing} min</Descriptions.Item>
       );
