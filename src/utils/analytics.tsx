@@ -47,9 +47,7 @@ export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => {
   const location = useLocation();
   const user = useAppSelector(selectCurrentUser);
   const brewSettings = useAppSelector(selectBrewSettings);
-  //   const sendEvents = constants.environment === "production";
-
-  const sendEvents = true;
+  const sendEvents = constants.environment === "production";
 
   useEffect(() => {
     if (!isInitialized && sendEvents) {
