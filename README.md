@@ -87,3 +87,8 @@ Move our state and terraform operations to TF Cloud. Also, create two different 
 **Effort - small**
 
 Facebook SSO doesn't work. The code is basically there, but for some reason it isn't working. Investigate/fix
+
+### Tests
+**Effort - large**
+
+Really need to start writing more tests...
