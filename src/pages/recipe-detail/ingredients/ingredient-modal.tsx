@@ -241,7 +241,7 @@ const IngredientModal = ({
                   <InputNumber
                     min="0"
                     max="100"
-                    step="0.1"
+                    step="1"
                     style={{ width: 105 }}
                     addonAfter="lov"
                   />
@@ -635,7 +635,7 @@ const IngredientModal = ({
                 name="timing"
                 label="Time"
                 labelCol={{ span: 30, offset: 0 }}
-                initialValue={0}
+                initialValue={60}
               >
                 <InputNumber
                   min={0}
