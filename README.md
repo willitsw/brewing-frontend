@@ -1,5 +1,5 @@
 # What Ales You
-What Ales You helps you keep track of your brewing hobby, and gives you tools to improve your skills. The app is driven and supported by the homebrewing community, and as long as donations support its operational costs, there will never be any ads, paywalls, or premium tiers.
+What Ales You helps you keep track of your brewing hobby, and gives you tools to improve your skills. The idea is that this app will be driven and supported by the homebrewing community, and as long as donations support its operational costs, there will never be any ads, paywalls, or premium tiers.
 
 # Table Of Contents
 - [Front End Repo (You are already here...)](https://github.com/willitsw/brewing-frontend) - The FE is a React SPA that leans heavily on Ant Design for a component library, and it utilizes Redux for global state management.
