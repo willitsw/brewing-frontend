@@ -635,7 +635,7 @@ const IngredientModal = ({
                 name="timing"
                 label="Time"
                 labelCol={{ span: 30, offset: 0 }}
-                initialValue={60}
+                initialValue={ingredientId === "Boil" ? 60 : 0}
               >
                 <InputNumber
                   min={0}
