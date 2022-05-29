@@ -63,10 +63,9 @@ const HomePage = () => {
       </Row>
       <Typography.Paragraph style={{ marginTop: 20 }}>
         What Ales You helps you keep track of your brewing hobby, and gives you
-        tools to improve your skills. The idea is that this app is driven and
-        supported by the homebrewing community, and as long as donations support
-        its operational costs, there will never be any ads, paywalls, or premium
-        tiers.
+        tools to improve your skills. This app is driven and supported by the
+        homebrewing community, and as long as donations support its operational
+        costs, there will never be any ads, paywalls, or premium tiers.
       </Typography.Paragraph>
       <Typography.Title level={5}>Current Features</Typography.Title>
       <Typography.Paragraph>
