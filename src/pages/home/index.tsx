@@ -6,6 +6,7 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { selectCurrentUser, userIsAuthenticated } from "../../redux/user/slice";
 import React from "react";
 import { useAnalytics } from "../../utils/analytics";
+import YoutubeEmbed from "./youtube-container";
 
 const HomePage = () => {
   const auth = getAuth();
@@ -20,8 +21,8 @@ const HomePage = () => {
 
   return (
     <Content pageTitle="Home">
-      <Row>
-        <Col span={12}>
+      <Row justify="center">
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           {isAuthenticated ? (
             <>
               <Typography.Title level={4}>
@@ -47,7 +48,7 @@ const HomePage = () => {
             </>
           )}
         </Col>
-        <Col span={12}>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           <Typography.Title level={4}>
             Make a Donation Via Paypal
           </Typography.Title>
@@ -60,14 +61,42 @@ const HomePage = () => {
             Donate
           </Button>
         </Col>
+        <Col span={24}>
+          <Typography.Paragraph style={{ marginTop: 20 }}>
+            What Ales You helps you keep track of your brewing hobby, and gives
+            you tools to improve your skills. This app is driven and supported
+            by the homebrewing community, and as long as donations support its
+            operational costs, there will never be any ads, paywalls, or premium
+            tiers.
+          </Typography.Paragraph>
+        </Col>
+        <Col span={24}>
+          <Typography.Title level={4}>A Quick Tour:</Typography.Title>
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <YoutubeEmbed
+            id="6A3X6cWE4zQ"
+            title="Build a Recipe"
+            description="Build your own recipe."
+          />
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <YoutubeEmbed
+            id="qcd483dXguc"
+            title="Build a Recipe"
+            description="Configure your brew settings."
+          />
+        </Col>
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <YoutubeEmbed
+            id="N_0yJX8CTCE"
+            title="Build a Recipe"
+            description="Record a Brew Log."
+          />
+        </Col>
       </Row>
-      <Typography.Paragraph style={{ marginTop: 20 }}>
-        What Ales You helps you keep track of your brewing hobby, and gives you
-        tools to improve your skills. This app is driven and supported by the
-        homebrewing community, and as long as donations support its operational
-        costs, there will never be any ads, paywalls, or premium tiers.
-      </Typography.Paragraph>
-      <Typography.Title level={5}>Current Features</Typography.Title>
+
+      {/* <Typography.Title level={5}>Current Features</Typography.Title>
       <Typography.Paragraph>
         <ul>
           <li>Design recipes</li>
@@ -83,7 +112,7 @@ const HomePage = () => {
           <li>Log brew sessions</li>
           <li>Print recipes in a nice format</li>
         </ul>
-      </Typography.Paragraph>
+      </Typography.Paragraph> */}
       <Typography.Paragraph>
         Do you have any great ideas for future functionality? Or would you like
         to contribute to this project as a product manager, designer, or
