@@ -180,7 +180,7 @@ const RecipeDetailPage = () => {
       <Tabs.TabPane tab="Ingredients" key="2">
         <Ingredients
           ingredients={ingredients}
-          measurementType={brewSettings.measurementType}
+          measurementType={form.getFieldValue("measurementType")}
           setIngredients={handleSetIngredients}
         />
       </Tabs.TabPane>
